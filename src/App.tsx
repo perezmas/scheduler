@@ -12,6 +12,7 @@ function App(): JSX.Element {
                     Lucas D
                     <br />
                     Max P-M
+
                 </p>
                 <p>Amani Kiruga</p>
             </header>
