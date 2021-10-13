@@ -10,7 +10,7 @@ function App(): JSX.Element {
                 UD CIS Scheduler
                 <p>
                     Lucas D
-                    <br />Max P-M <br> Amani Kiruga
+                    <br>Max P-M <br> Amani Kiruga
                 </p>
             </header>
         </div>
