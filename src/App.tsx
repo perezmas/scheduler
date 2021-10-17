@@ -1,21 +1,13 @@
-import React from "react";
-import logo from "./logo.svg";
+import React, { useState } from "react";
 import "./App.css";
+import {v4 as uuid} from "uuid";
+import Year from "./components/Year";
 
 function App(): JSX.Element {
+    const yruuid = useState(uuid);
     return (
         <div className="App">
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                UD CIS Scheduler
-                <p>
-                    Lucas D
-                    <br />
-                    Max P-M
-
-                </p>
-                <p>Amani Kiruga</p>
-            </header>
+            <Year uuid={yruuid[0]} level="FRESHMAN" num={1}/>
         </div>
     );
 }
