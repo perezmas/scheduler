@@ -1,18 +1,16 @@
 import { useReducer } from "react";
 import CourseProps from "../interfaces/Course";
 import SemesterProps from "../interfaces/Semester";
-
-interface SemesterReducerAction{
-    type: "ADD COURSE" | "UPDATE COURSE" | "UPDATE SEMESTER" | "DELETE COURSE" | "ADD SEMESTER",
-    uuid: string,
-    newValues: Map<"name" | "start" | "end",Date | string> | null,
-    course: string | null
+interface AbstractAction{
+    type: "UPDATE SEMESTER" | "ADD SEMESTER" | "DELETE SEMESTER" ,
+    uuid: string
 }
 
-interface AddSemester extends SemesterReducerAction{
+export interface AddSemesterAction extends AbstractAction{
     type: "ADD SEMESTER",
-    uuid: string,
-    newValues: Map<"name" | "start" | "end",Date | string>
+    name: string,
+    start: Date,
+    end: Date,
 }
 
 function isDate(dors: string | Date | undefined): dors is Date{
@@ -23,19 +21,18 @@ function isString(dors: string | Date | undefined): dors is string{
     return dors !== undefined && (dors as Date).getTime === undefined;
 }
 
-function isAddSemester(action: SemesterReducerAction): action is AddSemester{
-    return action.type === "ADD SEMESTER" && action.newValues !== null && isString(action.newValues.get("name")) && isDate(action.newValues.get("start")) && isDate(action.newValues.get("end"));
+function isAddSemester(action: AbstractAction): action is AddSemesterAction{
+    const output: AddSemesterAction = (action as AddSemesterAction);
+    return output.type === "ADD SEMESTER" && isString(output.name) && isDate(output.start) && isDate(output.end);
 }
 
-function semesterReducer(prev: Map<string,SemesterProps>, action: SemesterReducerAction){
+function semesterReducer(prev: Array<SemesterProps> ,action: AbstractAction){
     switch(action.type){
     case "ADD SEMESTER":
         if(isAddSemester(action)){
-            const name = action.newValues.get("name");
-            const start = action.newValues.get("start");
-            const end = action.newValues.get("end");
-            prev.set(action.uuid,{name: (name as string), start: (start as Date), end: (end as Date), uuid: action.uuid, courses: new Map<string,CourseProps>()});
-            return prev;
+            const next = new Array<SemesterProps>().concat(prev);
+            next.push({name: action.name, start: action.start, end: action.end, uuid: action.uuid, courses: new Map<string,CourseProps>()});
+            return next;
         }else{
             throw Error(`Could not add semester ${action.uuid}; was the input object the right type?`);
         }default:
@@ -43,18 +40,16 @@ function semesterReducer(prev: Map<string,SemesterProps>, action: SemesterReduce
     }
 }
 
-function initSemesters(init: Array<SemesterProps> | undefined): Map<string,SemesterProps>{
-    const output = new Map<string,SemesterProps>();
+function initializer(init?: Array<SemesterProps>): Array<SemesterProps>{
     if(init !== undefined){
-        for(const sem of init){
-            output.set(sem.uuid,sem);
-        }
+        return init;
+    }else{
+        return new Array<SemesterProps>();
     }
-    return output;
 }
 
-function useSemesters(init?: Array<SemesterProps>): [Map<string,SemesterProps>,(action: SemesterReducerAction) => void]{
-    const [semesters, updateSemesters] = useReducer(semesterReducer,init,initSemesters);
+function useSemesters(init?: Array<SemesterProps>): [Array<SemesterProps>,(action: AbstractAction) => void]{
+    const [semesters, updateSemesters] = useReducer(semesterReducer,init,initializer);
     return [semesters, updateSemesters];
 }
 

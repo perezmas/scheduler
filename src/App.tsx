@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import "./App.css";
+import "./Year.css";
 import {v4 as uuid} from "uuid";
 import Year from "./components/Year";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App(): JSX.Element {
     const yruuid = useState(uuid);
