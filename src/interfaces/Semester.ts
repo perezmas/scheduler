@@ -1,7 +1,7 @@
 import CourseProps from "./Course";
+import AbstractProps from "./Props";
 
-interface SemesterProps{
-    uuid: string,
+interface SemesterProps extends AbstractProps{
     name: string,
     start: Date,
     end: Date,

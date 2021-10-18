@@ -1,8 +1,8 @@
-interface CourseProps{
+import AbstractProps from "./Props";
+
+interface CourseProps extends AbstractProps{
     /**The uuid of the semester containing this course.*/
     parent: string
-    /**The unique identifier of this course. */
-    uuid: string
     /**The department of the course */
     department: string | null,
     /**The course ID */

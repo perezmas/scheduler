@@ -1,11 +1,7 @@
+import AbstractProps from "./Props";
 import SemesterProps from "./Semester";
 
-export interface YearProps{
-    uuid: string,
-    level: "JUNIOR" | "SENIOR" | "SOPHOMORE" | "FRESHMAN" | "OTHER",
-    num: number,
+export interface YearProps extends AbstractProps{
+    index: number,
+    semesters: Array<SemesterProps>
 };
-
-export interface YearState{
-    semesters: Map<string,SemesterProps> | null
-}

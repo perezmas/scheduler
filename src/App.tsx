@@ -1,14 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import "./Year.css";
-import {v4 as uuid} from "uuid";
-import Year from "./components/Year";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Scheduler } from "./components/Scheduler";
 
 function App(): JSX.Element {
-    const yruuid = useState(uuid);
     return (
         <div className="App">
-            <Year uuid={yruuid[0]} level="FRESHMAN" num={1}/>
+            <Scheduler/>
         </div>
     );
 }
