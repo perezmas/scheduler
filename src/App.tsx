@@ -1,5 +1,6 @@
 import React from "react";
 import "./Year.css";
+import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Scheduler } from "./components/Scheduler";
 

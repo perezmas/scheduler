@@ -1,5 +1,14 @@
-.App {
-  text-align: center;
+.App{
+  text-align: left;
+}
+
+.precollapse::after{
+  content: "";
+}
+
+.trigger{
+  background-color: white;
+  border: none;
 }
 
 .App-logo {

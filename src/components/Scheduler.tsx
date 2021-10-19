@@ -14,6 +14,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element{
     const [newName, setNewName] = useState<string | null>(null);
     const [newStart, setNewStart] = useState<string | null>(null);
     const [newEnd, setNewEnd] = useState<string | null>(null);
+    const [currentForm, setCurrentForm] = useState<string | null>(null);
     const handleSemesterInput = (event: ChangeEvent<HTMLInputElement>) => {
         switch(event.target.name){
         case "season":
@@ -39,7 +40,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element{
                     <div key={props.uuid}>
                         <Year handleInput={handleSemesterInput} handleSubmit={(event: FormEvent<HTMLFormElement>) => {
                             handleSemesterSubmit(event,props.uuid);
-                        }} semesters={props.semesters} uuid={props.uuid} index={i+1} />
+                        }} semesters={props.semesters} uuid={props.uuid} index={i+1} formUuid={currentForm} setFormUuid={setCurrentForm}/>
                     </div>
                 );
             })}

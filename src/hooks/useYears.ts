@@ -2,7 +2,6 @@ import { useReducer } from "react";
 import CourseProps from "../interfaces/Course";
 import SemesterProps from "../interfaces/Semester";
 import { YearProps } from "../interfaces/Year";
-import {v4 as uuid} from "uuid";
 import AbstractProps from "../interfaces/Props";
 interface AbstractAction{
     type: "ADD YEAR" | "DELETE YEAR" | "UPDATE SEMESTER" | "ADD SEMESTER" | "DELETE SEMESTER",
