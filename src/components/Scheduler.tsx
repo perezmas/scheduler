@@ -1,8 +1,7 @@
 import React, {ChangeEvent, FormEvent, useState} from "react";
-import useYears, { AddYearAction } from "../hooks/useYears";
+import useYears from "../hooks/useYears";
 import {v4 as uuid} from "uuid";
 import SemesterProps from "../interfaces/Semester";
-import {AddSemesterAction} from "../hooks/useYears";
 import { YearProps } from "../interfaces/Year";
 import Year from "./Year";
 interface SchedulerProps{

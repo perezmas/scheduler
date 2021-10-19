@@ -1,4 +1,4 @@
-import React, {useState, ChangeEvent, FormEvent, useRef, useMemo} from "react";
+import React, {ChangeEvent, FormEvent, useRef, useMemo} from "react";
 import {YearProps} from "../interfaces/Year";
 import Collapsible from "react-collapsible";
 import {Container, Row, Col, Popover, PopoverContent, Overlay} from "react-bootstrap";
@@ -12,7 +12,6 @@ interface FullYearProps extends YearProps{
 }
 
 const Year = React.forwardRef((props: FullYearProps, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const [formOpen, setFormOpen] = useState<boolean>(false);
     const overlayButton = useRef(null);
     const sortedSemesters = useMemo(() => {
         return props.semesters.sort((a: SemesterProps, b: SemesterProps) => {
@@ -24,17 +23,17 @@ const Year = React.forwardRef((props: FullYearProps, ref: React.ForwardedRef<HTM
             <Col>
                 <Collapsible hidden={true} trigger={<button className="trigger">{`Year ${props.index} >`}</button>} transitionTime={200}>
                     <Row>
-                        {props.semesters.map((semester: SemesterProps) => {
+                        {sortedSemesters.map((semester: SemesterProps) => {
                             return (
                                 <Col key={semester.uuid}>{semester.name}</Col>
                             );
                         })}
                         <Col>
                             <button className="trigger" ref={overlayButton} onClick={() => {
-                                setFormOpen(!formOpen);
+                                props.setFormUuid(props.formUuid === props.uuid ? null : props.uuid);
                             }}>+</button>
-                            <Overlay target={overlayButton} placement="right-end" show={formOpen} onHide={() => {
-                                setFormOpen(false);
+                            <Overlay target={overlayButton} placement="right-end" show={props.formUuid === props.uuid} onHide={() => {
+                                props.setFormUuid(null);
                             }}rootClose={true}>
                                 <Popover id="popover-basic">
                                     <PopoverContent>
