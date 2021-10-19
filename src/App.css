@@ -1,5 +1,14 @@
-.App {
-  text-align: center;
+.App{
+  text-align: left;
+}
+
+.precollapse::after{
+  content: "";
+}
+
+.trigger{
+  background-color: white;
+  border: none;
 }
 
 .App-logo {
@@ -11,6 +20,10 @@
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
+}
+
+.Year {
+  background-color: gray;
 }
 
 .App-header {

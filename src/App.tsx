@@ -1,21 +1,13 @@
 import React from "react";
-import logo from "./logo.svg";
+import "./Year.css";
 import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Scheduler } from "./components/Scheduler";
 
 function App(): JSX.Element {
     return (
         <div className="App">
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                UD CIS Scheduler
-                <p>
-                    Lucas D
-                    <br />
-                    Max P-M
-
-                </p>
-                <p>Amani Kiruga</p>
-            </header>
+            <Scheduler/>
         </div>
     );
 }
