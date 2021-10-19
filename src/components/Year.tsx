@@ -34,7 +34,7 @@ const Year = React.forwardRef((props: FullYearProps, ref: React.ForwardedRef<HTM
                             }}>+</button>
                             <Overlay target={overlayButton} placement="right-end" show={props.formUuid === props.uuid} onHide={() => {
                                 props.setFormUuid(null);
-                            }}rootClose={true}>
+                            }}rootClose={true} transition={false}>
                                 <Popover id="popover-basic">
                                     <PopoverContent>
                                         <form onSubmit={props.handleSubmit}>
