@@ -32,18 +32,17 @@ function getByUUID<T extends AbstractProps>(state: Array<T>, uuid: string): numb
 }
 
 function semesterReducer(prev: Array<YearProps> ,action: AbstractAction): Array<YearProps>{
-    const next = new Array<YearProps>().concat(prev);
+    const next = prev.map((x: YearProps) => {
+        return x;
+    });
     switch(action.type){
     case "ADD SEMESTER": {
         const semAction: AddSemesterAction = action as AddSemesterAction;
-        const targetIndex: number = getByUUID(prev,semAction.uuid);
-        const target: YearProps = prev[targetIndex];
-        if(getByUUID(target.semesters,semAction.semesterUuid) !== -1){
-            return prev;
-        }
+        const targetIndex: number = getByUUID(next,semAction.uuid);
+        const target: YearProps = next[targetIndex];
         const newYear1 = new Array<SemesterProps>().concat(target.semesters);
         newYear1.push({name: semAction.name, start: semAction.start, end: semAction.end, uuid: semAction.semesterUuid, courses: new Map<string,CourseProps>()});
-        next[targetIndex].semesters = newYear1;
+        next[targetIndex] = {index: next[targetIndex].index, uuid: next[targetIndex].uuid, semesters: newYear1};
         return next;
     }case "ADD YEAR": {
         const addYear = action as AddYearAction;
