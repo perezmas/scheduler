@@ -10,7 +10,7 @@ interface SchedulerProps{
     json?: string
 }
 export function Scheduler(props: SchedulerProps): JSX.Element{
-    const [years, dispatchYears] = useYears([{index: 1, uuid: uuid(), semesters: new Array<SemesterProps>()}]);
+    const years = useYears([{index: 1, uuid: uuid(), semesters: new Array<SemesterProps>()}]);
     const [newName, setNewName] = useState<string | null>(null);
     const [newStart, setNewStart] = useState<string | null>(null);
     const [newEnd, setNewEnd] = useState<string | null>(null);
@@ -30,12 +30,11 @@ export function Scheduler(props: SchedulerProps): JSX.Element{
     };
     const handleSemesterSubmit = (event: FormEvent<HTMLFormElement>,id: string) => {
         event.preventDefault();
-        const input: AddSemesterAction = {type: "ADD SEMESTER", uuid: id, name: newName as string, start: new Date(newStart as string), end: new Date(newEnd as string), semesterUuid: uuid()};
-        dispatchYears(input);
+        years.putSemester(id, uuid(),new Date(newStart as string),new Date(newEnd as string),newName as string);
     };
     return (
         <div>
-            {years.map((props: YearProps, i: number) => {
+            {years.value.map((props: YearProps, i: number) => {
                 return (
                     <div key={props.uuid}>
                         <Year handleInput={handleSemesterInput} handleSubmit={(event: FormEvent<HTMLFormElement>) => {
@@ -45,8 +44,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element{
                 );
             })}
             <button onClick={() => {
-                const input: AddYearAction = {type: "ADD YEAR",uuid: uuid(), index: years.length};
-                dispatchYears(input);
+                years.push(uuid(),years.value.length);
             }}>+</button>
         </div>
     );
