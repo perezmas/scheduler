@@ -1,7 +1,7 @@
 import React, {useState, ChangeEvent, FormEvent, useRef} from "react";
 import {YearProps} from "../interfaces/Year";
-import Collapse from "react-bootstrap/Collapse";
-import {Container, Row, Col, Popover, OverlayTrigger, PopoverContent, Overlay} from "react-bootstrap";
+import Collapsible from "react-collapsible";
+import {Container, Row, Col, Popover, PopoverContent, Overlay} from "react-bootstrap";
 import SemesterProps from "../interfaces/Semester";
 
 interface FullYearProps extends YearProps{
@@ -9,22 +9,12 @@ interface FullYearProps extends YearProps{
     handleInput: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
-function Year(props: FullYearProps): JSX.Element{
-    const [viewing, setViewing] = useState<boolean>(false);
+const Year = React.forwardRef((props: FullYearProps, ref: React.ForwardedRef<HTMLDivElement>) => {
     const [formOpen, setFormOpen] = useState<boolean>(false);
     const overlayButton = useRef(null);
     return (
-        <Container className="container-sm">
-            <Row>
-                <div>
-                    Year {props.index}
-                    <button onClick={() => {
-                        setViewing(!viewing);
-                    }
-                    }>{">"}</button>
-                </div>
-            </Row>
-            <Collapse in={viewing}>
+        <Container className="container-sm" ref={ref}>
+            <Collapsible trigger={<div>{`Year ${props.index} >`}</div>} transitionTime={200}>
                 <Row>
                     {props.semesters.map((semester: SemesterProps) => {
                         return (
@@ -62,11 +52,10 @@ function Year(props: FullYearProps): JSX.Element{
                         </Overlay>
                     </Col>
                 </Row>
-            </Collapse>
-        </Container>
-
-        
+            </Collapsible>
+        </Container>    
     );
-}
+});
+Year.displayName="Year";
 
 export default Year;
