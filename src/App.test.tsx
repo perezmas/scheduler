@@ -1,9 +1,31 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
-import App from "./App";
+import { render, screen} from "@testing-library/react";
+import { Scheduler } from "./components/Scheduler";
 
-test("renders UD CIS Scheduler text", () => {
-    render(<App />);
-    const linkElement = screen.getByText(/UD CIS Scheduler/i);
-    expect(linkElement).toBeInTheDocument();
-});
+describe("Scheduler", () => {
+    beforeEach(() => {
+       render(<Scheduler></Scheduler>);
+    });
+
+    it("Starts with one year and a button to add more", () => {
+        const yrs = screen.getAllByTestId("Year");
+        expect(yrs.length).toBe(1);
+        const btn = screen.getByTestId("addYearButton");
+        expect(btn).toBeInTheDocument();
+    });
+
+    it("Can add another year by pressing the button", () => {
+        let btn = screen.getByTestId("addYearButton");
+        btn.click();
+        let yrs = screen.getAllByTestId("Year");
+        expect(yrs.length).toBe(2);
+        for(let i = 0;i < 5;i++){
+            btn = screen.getByTestId("addYearButton");
+            expect(btn).toBeInTheDocument();
+            btn.click();
+        }
+        yrs = screen.getAllByTestId("Year");
+        expect(yrs.length).toBe(7);
+    });
+
+})

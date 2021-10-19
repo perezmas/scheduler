@@ -35,14 +35,14 @@ export function Scheduler(props: SchedulerProps): JSX.Element{
         <div>
             {years.value.map((props: YearProps, i: number) => {
                 return (
-                    <div key={props.uuid}>
+                    <div data-testid={"Year"} key={props.uuid}>
                         <Year handleInput={handleSemesterInput} handleSubmit={(event: FormEvent<HTMLFormElement>) => {
                             handleSemesterSubmit(event,props.uuid);
                         }} semesters={props.semesters} uuid={props.uuid} index={i+1} formUuid={currentForm} setFormUuid={setCurrentForm}/>
                     </div>
                 );
             })}
-            <button onClick={() => {
+            <button data-testid="addYearButton" onClick={() => {
                 years.push(uuid(),years.value.length);
             }}>+</button>
         </div>

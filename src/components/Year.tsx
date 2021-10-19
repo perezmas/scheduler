@@ -21,7 +21,7 @@ const Year = React.forwardRef((props: FullYearProps, ref: React.ForwardedRef<HTM
     return (
         <Container className="container-sm" ref={ref}>
             <Col>
-                <Collapsible hidden={true} trigger={<button className="trigger">{`Year ${props.index} >`}</button>} transitionTime={200}>
+                <Collapsible hidden={true} trigger={<button data-testid={`Year ${props.index} label`} className="trigger">{`Year ${props.index} >`}</button>} transitionTime={200}>
                     <Row>
                         {sortedSemesters.map((semester: SemesterProps) => {
                             return (
