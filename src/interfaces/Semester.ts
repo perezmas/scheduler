@@ -6,6 +6,6 @@ interface SemesterProps extends AbstractProps{
     start: Date,
     end: Date,
     courses: Map<string,CourseProps>
-};
+}
 
 export default SemesterProps;

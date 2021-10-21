@@ -4,7 +4,7 @@ import { Scheduler } from "./components/Scheduler";
 
 describe("Scheduler", () => {
     beforeEach(() => {
-       render(<Scheduler></Scheduler>);
+        render(<Scheduler></Scheduler>);
     });
 
     it("Starts with one year and a button to add more", () => {
@@ -28,4 +28,15 @@ describe("Scheduler", () => {
         expect(yrs.length).toBe(7);
     });
 
-})
+    it("Can expand and collapse each year", () => {
+        let semesterPlus = screen.getByTestId("trigger");
+        expect(semesterPlus).not.toBeVisible();
+        const yr = screen.getByTestId("Year 1 label");
+        yr.click();
+        semesterPlus = screen.getByTestId("trigger");
+        expect(semesterPlus).toBeVisible();
+
+
+    });
+
+});

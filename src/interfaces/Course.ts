@@ -15,6 +15,6 @@ interface CourseProps extends AbstractProps{
     coreqs: Array<CourseProps> | null,
     /**What courses need to be taken before this one. */
     prereqs: Array<CourseProps> | null
-};
+}
 
 export default CourseProps;

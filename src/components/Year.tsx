@@ -29,7 +29,7 @@ const Year = React.forwardRef((props: FullYearProps, ref: React.ForwardedRef<HTM
                             );
                         })}
                         <Col>
-                            <button className="trigger" ref={overlayButton} onClick={() => {
+                            <button data-testid="trigger" className="trigger" ref={overlayButton} onClick={() => {
                                 props.setFormUuid(props.formUuid === props.uuid ? null : props.uuid);
                             }}>+</button>
                             <Overlay target={overlayButton} placement="right-end" show={props.formUuid === props.uuid} onHide={() => {
@@ -37,24 +37,25 @@ const Year = React.forwardRef((props: FullYearProps, ref: React.ForwardedRef<HTM
                             }}rootClose={true} transition={false}>
                                 <Popover id="popover-basic">
                                     <PopoverContent>
-                                        <form onSubmit={props.handleSubmit}>
+                                        <form data-testid="semester-form" onSubmit={props.handleSubmit}>
                                             <label>
                                                 season: 
                                             </label>
-                                            <input type="text" name="season" onChange={props.handleInput}/>
+                                            <input data-testid="season-input" type="text" name="season" onChange={props.handleInput}/>
                                             <br/>
                                             <label>
                                                 starts:
                                             </label>
-                                            <input type="date" name="starts" onChange={props.handleInput}/>
+                                            <input data-testid="starts-input" type="date" name="starts" onChange={props.handleInput}/>
                                             <br/>
                                             <label>
                                                 ends:
                                             </label>
-                                            <input type="date" name="ends" onChange={props.handleInput}/>
+                                            <input data-testid="ends-input" type="date" name="ends" onChange={props.handleInput}/>
                                             <br/>
-                                            <input type="submit" value="submit" />
-                                        </form> </PopoverContent>
+                                            <input data-testid="submit-button" type="submit" value="submit" />
+                                        </form> 
+                                    </PopoverContent>
                                 </Popover>
                             </Overlay>
                         </Col>
