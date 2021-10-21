@@ -1,10 +1,12 @@
 import React from "react";
 import { render, screen} from "@testing-library/react";
-import { Scheduler } from "./components/Scheduler";
+import App from "./App";
+import { act } from "react-dom/test-utils";
+import { getByTestId } from "@testing-library/react";
 
 describe("Scheduler", () => {
     beforeEach(() => {
-        render(<Scheduler></Scheduler>);
+        render(<App></App>);
     });
 
     it("Starts with one year and a button to add more", () => {
@@ -35,6 +37,18 @@ describe("Scheduler", () => {
         yr.click();
         semesterPlus = screen.getByTestId("trigger");
         expect(semesterPlus).toBeVisible();
+    });
+
+    it("Can open a popup by clicking on the button that appears under the year", () => {
+        const yr = screen.getByTestId("Year 1 label");
+        yr.click();
+        const semesterPlus = screen.getByTestId("trigger");
+        act(() => {
+            semesterPlus.click();
+            const popover = screen.getByRole("tooltip");
+            let form = getByTestId(popover,"semester-form");
+            expect(form).toBeInTheDocument();
+        });
     });
 
 });
