@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FormEvent, useRef, useMemo} from "react";
+import React, {ChangeEvent, FormEvent, useRef, useMemo, useState} from "react";
 import {YearProps} from "../interfaces/Year";
 import Collapsible from "react-collapsible";
 import {Container, Row, Col, Popover, PopoverContent, Overlay} from "react-bootstrap";
@@ -13,6 +13,7 @@ interface FullYearProps extends YearProps{
 
 const Year = React.forwardRef((props: FullYearProps, ref: React.ForwardedRef<HTMLDivElement>) => {
     const overlayButton = useRef(null);
+    const [visible, setVisible] = useState(false);
     const sortedSemesters = useMemo(() => {
         return props.semesters.sort((a: SemesterProps, b: SemesterProps) => {
             return b.start.getTime() - a.start.getTime();
@@ -21,8 +22,12 @@ const Year = React.forwardRef((props: FullYearProps, ref: React.ForwardedRef<HTM
     return (
         <Container className="container-sm" ref={ref}>
             <Col>
-                <Collapsible hidden={true} trigger={<button data-testid={`Year ${props.index} label`} className="trigger">{`Year ${props.index} >`}</button>} transitionTime={200}>
-                    <Row>
+                <Collapsible onOpening={() => {
+                    setVisible(true);
+                }} onClose={() =>{
+                    setVisible(false);  
+                }}trigger={<button data-testid={`Year ${props.index} label`} className="trigger">{`Year ${props.index} >`}</button>} transitionTime={200}>
+                    <Row hidden={!visible}>
                         {sortedSemesters.map((semester: SemesterProps) => {
                             return (
                                 <Col key={semester.uuid}>{semester.name}</Col>

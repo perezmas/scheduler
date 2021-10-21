@@ -35,8 +35,6 @@ describe("Scheduler", () => {
         yr.click();
         semesterPlus = screen.getByTestId("trigger");
         expect(semesterPlus).toBeVisible();
-
-
     });
 
 });
