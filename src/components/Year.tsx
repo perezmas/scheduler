@@ -1,7 +1,7 @@
 import React, {ChangeEvent, FormEvent, useRef, useMemo, useState} from "react";
 import {YearProps} from "../interfaces/Year";
 import Collapsible from "react-collapsible";
-import {Container, Row, Col, Popover, PopoverContent, Overlay} from "react-bootstrap";
+import {Container, Row, Col, Popover, Overlay} from "react-bootstrap";
 import SemesterProps from "../interfaces/Semester";
 
 interface FullYearProps extends YearProps{
@@ -41,26 +41,7 @@ const Year = React.forwardRef((props: FullYearProps, ref: React.ForwardedRef<HTM
                                 props.setFormUuid(null);
                             }}rootClose={true} transition={false}>
                                 <Popover id="popover-basic">
-                                    <PopoverContent>
-                                        <form data-testid="semester-form" onSubmit={props.handleSubmit}>
-                                            <label>
-                                                season: 
-                                            </label>
-                                            <input data-testid="season-input" type="text" name="season" onChange={props.handleInput}/>
-                                            <br/>
-                                            <label>
-                                                starts:
-                                            </label>
-                                            <input data-testid="starts-input" type="date" name="starts" onChange={props.handleInput}/>
-                                            <br/>
-                                            <label>
-                                                ends:
-                                            </label>
-                                            <input data-testid="ends-input" type="date" name="ends" onChange={props.handleInput}/>
-                                            <br/>
-                                            <input data-testid="submit-button" type="submit" value="submit" />
-                                        </form> 
-                                    </PopoverContent>
+                        
                                 </Popover>
                             </Overlay>
                         </Col>
