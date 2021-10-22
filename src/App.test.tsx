@@ -4,7 +4,7 @@ import { Scheduler } from "./components/Scheduler";
 
 describe("Scheduler", () => {
     beforeEach(() => {
-       render(<Scheduler></Scheduler>);
+        render(<Scheduler></Scheduler>);
     });
 
     it("Starts with one year and a button to add more", () => {
@@ -28,4 +28,4 @@ describe("Scheduler", () => {
         expect(yrs.length).toBe(7);
     });
 
-})
+});

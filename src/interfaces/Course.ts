@@ -6,7 +6,7 @@ interface CourseProps extends AbstractProps {
     /**The department of the course */
     department: string | null;
     /**The course ID */
-    id: string | null;
+    id: string;
     /* The name of the course */
     name: string;
     /**The description of the course */

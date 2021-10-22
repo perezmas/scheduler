@@ -1,4 +1,4 @@
 interface AbstractProps{
     uuid: string
 }
-export default AbstractProps
+export default AbstractProps;
