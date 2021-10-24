@@ -5,19 +5,19 @@ import { act, } from "react-dom/test-utils";
 
 async function addSemester(name: string, start: string, end: string): Promise<void>{
     screen.getByTestId("trigger 1").click();
-    let form = await screen.findByTestId("semester-form 1");
+    const form = await screen.findByTestId("semester-form 1");
 
     expect(form).toBeInTheDocument();
     
-    let seasonBox = screen.getByTestId("season-input");
-    let startBox = screen.getByTestId("starts-input");
-    let endBox = screen.getByTestId("ends-input");
+    const seasonBox = screen.getByTestId("season-input");
+    const startBox = screen.getByTestId("starts-input");
+    const endBox = screen.getByTestId("ends-input");
     
     fireEvent.change(seasonBox,{target: {value: name}});
     fireEvent.change(startBox,{target: {value: start}});
     fireEvent.change(endBox,{target: {value: end}});
 
-    let submit = screen.getByTestId("submit-button");
+    const submit = screen.getByTestId("submit-button");
     submit.click();
 
     await waitFor(() => {
