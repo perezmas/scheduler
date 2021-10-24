@@ -32,7 +32,7 @@ describe("Scheduler", () => {
 
     it("Starts with one year and a button to add more",async () => {
         const yrs = screen.getAllByTestId("Year");
-        expect(yrs.length).toBe(1);
+        expect(yrs).toHaveLength(1);
         expect(yrs[0]).toBeInstanceOf(HTMLDivElement);
         const btn = screen.getByTestId("addYearButton");
         expect(btn).toBeInTheDocument();
@@ -43,14 +43,14 @@ describe("Scheduler", () => {
         let btn = screen.getByTestId("addYearButton");
         btn.click();
         let yrs = screen.getAllByTestId("Year");
-        expect(yrs.length).toBe(2);
+        expect(yrs).toHaveLength(2);
         for(let i = 0;i < 5;i++){
             btn = screen.getByTestId("addYearButton");
             expect(btn).toBeInTheDocument();
             btn.click();
         }
         yrs = screen.getAllByTestId("Year");
-        expect(yrs.length).toBe(7);
+        expect(yrs).toHaveLength(7);
     });
 
     it("renders a form when you click on the new semester button",async () => {
@@ -74,6 +74,7 @@ describe("Scheduler", () => {
         await waitFor(() => {
             expect(screen.queryByTestId("semester-form 1")).not.toBeInTheDocument();
         });
+
     });
 
     it("Can display the names of semesters you add to a year.", async () => {
