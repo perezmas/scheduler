@@ -4,6 +4,7 @@ import {v4 as uuid} from "uuid";
 import SemesterProps from "../interfaces/Semester";
 import { YearProps } from "../interfaces/Year";
 import Year from "./Year";
+
 interface SchedulerProps{
     csv?: string,
     json?: string
@@ -30,7 +31,14 @@ export function Scheduler(props: SchedulerProps): JSX.Element{
         };
         const handleSemesterSubmit = (event: FormEvent<HTMLFormElement>,id: string) => {
             event.preventDefault();
-            years.putSemester(id, uuid(),new Date(newStart as string),new Date(newEnd as string),newName as string);
+            if(newName !== null && newEnd !== null && newStart !== null){
+                years.putSemester(id, uuid(),new Date(newStart as string),new Date(newEnd as string),newName as string);
+                setNewName(null);
+                setNewStart(null);
+                setNewEnd(null);
+                setCurrentForm(null);
+            }
+
         };
         return (
             <div>

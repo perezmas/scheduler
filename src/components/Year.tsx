@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FormEvent, useRef, useMemo, useState} from "react";
+import React, {ChangeEvent, FormEvent, useRef, useMemo} from "react";
 import {YearProps} from "../interfaces/Year";
 import Collapsible from "react-collapsible";
 import {Container, Row, Col, Popover, PopoverContent, Overlay} from "react-bootstrap";
@@ -13,28 +13,23 @@ interface FullYearProps extends YearProps{
 
 const Year = React.forwardRef((props: FullYearProps, ref: React.ForwardedRef<HTMLDivElement>) => {
     const overlayButton = useRef(null);
-    const [visible, setVisible] = useState(false);
     const sortedSemesters = useMemo(() => {
         return props.semesters.sort((a: SemesterProps, b: SemesterProps) => {
-            return b.start.getTime() - a.start.getTime();
+            return a.start.getTime() - b.start.getTime(); 
         });
     },[props.semesters]);
     return (
         <Container className="container-sm" ref={ref}>
             <Col>
-                <Collapsible onOpening={() => {
-                    setVisible(true);
-                }} onClose={() =>{
-                    setVisible(false);  
-                }}trigger={<button data-testid={`Year ${props.index} label`} className="trigger">{`Year ${props.index} >`}</button>} transitionTime={200}>
-                    <Row hidden={!visible}>
-                        {sortedSemesters.map((semester: SemesterProps) => {
+                <Collapsible trigger={<button data-testid={`Year ${props.index} label`} className="trigger">{`Year ${props.index} >`}</button>} transitionTime={200}>
+                    <Row data-testid="collapsible-content">
+                        {sortedSemesters.map((semester: SemesterProps, index: number) => {
                             return (
-                                <Col key={semester.uuid}>{semester.name}</Col>
+                                <Col data-testid={`Year ${props.index} semester ${index + 1}`} key={semester.uuid}>{semester.name}</Col>
                             );
                         })}
                         <Col>
-                            <button data-testid="trigger" className="trigger" ref={overlayButton} onClick={() => {
+                            <button data-testid={`trigger ${props.index}`} className="trigger" ref={overlayButton} onClick={() => {
                                 props.setFormUuid(props.formUuid === props.uuid ? null : props.uuid);
                             }}>+</button>
                             <Overlay target={overlayButton} placement="right-end" show={props.formUuid === props.uuid} onHide={() => {
@@ -42,7 +37,7 @@ const Year = React.forwardRef((props: FullYearProps, ref: React.ForwardedRef<HTM
                             }}rootClose={true} transition={false}>
                                 <Popover id="popover-basic">
                                     <PopoverContent>
-                                        <form data-testid="semester-form" onSubmit={props.handleSubmit}>
+                                        <form data-testid={`semester-form ${props.index}`} onSubmit={props.handleSubmit}>
                                             <label>
                                                 season: 
                                             </label>
