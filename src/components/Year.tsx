@@ -11,7 +11,7 @@ interface FullYearProps extends YearProps{
     setFormUuid: (newId: string | null) => void
 }
 
-const Year = React.forwardRef((props: FullYearProps, ref: React.ForwardedRef<HTMLDivElement>) => {
+function Year(props: FullYearProps): JSX.Element{
     const overlayButton = useRef(null);
     const sortedSemesters = useMemo(() => {
         return props.semesters.sort((a: SemesterProps, b: SemesterProps) => {
@@ -19,7 +19,7 @@ const Year = React.forwardRef((props: FullYearProps, ref: React.ForwardedRef<HTM
         });
     },[props.semesters]);
     return (
-        <Container className="container-sm" ref={ref}>
+        <Container className="container-sm">
             <Col>
                 <Collapsible trigger={<button data-testid={`Year ${props.index} label`} className="trigger">{`Year ${props.index} >`}</button>} transitionTime={200}>
                     <Row data-testid="collapsible-content">
@@ -64,7 +64,6 @@ const Year = React.forwardRef((props: FullYearProps, ref: React.ForwardedRef<HTM
             </Col>
         </Container>    
     );
-});
-Year.displayName="Year";
+}
 
 export default Year;
