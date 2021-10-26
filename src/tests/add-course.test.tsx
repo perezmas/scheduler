@@ -1,16 +1,6 @@
 import React from "react"; // eslint-disable-line no-unused-vars
 
-const CourseTest = (): JSX.Element => {
-    return (
-        <div>
-            <h1>Course</h1>
-        </div>
-    );
-};
-
-export default CourseTest;
-
-/*import { fireEvent, render } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
 import App from "../App";
 
 const addCourseTest = () => {
@@ -75,4 +65,3 @@ const addCourseAndRemoveCourseTest = () => {
         expect(getByText("Test course")).not.toBeInTheDocument();
     });
 }; // addCourseAndRemoveCourseTest ends here
-*/
