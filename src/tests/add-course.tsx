@@ -2,7 +2,7 @@ import React from "react"; // eslint-disable-line no-unused-vars
 
 import { fireEvent, render } from "@testing-library/react";
 import App from "../App";
-
+/*
 const addCourseTest = () => {
     test("Add course", () => {
         const { getByText, getByPlaceholderText } = render(<App />);
@@ -65,3 +65,4 @@ const addCourseAndRemoveCourseTest = () => {
         expect(getByText("Test course")).not.toBeInTheDocument();
     });
 }; // addCourseAndRemoveCourseTest ends here
+*/
