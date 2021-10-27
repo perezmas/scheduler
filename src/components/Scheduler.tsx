@@ -67,6 +67,11 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                                 index={i + 1}
                                 formUuid={currentForm}
                                 setFormUuid={setCurrentForm}
+                                removeSemester={(
+                                    semesterUuid: string
+                                ) => {
+                                    years.removeSemester(props.uuid,semesterUuid);
+                                }}
                             />
                         </div>
                     );

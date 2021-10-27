@@ -17,6 +17,7 @@ interface FullYearProps extends YearProps {
     handleInput: (event: ChangeEvent<HTMLInputElement>) => void;
     formUuid: string | null;
     setFormUuid: (newId: string | null) => void;
+    removeSemester: (semesterUuid: string) => void;
 }
 
 function Year(props: FullYearProps): JSX.Element {
@@ -48,7 +49,10 @@ function Year(props: FullYearProps): JSX.Element {
                                         } semester ${index + 1}`}
                                         key={semesterProps.uuid}
                                     >
-                                        <Semester {...semesterProps}></Semester>
+                                        <Semester {...semesterProps} removeSemester={() =>{
+                                            props.removeSemester(semesterProps.uuid);
+                                        }}
+                                        />
                                     </Col>
                                 );
                             }
