@@ -27,6 +27,10 @@ export interface DeleteSemesterAction extends AbstractAction {
     semesterUuid: string;
 }
 
+export interface DeleteYearAction extends AbstractAction{
+    type: "DELETE YEAR";
+}
+
 export interface AddYearAction extends AbstractAction {
     type: "ADD YEAR";
     uuid: string;
@@ -91,6 +95,12 @@ function semesterReducer(
         });
         next[targetIndex] = {index: next[targetIndex].index, uuid: next[targetIndex].uuid, semesters: newYear};
         return next;
+    }case "DELETE YEAR": {
+        const removeYear = action as DeleteYearAction;
+        const output = next.filter((value: YearProps) => {
+            return value.uuid !== removeYear.uuid;
+        });
+        return output;
     }
     default:
         throw Error(`${action.type} not implemented!`);
@@ -105,7 +115,24 @@ function initializer(init?: Array<YearProps>): Array<YearProps> {
     }
 }
 
-interface Years {
+function clearSemesters(years: Array<YearProps>, pusher: (uuid: string, index: number) => void, semesterRemover: (uuid: string, semesterUuid: string) => void, yearRemover: (uuid: string) => void, yearUuid?: string){
+    if(yearUuid !== undefined && getByUUID(years,yearUuid) !== -1){
+        for(const semester of years[getByUUID(years,yearUuid)].semesters){
+            semesterRemover(yearUuid,semester.uuid);
+        }
+    }else if(yearUuid === undefined){
+        const newYears: YearProps[] = new Array<YearProps>();
+        for(const year of years){
+            newYears.push({semesters: [], index: year.index, uuid: year.uuid});
+            yearRemover(year.uuid);
+        }
+        for(const year of newYears){
+            pusher(year.uuid,year.index);
+        }
+    }
+}
+
+interface Years{
     value: Array<YearProps>;
     push: (uuid: string, index: number) => void;
     putSemester: (
@@ -118,6 +145,12 @@ interface Years {
     removeSemester: (
         uuid: string,
         semesterUuid: string
+    ) => void;
+    removeYear: (
+        uuid: string
+    ) => void;
+    clear: (
+        uuid?: string
     ) => void;
 }
 
@@ -164,7 +197,18 @@ function useYears(init?: Array<YearProps>): Years {
         };
         updateSemesters(action);
     };
-    return { value: semesters, push: addYear, putSemester: addSemester, removeSemester: removeSemester };
+    const removeYear = (
+        uuid: string
+    ) => {
+        const action: DeleteYearAction = {
+            type: "DELETE YEAR",
+            uuid: uuid
+        };
+        updateSemesters(action);
+    };
+    return {value: semesters, push: addYear, putSemester: addSemester, removeSemester: removeSemester, removeYear: removeYear, clear: (uuid?: string) => {
+        clearSemesters(semesters,addYear,removeSemester,removeYear,uuid);
+    }};
 }
 
 export default useYears;
