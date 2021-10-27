@@ -1,11 +1,17 @@
-import {render, screen, fireEvent, act, waitFor} from "@testing-library/react";
+import React from "react";
+import {render, screen, fireEvent} from "@testing-library/react";
 import Year from "../components/Year";
 import {v4 as uuid} from "uuid";
 import CourseProps from "../interfaces/Course";
 import { ChangeEvent, FormEvent } from "react";
+
+let POINTLESS_GLOBAL = 1; //This is to appease the linter by avoiding doNothing being empty
+function doNothing(){
+    POINTLESS_GLOBAL += 1;
+}
+
 describe("Year",() => {
-    const yrUuid = uuid();
-    const doNothing = () => {}
+    const yrUuid = uuid();    
     it("Should render the label correctly", async () => {
         const {rerender} = render(
             <Year
@@ -66,7 +72,7 @@ describe("Year",() => {
         
         expect(semesterLabel).toBeInTheDocument();
         expect(minusButton).toBeInTheDocument();
-    })
+    });
 
     it("Should be able to several semesters, and they should be sorted by their starting dates.", async () => {
         render(
@@ -122,7 +128,7 @@ describe("Year",() => {
                 semesters={[]}
                 removeSemester={doNothing}
             />
-        )
+        );
         screen.getByTestId("Year 1 label").click();
         expect(fn).not.toHaveBeenCalled();
         screen.getByTestId("trigger 1").click();
@@ -133,8 +139,8 @@ describe("Year",() => {
     it("Should render the form when the formUuid prop matches the uuid and attempt to close the form on submitting or clicking out", async () => {
         let tst: string | null = "";
         const setFormWatcher = jest.fn((uuid: string | null) => {
-            tst = uuid
-        })
+            tst = uuid;
+        });
         render(<button data-testid="form-escape">hi</button>);
         render(
             <Year
@@ -175,24 +181,22 @@ describe("Year",() => {
         const handleInputSpy = jest.fn((e: ChangeEvent<HTMLInputElement>) => {
             e.preventDefault();
             switch(e.target.name){
-                case "season": {
-                    newName = e.target.value;
-                    break;
-                }
-                case "starts": {
-                    newStart = e.target.value;
-                    break;
-                }
-                case "ends": {
-                    newEnd = e.target.value;
-                    break;
-                }
+            case "season": {
+                newName = e.target.value;
+                break;
+            }case "starts": {
+                newStart = e.target.value;
+                break;
+            }case "ends": {
+                newEnd = e.target.value;
+                break;
+            }
             }
         });
 
         const handleSubmitSpy = jest.fn((e: FormEvent) => {
             e.preventDefault();
-        })
+        });
         render(
             <Year
                 uuid={yrUuid}
@@ -251,4 +255,5 @@ describe("Year",() => {
         screen.getByText("-").click();
         expect(removeSpy).toHaveBeenCalled();
     });
+    expect(typeof POINTLESS_GLOBAL).toBe("number");
 });

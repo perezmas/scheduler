@@ -112,5 +112,5 @@ describe("Scheduler", () => {
         expect(screen.getByText("fall")).toBeInTheDocument();
         screen.getByText("-").click();
         expect(screen.queryByText("fall")).not.toBeInTheDocument();
-    })
+    });
 });
