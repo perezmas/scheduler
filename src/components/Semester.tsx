@@ -27,7 +27,11 @@ const courseInit = (
     if (courses) return courses;
     else return new Map<string, CourseProps>();
 };
-const Semester = (props: SemesterProps): JSX.Element => {
+
+interface FullSemesterProps extends SemesterProps{
+    removeSemester: () => void;
+}
+const Semester = (props: FullSemesterProps): JSX.Element => {
     const [isOpen, setIsOpen] = useState(false);
     const [newCourseName, setNewCourseName] = useState<string>("");
     const [newCourseID, setNewCourseID] = useState<string>("");
@@ -101,6 +105,14 @@ const Semester = (props: SemesterProps): JSX.Element => {
             {props.name}
             <button
                 className="trigger"
+                onClick={props.removeSemester}
+            >
+                -
+            </button>
+
+            <div className="courses">{addedCourses}</div>
+            <button
+                className="trigger"
                 onClick={() => {
                     setIsOpen(true);
                 }}
@@ -108,7 +120,6 @@ const Semester = (props: SemesterProps): JSX.Element => {
             >
                 +
             </button>
-            <div className="courses">{addedCourses}</div>
         </>
     );
 };

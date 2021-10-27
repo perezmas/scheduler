@@ -22,6 +22,11 @@ export interface AddSemesterAction extends AbstractAction {
     end: Date;
 }
 
+export interface DeleteSemesterAction extends AbstractAction {
+    type: "DELETE SEMESTER";
+    semesterUuid: string;
+}
+
 export interface AddYearAction extends AbstractAction {
     type: "ADD YEAR";
     uuid: string;
@@ -68,8 +73,7 @@ function semesterReducer(
             semesters: newYear1,
         };
         return next;
-    }
-    case "ADD YEAR": {
+    }case "ADD YEAR": {
         const addYear = action as AddYearAction;
         const newYear2: YearProps = {
             index: addYear.index,
@@ -77,6 +81,15 @@ function semesterReducer(
             semesters: new Array<SemesterProps>(),
         };
         next.push(newYear2);
+        return next;
+    }case "DELETE SEMESTER": {
+        const removeSemester = action as DeleteSemesterAction;
+        const targetIndex: number = getByUUID(next,removeSemester.uuid);
+        const targetYear: YearProps = next[targetIndex];
+        const newYear = targetYear.semesters.filter((semester: SemesterProps) => {
+            return semester.uuid !== removeSemester.semesterUuid; 
+        });
+        next[targetIndex] = {index: next[targetIndex].index, uuid: next[targetIndex].uuid, semesters: newYear};
         return next;
     }
     default:
@@ -101,6 +114,10 @@ interface Years {
         start: Date,
         end: Date,
         name: string
+    ) => void;
+    removeSemester: (
+        uuid: string,
+        semesterUuid: string
     ) => void;
 }
 
@@ -136,7 +153,18 @@ function useYears(init?: Array<YearProps>): Years {
         };
         updateSemesters(action);
     };
-    return { value: semesters, push: addYear, putSemester: addSemester };
+    const removeSemester = (
+        uuid: string,
+        semesterUuid: string,
+    ) => {
+        const action: DeleteSemesterAction = {
+            type: "DELETE SEMESTER",
+            uuid: uuid,
+            semesterUuid: semesterUuid
+        };
+        updateSemesters(action);
+    };
+    return { value: semesters, push: addYear, putSemester: addSemester, removeSemester: removeSemester };
 }
 
 export default useYears;

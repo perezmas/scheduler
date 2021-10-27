@@ -83,10 +83,12 @@ describe("Scheduler", () => {
     });
 
     it("Can display the names of semesters you add to a year.", async () => {
-        expect(screen.queryByText("fall")).not.toBeInTheDocument();
+
         screen.getByTestId("Year 1 label").click();
         screen.getByTestId("trigger 1").click();
         const form = await screen.findByTestId("semester-form 1");
+        
+        expect(screen.queryByText("fall")).not.toBeInTheDocument();
 
         expect(form).toBeInTheDocument();
 
@@ -104,31 +106,11 @@ describe("Scheduler", () => {
         expect(screen.getByText("fall")).toBeInTheDocument();
     });
 
-    it("Should sort semesters by starting dates", async () => {
-        screen.getByTestId("Year 1 label").click();
+    it("Should be able to remove a semester on clicking the '-' button next to the label", async () => {
+        await addSemester("fall","2021-09-01","2021-12-15");
 
-        await addSemester("summer 2", "2022-07-11", "2022-08-12");
-        await addSemester("spring", "2022-02-07", "2022-05-26");
-        await addSemester("winter", "2022-01-03", "2022-02-05");
-        await addSemester("fall", "2021-08-31", "2021-12-18");
-        await addSemester("summer 1", "2022-06-06", "2022-07-28");
-
-        const fall = screen.getByText("fall");
-        const winter = screen.getByText("winter");
-        const spring = screen.getByText("spring");
-        const summer1 = screen.getByText("summer 1");
-        const summer2 = screen.getByText("summer 2");
-
-        const fallCol = screen.getByTestId("Year 1 semester 1");
-        const winterCol = screen.getByTestId("Year 1 semester 2");
-        const springCol = screen.getByTestId("Year 1 semester 3");
-        const summer1Col = screen.getByTestId("Year 1 semester 4");
-        const summer2Col = screen.getByTestId("Year 1 semester 5");
-
-        expect(fallCol).toBe(fall);
-        expect(winterCol).toBe(winter);
-        expect(springCol).toBe(spring);
-        expect(summer1Col).toBe(summer1);
-        expect(summer2Col).toBe(summer2);
-    });
+        expect(screen.getByText("fall")).toBeInTheDocument();
+        screen.getByText("-").click();
+        expect(screen.queryByText("fall")).not.toBeInTheDocument();
+    })
 });
