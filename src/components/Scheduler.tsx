@@ -9,6 +9,7 @@ interface SchedulerProps {
     csv?: string;
     json?: string;
 }
+
 export function Scheduler(props: SchedulerProps): JSX.Element {
     if (props.csv === undefined && props.json === undefined) {
         const years = useYears([
@@ -51,40 +52,53 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
             }
         };
         return (
-            <div>
-                {years.value.map((props: YearProps, i: number) => {
-                    return (
-                        <div data-testid={"Year"} key={props.uuid}>
-                            <Year
-                                handleInput={handleSemesterInput}
-                                handleSubmit={(
-                                    event: FormEvent<HTMLFormElement>
-                                ) => {
-                                    handleSemesterSubmit(event, props.uuid);
-                                }}
-                                semesters={props.semesters}
-                                uuid={props.uuid}
-                                index={i + 1}
-                                formUuid={currentForm}
-                                setFormUuid={setCurrentForm}
-                                removeSemester={(
-                                    semesterUuid: string
-                                ) => {
-                                    years.removeSemester(props.uuid,semesterUuid);
-                                }}
-                            />
-                        </div>
-                    );
-                })}
+            <>
                 <button
-                    data-testid="addYearButton"
                     onClick={() => {
-                        years.push(uuid(), years.value.length);
+                        years.clear();
                     }}
+                    data-testid="clear-button"
                 >
-                    +
+                    Clear
                 </button>
-            </div>
+                <div>
+                    {years.value.map((props: YearProps, i: number) => {
+                        return (
+                            <div data-testid={"Year"} key={props.uuid}>
+                                <Year
+                                    handleInput={handleSemesterInput}
+                                    handleSubmit={(
+                                        event: FormEvent<HTMLFormElement>
+                                    ) => {
+                                        handleSemesterSubmit(event, props.uuid);
+                                    }}
+                                    semesters={props.semesters}
+                                    uuid={props.uuid}
+                                    index={i + 1}
+                                    formUuid={currentForm}
+                                    setFormUuid={setCurrentForm}
+                                    removeSemester={(
+                                        semesterUuid: string
+                                    ) => {
+                                        years.removeSemester(props.uuid,semesterUuid);
+                                    }}
+                                    clear={() => {
+                                        years.clear(props.uuid);
+                                    }}
+                                />
+                            </div>
+                        );
+                    })}
+                    <button
+                        data-testid="add-year-button"
+                        onClick={() => {
+                            years.push(uuid(), years.value.length);
+                        }}
+                    >
+                        +
+                    </button>
+                </div>
+            </>
         );
     }
     return <></>;

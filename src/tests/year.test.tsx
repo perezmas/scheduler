@@ -23,6 +23,7 @@ describe("Year",() => {
                 index={1}
                 semesters={[]}
                 removeSemester={doNothing}
+                clear={doNothing}
             />
         );
         let label = screen.getByTestId("Year 1 label");
@@ -38,6 +39,7 @@ describe("Year",() => {
                 index={3}
                 semesters={[]}
                 removeSemester={doNothing}
+                clear={doNothing}
             />
         );
         expect(screen.queryByTestId("Year 1 label")).not.toBeInTheDocument();
@@ -64,6 +66,7 @@ describe("Year",() => {
                     ]
                 }
                 removeSemester={doNothing}
+                clear={doNothing}
             />
         );
 
@@ -93,6 +96,7 @@ describe("Year",() => {
                     ]
                 }
                 removeSemester={doNothing}
+                clear={doNothing}
             />
         );
 
@@ -127,6 +131,7 @@ describe("Year",() => {
                 index={1}
                 semesters={[]}
                 removeSemester={doNothing}
+                clear={doNothing}
             />
         );
         screen.getByTestId("Year 1 label").click();
@@ -152,6 +157,7 @@ describe("Year",() => {
                 index={1}
                 semesters={[]}
                 removeSemester={doNothing}
+                clear={doNothing}
             />
         );
         
@@ -207,6 +213,7 @@ describe("Year",() => {
                 index={1}
                 semesters={[]}
                 removeSemester={doNothing}
+                clear={doNothing}
             />
         );
 
@@ -249,11 +256,36 @@ describe("Year",() => {
                     ]
                 }
                 removeSemester={removeSpy}
+                clear={doNothing}
             />
         );
 
         screen.getByText("-").click();
         expect(removeSpy).toHaveBeenCalled();
+    });
+
+    it("Calls the function passed to the clear prop if the clear button is clicked", async () => {
+        const clearSpy = jest.fn();
+        render(
+            <Year 
+                uuid={yrUuid}
+                handleSubmit={doNothing}
+                handleInput={doNothing}
+                formUuid={null}
+                setFormUuid={doNothing}
+                index={1}
+                semesters={
+                    [
+                        {name: "summer 2", start: new Date("2022-07-11"), end: new Date("2022-08-12"), courses: new Map<string,CourseProps>(), uuid: uuid()},  
+                    ]
+                }
+                removeSemester={doNothing}
+                clear={clearSpy}
+            />
+        );
+        screen.getByTestId("clear-year 1").click();
+        expect(clearSpy).toHaveBeenCalled();
+
     });
     expect(typeof POINTLESS_GLOBAL).toBe("number");
 });
