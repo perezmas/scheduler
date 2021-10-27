@@ -81,7 +81,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                 </Form>
             </div>
         </div>,
-        (document.getElementById("modal-view") as Element) || document.body
+        document.getElementById("modal-view") as Element || document.body
     );
 };
 
