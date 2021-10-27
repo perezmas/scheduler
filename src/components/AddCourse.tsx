@@ -34,6 +34,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                             <Form.Control
                                 type="text"
                                 placeholder="Enter Course Name"
+                                data-testid="courseNameField"
                                 name="courseName"
                                 defaultValue={props.defaultValues.courseName}
                                 onChange={props.onChange}
@@ -75,12 +76,12 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                     </Form.Group>
 
                     <Button variant="primary" type="submit">
-                        Submit
+                        Add Course
                     </Button>
                 </Form>
             </div>
         </div>,
-        document.getElementById("modal-view") as Element
+        (document.getElementById("modal-view") as Element) || document.body
     );
 };
 

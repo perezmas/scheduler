@@ -104,6 +104,7 @@ const Semester = (props: SemesterProps): JSX.Element => {
                 onClick={() => {
                     setIsOpen(true);
                 }}
+                data-testid="add-course-button"
             >
                 +
             </button>

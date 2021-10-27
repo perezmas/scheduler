@@ -1,21 +1,25 @@
 import React from "react";
-import { fireEvent, render, screen, waitFor} from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import App from "../App";
-import { act, } from "react-dom/test-utils";
+import { act } from "react-dom/test-utils";
 
-async function addSemester(name: string, start: string, end: string): Promise<void>{
+async function addSemester(
+    name: string,
+    start: string,
+    end: string
+): Promise<void> {
     screen.getByTestId("trigger 1").click();
     const form = await screen.findByTestId("semester-form 1");
 
     expect(form).toBeInTheDocument();
-    
+
     const seasonBox = screen.getByTestId("season-input");
     const startBox = screen.getByTestId("starts-input");
     const endBox = screen.getByTestId("ends-input");
-    
-    fireEvent.change(seasonBox,{target: {value: name}});
-    fireEvent.change(startBox,{target: {value: start}});
-    fireEvent.change(endBox,{target: {value: end}});
+
+    fireEvent.change(seasonBox, { target: { value: name } });
+    fireEvent.change(startBox, { target: { value: start } });
+    fireEvent.change(endBox, { target: { value: end } });
 
     const submit = screen.getByTestId("submit-button");
     submit.click();
@@ -27,10 +31,10 @@ async function addSemester(name: string, start: string, end: string): Promise<vo
 
 describe("Scheduler", () => {
     beforeEach(() => {
-        render(<App/>);
+        render(<App />);
     });
 
-    it("Starts with one year and a button to add more",async () => {
+    it("Starts with one year and a button to add more", async () => {
         const yrs = screen.getAllByTestId("Year");
         expect(yrs).toHaveLength(1);
         expect(yrs[0]).toBeInstanceOf(HTMLDivElement);
@@ -44,7 +48,7 @@ describe("Scheduler", () => {
         btn.click();
         let yrs = screen.getAllByTestId("Year");
         expect(yrs).toHaveLength(2);
-        for(let i = 0;i < 5;i++){
+        for (let i = 0; i < 5; i++) {
             btn = screen.getByTestId("addYearButton");
             expect(btn).toBeInTheDocument();
             btn.click();
@@ -53,7 +57,7 @@ describe("Scheduler", () => {
         expect(yrs).toHaveLength(7);
     });
 
-    it("renders a form when you click on the new semester button",async () => {
+    it("renders a form when you click on the new semester button", async () => {
         screen.getByTestId("Year 1 label").click();
         screen.getByTestId("trigger 1").click();
 
@@ -72,9 +76,10 @@ describe("Scheduler", () => {
         });
 
         await waitFor(() => {
-            expect(screen.queryByTestId("semester-form 1")).not.toBeInTheDocument();
+            expect(
+                screen.queryByTestId("semester-form 1")
+            ).not.toBeInTheDocument();
         });
-
     });
 
     it("Can display the names of semesters you add to a year.", async () => {
@@ -88,10 +93,10 @@ describe("Scheduler", () => {
         const seasonBox = screen.getByTestId("season-input");
         const startBox = screen.getByTestId("starts-input");
         const endBox = screen.getByTestId("ends-input");
-        
-        fireEvent.change(seasonBox,{target: {value: "fall"}});
-        fireEvent.change(startBox,{target: {value: "2021-09-01"}});
-        fireEvent.change(endBox,{target: {value: "2021-12-15"}});
+
+        fireEvent.change(seasonBox, { target: { value: "fall" } });
+        fireEvent.change(startBox, { target: { value: "2021-09-01" } });
+        fireEvent.change(endBox, { target: { value: "2021-12-15" } });
 
         const submit = screen.getByTestId("submit-button");
         submit.click();
@@ -100,13 +105,12 @@ describe("Scheduler", () => {
     });
 
     it("Should sort semesters by starting dates", async () => {
-
         screen.getByTestId("Year 1 label").click();
 
-        await addSemester("summer 2","2022-07-11", "2022-08-12");
-        await addSemester("spring", "2022-02-07","2022-05-26");
-        await addSemester("winter","2022-01-03","2022-02-05");
-        await addSemester("fall","2021-08-31","2021-12-18");
+        await addSemester("summer 2", "2022-07-11", "2022-08-12");
+        await addSemester("spring", "2022-02-07", "2022-05-26");
+        await addSemester("winter", "2022-01-03", "2022-02-05");
+        await addSemester("fall", "2021-08-31", "2021-12-18");
         await addSemester("summer 1", "2022-06-06", "2022-07-28");
 
         const fall = screen.getByText("fall");
@@ -126,7 +130,5 @@ describe("Scheduler", () => {
         expect(springCol).toBe(spring);
         expect(summer1Col).toBe(summer1);
         expect(summer2Col).toBe(summer2);
-        
     });
 });
-
