@@ -107,13 +107,8 @@ function semesterReducer(
     }
 }
 
-function initializer(init?: Array<YearProps>): Array<YearProps> {
-    if (init !== undefined) {
-        return init;
-    } else {
-        return new Array<YearProps>();
-    }
-}
+
+
 
 function clearSemesters(years: Array<YearProps>, pusher: (uuid: string, index: number) => void, semesterRemover: (uuid: string, semesterUuid: string) => void, yearRemover: (uuid: string) => void, yearUuid?: string){
     if(yearUuid !== undefined && getByUUID(years,yearUuid) !== -1){
@@ -154,11 +149,13 @@ interface Years{
     ) => void;
 }
 
-function useYears(init?: Array<YearProps>): Years {
+function useYears(init?: () => Array<YearProps>): Years {
     const [semesters, updateSemesters] = useReducer(
         semesterReducer,
-        init,
-        initializer
+        undefined,
+        init === undefined ? () => {
+            return new Array<YearProps>();
+        } : init
     );
 
     const addYear = (uuid: string, index: number) => {
