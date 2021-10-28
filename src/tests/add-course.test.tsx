@@ -34,16 +34,11 @@ describe("AddCourse", () => {
     });
 
     test("Course should be added after clicking the submit button", async () => {
-        await addSemester("summer 2", "2022-07-11", "2022-08-12");
+        screen.getAllByTestId("add-course-button")[0].click();
 
-        const { getByText, getByLabelText, getByTestId } = render(<App />);
-
-        const addCourseButton = getByTestId("add-course-button");
-        fireEvent.click(addCourseButton);
-
-        const courseName = getByLabelText("Course Name");
-        const courseID = getByLabelText("Course ID");
-        const courseDescription = getByLabelText(
+        const courseName = screen.getByLabelText("Course Name");
+        const courseID = screen.getByLabelText("Course ID");
+        const courseDescription = screen.getByLabelText(
             "Course Description (Optional)"
         );
 
@@ -53,17 +48,14 @@ describe("AddCourse", () => {
             target: { value: "Test description" },
         });
 
-        const submitBtn = getByText("Add Course");
+        const submitBtn = screen.getByText("Add Course");
         fireEvent.click(submitBtn);
 
-        expect(getByText("Test course")).toBeInTheDocument();
+        expect(screen.getByText("Test course")).toBeInTheDocument();
     });
 
     it("Should display the Add Course modal when the add course button is clicked", async () => {
-        await addSemester("summer 2", "2022-07-11", "2022-08-12");
-        const { getByTestId, getByLabelText } = render(<App />);
-        const addCourseButton = getByTestId("add-course-button");
-        fireEvent.click(addCourseButton);
-        expect(getByLabelText("Course Name")).toBeInTheDocument();
+        screen.getAllByTestId("add-course-button")[0].click();
+        expect(screen.getByLabelText("Course Name")).toBeInTheDocument();
     });
 }); // addCourseTest ends here ...

@@ -100,23 +100,23 @@ describe("Year",() => {
             />
         );
 
-        const fall = screen.getByText("fall");
-        const winter = screen.getByText("winter");
-        const spring = screen.getByText("spring");
-        const summer1 = screen.getByText("summer 1");
-        const summer2 = screen.getByText("summer 2");
+        const fall = screen.getByTestId("Semester fall 2021")
+        const winter = screen.getByTestId("Semester winter 2022");
+        const spring = screen.getByTestId("Semester spring 2022");
+        const summer1 = screen.getByTestId("Semester summer 1 2022");
+        const summer2 = screen.getByTestId("Semester summer 2 2022");
 
         const fallCol = screen.getByTestId("Year 1 semester 1");
         const winterCol = screen.getByTestId("Year 1 semester 2");
         const springCol = screen.getByTestId("Year 1 semester 3");
         const summer1Col = screen.getByTestId("Year 1 semester 4");
         const summer2Col = screen.getByTestId("Year 1 semester 5");
-
-        expect(fallCol).toBe(fall);
-        expect(winterCol).toBe(winter);
-        expect(springCol).toBe(spring);
-        expect(summer1Col).toBe(summer1);
-        expect(summer2Col).toBe(summer2);
+        
+        expect(fallCol).toContainElement(fall);
+        expect(winterCol).toContainElement(winter);
+        expect(springCol).toContainElement(spring);
+        expect(summer1Col).toContainElement(summer1);
+        expect(summer2Col).toContainElement(summer2);
     });
 
     it("calls setFormUuid when you click the trigger", async () => {

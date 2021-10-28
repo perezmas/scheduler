@@ -102,8 +102,9 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                 onChange={handleOnChange}
             ></AddCourse>
 
-            {props.name}
+            <span data-testid={`Semester ${props.name} ${props.start.getUTCFullYear()}`}>{props.name}</span>
             <button
+                data-testid={`Remove Semester ${props.name} ${props.start.getUTCFullYear()}`}
                 className="trigger"
                 onClick={props.removeSemester}
             >
