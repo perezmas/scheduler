@@ -5,21 +5,30 @@ import SemesterProps from "../interfaces/Semester";
 import AddCourse from "./AddCourse";
 import Course from "./Course";
 
-interface AddCourseAction {
-    type: "ADD COURSE";
+interface CourseAction {
+    type: "ADD COURSE" | "REMOVE COURSE";
     payload: CourseProps;
 }
+
 // easy access to the courses
 
 const courseReducer = (
     state: Map<string, CourseProps>,
-    action: AddCourseAction
+    action: CourseAction
 ): Map<string, CourseProps> => {
     switch (action.type) {
     case "ADD COURSE":
         return state.set(action.payload.id, action.payload);
+    case "REMOVE COURSE":
+        state.delete(action.payload.id);
+        return state;
     }
 };
+
+// const onRightClickCourse = (event: React.MouseEvent<HTMLDivElement>) => {
+//     event.preventDefault();
+//     console.log("Right Clicked");
+// };
 
 const courseInit = (
     courses: Map<string, CourseProps>
@@ -54,6 +63,21 @@ const Semester = (props: SemesterProps): JSX.Element => {
             break;
         }
     };
+    const onRemoveCourse = (courseToRemove: CourseProps) => {
+        const action: CourseAction = {
+            type: "REMOVE COURSE",
+            payload: courseToRemove,
+        };
+        updateCourses(action);
+        console.log("Remove Course", courseToRemove.id);
+    };
+
+    const onClickEdit = (courseToEdit: CourseProps) => {
+        setNewCourseName(courseToEdit.name);
+        setNewCourseDescription(courseToEdit.description);
+        setNewCourseID(courseToEdit.id);
+        setIsOpen(true);
+    };
     const handleCourseSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const newCourse: CourseProps = {
@@ -62,7 +86,7 @@ const Semester = (props: SemesterProps): JSX.Element => {
             description: newCourseDescription,
         };
 
-        const action: AddCourseAction = {
+        const action: CourseAction = {
             type: "ADD COURSE",
             payload: newCourse,
         };
@@ -76,7 +100,11 @@ const Semester = (props: SemesterProps): JSX.Element => {
         ([courseID, course]: [string, CourseProps]) => {
             return (
                 <div key={courseID}>
-                    <Course {...course} />{" "}
+                    <Course
+                        onClickEdit={onClickEdit}
+                        onRemoveCourse={onRemoveCourse}
+                        {...course}
+                    />{" "}
                 </div>
             );
         }
@@ -107,6 +135,14 @@ const Semester = (props: SemesterProps): JSX.Element => {
                 data-testid="add-course-button"
             >
                 +
+            </button>
+            <button
+                className="trigger"
+                onClick={() => {
+                    setIsOpen(true);
+                }}
+            >
+                -
             </button>
             <div className="courses">{addedCourses}</div>
         </>

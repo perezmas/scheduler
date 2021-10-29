@@ -10,7 +10,8 @@ interface AbstractAction {
         | "UPDATE SEMESTER"
         | "ADD SEMESTER"
         | "DELETE SEMESTER"
-        | "ADD COURSE";
+        | "ADD COURSE"
+        | "DELETE COURSE";
     uuid: string;
 }
 
