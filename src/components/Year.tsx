@@ -41,7 +41,6 @@ const Year = React.forwardRef((props: FullYearProps, ref: React.ForwardedRef<HTM
                                 props.setFormUuid(null);
                             }}rootClose={true} transition={false}>
                                 <Popover id="popover-basic">
-                        
                                 </Popover>
                             </Overlay>
                         </Col>
