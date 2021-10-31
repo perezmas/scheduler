@@ -1,32 +1,7 @@
 import React from "react"; // eslint-disable-line no-unused-vars
 
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import App from "../App";
-async function addSemester(
-    name: string,
-    start: string,
-    end: string
-): Promise<void> {
-    screen.getByTestId("trigger 1").click();
-    const form = await screen.findByTestId("semester-form 1");
-
-    expect(form).toBeInTheDocument();
-
-    const seasonBox = screen.getByTestId("season-input");
-    const startBox = screen.getByTestId("starts-input");
-    const endBox = screen.getByTestId("ends-input");
-
-    fireEvent.change(seasonBox, { target: { value: name } });
-    fireEvent.change(startBox, { target: { value: start } });
-    fireEvent.change(endBox, { target: { value: end } });
-
-    const submit = screen.getByTestId("submit-button");
-    submit.click();
-
-    await waitFor(() => {
-        expect(screen.queryByTestId("semester-form 1")).not.toBeInTheDocument();
-    });
-}
 
 describe("AddCourse", () => {
     beforeEach(() => {
@@ -34,16 +9,11 @@ describe("AddCourse", () => {
     });
 
     test("Course should be added after clicking the submit button", async () => {
-        await addSemester("summer 2", "2022-07-11", "2022-08-12");
+        screen.getAllByTestId("add-course-button")[0].click();
 
-        const { getByText, getByLabelText, getByTestId } = render(<App />);
-
-        const addCourseButton = getByTestId("add-course-button");
-        fireEvent.click(addCourseButton);
-
-        const courseName = getByLabelText("Course Name");
-        const courseID = getByLabelText("Course ID");
-        const courseDescription = getByLabelText(
+        const courseName = screen.getByLabelText("Course Name");
+        const courseID = screen.getByLabelText("Course ID");
+        const courseDescription = screen.getByLabelText(
             "Course Description (Optional)"
         );
 
@@ -53,17 +23,22 @@ describe("AddCourse", () => {
             target: { value: "Test description" },
         });
 
-        const submitBtn = getByText("Add Course");
+        const submitBtn = screen.getByText("Add Course");
         fireEvent.click(submitBtn);
 
-        expect(getByText("Test course")).toBeInTheDocument();
+        expect(screen.getByText("Test course")).toBeInTheDocument();
     });
 
     it("Should display the Add Course modal when the add course button is clicked", async () => {
-        await addSemester("summer 2", "2022-07-11", "2022-08-12");
-        const { getByTestId, getByLabelText } = render(<App />);
-        const addCourseButton = getByTestId("add-course-button");
-        fireEvent.click(addCourseButton);
-        expect(getByLabelText("Course Name")).toBeInTheDocument();
+        screen.getAllByTestId("add-course-button")[0].click();
+        expect(screen.getByLabelText("Course Name")).toBeInTheDocument();
     });
-}); // addCourseTest ends here ...
+
+    it("Should close modal popup when close button is clicked", () => {
+        screen.getAllByTestId("add-course-button")[0].click();
+        expect(screen.getByLabelText("Course Name")).toBeInTheDocument();
+        screen.getByText("Close Button").click();
+        expect(screen.queryByLabelText("Course Name")).not.toBeInTheDocument();
+    });
+});
+// addCourseTest ends here ...

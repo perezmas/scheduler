@@ -5,21 +5,32 @@ import SemesterProps from "../interfaces/Semester";
 import AddCourse from "./AddCourse";
 import Course from "./Course";
 
-interface AddCourseAction {
-    type: "ADD COURSE";
+interface CourseAction {
+    type: "ADD COURSE" | "REMOVE COURSE";
     payload: CourseProps;
 }
+
 // easy access to the courses
 
 const courseReducer = (
     state: Map<string, CourseProps>,
-    action: AddCourseAction
+    action: CourseAction
 ): Map<string, CourseProps> => {
     switch (action.type) {
     case "ADD COURSE":
         return state.set(action.payload.id, action.payload);
+    case "REMOVE COURSE": {
+        const newState = new Map<string, CourseProps>(state);
+        newState.delete(action.payload.id);
+        return newState;
+    }
     }
 };
+
+// const onRightClickCourse = (event: React.MouseEvent<HTMLDivElement>) => {
+//     event.preventDefault();
+//     console.log("Right Clicked");
+// };
 
 const courseInit = (
     courses: Map<string, CourseProps>
@@ -27,13 +38,18 @@ const courseInit = (
     if (courses) return courses;
     else return new Map<string, CourseProps>();
 };
-const Semester = (props: SemesterProps): JSX.Element => {
+
+interface FullSemesterProps extends SemesterProps {
+    removeSemester: () => void;
+}
+const Semester = (props: FullSemesterProps): JSX.Element => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
     const [newCourseName, setNewCourseName] = useState<string>("");
     const [newCourseID, setNewCourseID] = useState<string>("");
     const [newCourseDescription, setNewCourseDescription] =
         useState<string>("");
-
+    console.log("Semester render!");
     const [courses, updateCourses] = useReducer(
         courseReducer,
         props.courses,
@@ -54,6 +70,22 @@ const Semester = (props: SemesterProps): JSX.Element => {
             break;
         }
     };
+    const onRemoveCourse = (courseToRemove: CourseProps) => {
+        const action: CourseAction = {
+            type: "REMOVE COURSE",
+            payload: courseToRemove,
+        };
+        updateCourses(action);
+        console.log("Remove Course", courseToRemove.id);
+    };
+
+    const onClickEdit = (courseToEdit: CourseProps) => {
+        setNewCourseName(courseToEdit.name);
+        setNewCourseDescription(courseToEdit.description);
+        setNewCourseID(courseToEdit.id);
+        setIsOpen(true);
+        setIsEditing(true);
+    };
     const handleCourseSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const newCourse: CourseProps = {
@@ -62,7 +94,7 @@ const Semester = (props: SemesterProps): JSX.Element => {
             description: newCourseDescription,
         };
 
-        const action: AddCourseAction = {
+        const action: CourseAction = {
             type: "ADD COURSE",
             payload: newCourse,
         };
@@ -71,12 +103,17 @@ const Semester = (props: SemesterProps): JSX.Element => {
         setNewCourseName("");
         setNewCourseDescription("");
         setNewCourseID("");
+        if (isEditing) setIsEditing(false);
     };
     const addedCourses = Array.from(courses).map(
         ([courseID, course]: [string, CourseProps]) => {
             return (
                 <div key={courseID}>
-                    <Course {...course} />{" "}
+                    <Course
+                        onClickEdit={onClickEdit}
+                        onRemoveCourse={onRemoveCourse}
+                        {...course}
+                    />{" "}
                 </div>
             );
         }
@@ -90,15 +127,36 @@ const Semester = (props: SemesterProps): JSX.Element => {
                     courseID: newCourseID,
                     courseDescription: newCourseDescription,
                 }}
+                isEditing={isEditing}
                 isOpen={isOpen}
-                onClickClose={() => setIsOpen(false)}
+                onClickClose={() => {
+                    setIsOpen(false);
+                    setIsEditing(false);
+                }}
                 onClickSubmit={(event: FormEvent<HTMLFormElement>) => {
                     handleCourseSubmit(event);
                 }}
                 onChange={handleOnChange}
             ></AddCourse>
 
-            {props.name}
+            <span
+                data-testid={`Semester ${
+                    props.name
+                } ${props.start.getUTCFullYear()}`}
+            >
+                {props.name}
+            </span>
+            <button
+                data-testid={`Remove Semester ${
+                    props.name
+                } ${props.start.getUTCFullYear()}`}
+                className="trigger"
+                onClick={props.removeSemester}
+            >
+                -
+            </button>
+
+            <div className="courses">{addedCourses}</div>
             <button
                 className="trigger"
                 onClick={() => {
@@ -108,7 +166,6 @@ const Semester = (props: SemesterProps): JSX.Element => {
             >
                 +
             </button>
-            <div className="courses">{addedCourses}</div>
         </>
     );
 };
