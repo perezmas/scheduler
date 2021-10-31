@@ -63,4 +63,26 @@ describe("Semester", () => {
 
         expect(screen.getByText("Test course 2")).toBeInTheDocument();
     });
+    it("removes the course when it is clicked on ", () => {
+        screen.getAllByTestId("add-course-button")[0].click();
+
+        const courseName = screen.getByLabelText("Course Name");
+        const courseID = screen.getByLabelText("Course ID");
+        const courseDescription = screen.getByLabelText(
+            "Course Description (Optional)"
+        );
+
+        fireEvent.change(courseName, { target: { value: "Test course" } });
+        fireEvent.change(courseID, { target: { value: "CISC123" } });
+        fireEvent.change(courseDescription, {
+            target: { value: "Test description" },
+        });
+
+        const submitBtn = screen.getByText("Add Course");
+        fireEvent.click(submitBtn);
+
+        expect(screen.getByText("Test course")).toBeInTheDocument();
+        screen.getByText("Test course").click();
+        expect(screen.queryByText("Test course")).not.toBeInTheDocument();
+    });
 });
