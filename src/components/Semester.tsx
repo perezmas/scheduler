@@ -19,9 +19,11 @@ const courseReducer = (
     switch (action.type) {
     case "ADD COURSE":
         return state.set(action.payload.id, action.payload);
-    case "REMOVE COURSE":
-        state.delete(action.payload.id);
-        return state;
+    case "REMOVE COURSE": {
+        const newState = new Map<string, CourseProps>(state);
+        newState.delete(action.payload.id);
+        return newState;
+    }
     }
 };
 
@@ -36,13 +38,18 @@ const courseInit = (
     if (courses) return courses;
     else return new Map<string, CourseProps>();
 };
-const Semester = (props: SemesterProps): JSX.Element => {
+
+interface FullSemesterProps extends SemesterProps {
+    removeSemester: () => void;
+}
+const Semester = (props: FullSemesterProps): JSX.Element => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
     const [newCourseName, setNewCourseName] = useState<string>("");
     const [newCourseID, setNewCourseID] = useState<string>("");
     const [newCourseDescription, setNewCourseDescription] =
         useState<string>("");
-
+    console.log("Semester render!");
     const [courses, updateCourses] = useReducer(
         courseReducer,
         props.courses,
@@ -77,6 +84,7 @@ const Semester = (props: SemesterProps): JSX.Element => {
         setNewCourseDescription(courseToEdit.description);
         setNewCourseID(courseToEdit.id);
         setIsOpen(true);
+        setIsEditing(true);
     };
     const handleCourseSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -95,6 +103,7 @@ const Semester = (props: SemesterProps): JSX.Element => {
         setNewCourseName("");
         setNewCourseDescription("");
         setNewCourseID("");
+        if (isEditing) setIsEditing(false);
     };
     const addedCourses = Array.from(courses).map(
         ([courseID, course]: [string, CourseProps]) => {
@@ -118,15 +127,36 @@ const Semester = (props: SemesterProps): JSX.Element => {
                     courseID: newCourseID,
                     courseDescription: newCourseDescription,
                 }}
+                isEditing={isEditing}
                 isOpen={isOpen}
-                onClickClose={() => setIsOpen(false)}
+                onClickClose={() => {
+                    setIsOpen(false);
+                    setIsEditing(false);
+                }}
                 onClickSubmit={(event: FormEvent<HTMLFormElement>) => {
                     handleCourseSubmit(event);
                 }}
                 onChange={handleOnChange}
             ></AddCourse>
 
-            {props.name}
+            <span
+                data-testid={`Semester ${
+                    props.name
+                } ${props.start.getUTCFullYear()}`}
+            >
+                {props.name}
+            </span>
+            <button
+                data-testid={`Remove Semester ${
+                    props.name
+                } ${props.start.getUTCFullYear()}`}
+                className="trigger"
+                onClick={props.removeSemester}
+            >
+                -
+            </button>
+
+            <div className="courses">{addedCourses}</div>
             <button
                 className="trigger"
                 onClick={() => {
@@ -136,15 +166,6 @@ const Semester = (props: SemesterProps): JSX.Element => {
             >
                 +
             </button>
-            <button
-                className="trigger"
-                onClick={() => {
-                    setIsOpen(true);
-                }}
-            >
-                -
-            </button>
-            <div className="courses">{addedCourses}</div>
         </>
     );
 };

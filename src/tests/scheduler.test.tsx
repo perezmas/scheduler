@@ -2,14 +2,16 @@ import React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import App from "../App";
 import { act } from "react-dom/test-utils";
+import { Scheduler } from "../components/Scheduler";
 
 async function addSemester(
     name: string,
     start: string,
-    end: string
+    end: string,
+    year: number = 1
 ): Promise<void> {
-    screen.getByTestId("trigger 1").click();
-    const form = await screen.findByTestId("semester-form 1");
+    screen.getByTestId(`trigger ${year}`).click();
+    const form = await screen.findByTestId(`semester-form ${year}`);
 
     expect(form).toBeInTheDocument();
 
@@ -25,40 +27,40 @@ async function addSemester(
     submit.click();
 
     await waitFor(() => {
-        expect(screen.queryByTestId("semester-form 1")).not.toBeInTheDocument();
+        expect(screen.queryByTestId(`semester-form ${year}`)).not.toBeInTheDocument();
     });
 }
 
 describe("Scheduler", () => {
+    const currentYear = new Date().getUTCFullYear();
     beforeEach(() => {
-        render(<App />);
+        render(<Scheduler />);
     });
 
-    it("Starts with one year and a button to add more", async () => {
+    it("Starts with a default page with the first 3 semesters in a standard plan", async () => {
         const yrs = screen.getAllByTestId("Year");
-        expect(yrs).toHaveLength(1);
-        expect(yrs[0]).toBeInstanceOf(HTMLDivElement);
-        const btn = screen.getByTestId("addYearButton");
-        expect(btn).toBeInTheDocument();
-        expect(btn).toBeInstanceOf(HTMLButtonElement);
+        expect(yrs).toHaveLength(2);
+        expect(screen.getAllByText("fall")).toHaveLength(2);
+        expect(screen.getAllByText("spring")).toHaveLength(1);
+
+        expect(screen.getByTestId("clear-button")).toBeInTheDocument();
+        expect(screen.getByTestId(`Semester fall ${currentYear}`)).toBeInTheDocument();
+        expect(screen.getByTestId(`Semester spring ${currentYear + 1}`)).toBeInTheDocument();
+        expect(screen.getByTestId(`Semester spring ${currentYear + 1}`)).toBeInTheDocument();
     });
 
     it("Can add another year by pressing the button", async () => {
-        let btn = screen.getByTestId("addYearButton");
+        let btn = screen.getByTestId("add-year-button");
         btn.click();
-        let yrs = screen.getAllByTestId("Year");
-        expect(yrs).toHaveLength(2);
+        expect(screen.getByTestId("Year 3 label")).toBeInTheDocument();
         for (let i = 0; i < 5; i++) {
-            btn = screen.getByTestId("addYearButton");
-            expect(btn).toBeInTheDocument();
+            btn = screen.getByTestId("add-year-button");
             btn.click();
+            expect(screen.getByTestId(`Year ${4+i} label`)).toBeInTheDocument();
         }
-        yrs = screen.getAllByTestId("Year");
-        expect(yrs).toHaveLength(7);
     });
 
     it("renders a form when you click on the new semester button", async () => {
-        screen.getByTestId("Year 1 label").click();
         screen.getByTestId("trigger 1").click();
 
         const form = await screen.findByTestId("semester-form 1");
@@ -82,53 +84,32 @@ describe("Scheduler", () => {
         });
     });
 
-    it("Can display the names of semesters you add to a year.", async () => {
+    it("Allows you to add semesters to a year.", async () => {
+
+        expect(screen.queryByTestId(`Semester summer 2019`)).not.toBeInTheDocument();
+
+        await addSemester("summer","2019-09-01","2019-12-15");
+
+        expect(screen.queryByTestId(`Semester summer 2019`)).toBeInTheDocument();
+    });
+
+    it("Should be able to remove a semester on clicking the '-' button next to the label", async () => {
+        screen.getByTestId(`Remove Semester fall ${currentYear}`).click();
+        expect(screen.queryByTestId(`Semester fall ${currentYear}`)).not.toBeInTheDocument();
+    });
+
+    it("Removes all the semesters in the plan when the clear button is clicked", async () => {
+        screen.getByTestId("clear-button").click();
+
         expect(screen.queryByText("fall")).not.toBeInTheDocument();
-        screen.getByTestId("Year 1 label").click();
-        screen.getByTestId("trigger 1").click();
-        const form = await screen.findByTestId("semester-form 1");
-
-        expect(form).toBeInTheDocument();
-
-        const seasonBox = screen.getByTestId("season-input");
-        const startBox = screen.getByTestId("starts-input");
-        const endBox = screen.getByTestId("ends-input");
-
-        fireEvent.change(seasonBox, { target: { value: "fall" } });
-        fireEvent.change(startBox, { target: { value: "2021-09-01" } });
-        fireEvent.change(endBox, { target: { value: "2021-12-15" } });
-
-        const submit = screen.getByTestId("submit-button");
-        submit.click();
-
-        expect(screen.getByText("fall")).toBeInTheDocument();
+        expect(screen.queryByText("spring")).not.toBeInTheDocument();
     });
 
-    it("Should sort semesters by starting dates", async () => {
-        screen.getByTestId("Year 1 label").click();
+    it("Removes all the semesters in a year when the clear button for a year is clicked", async () => {
+        screen.getByTestId("add-year-button").click();
+        screen.getByTestId("clear-year 1").click();
 
-        await addSemester("summer 2", "2022-07-11", "2022-08-12");
-        await addSemester("spring", "2022-02-07", "2022-05-26");
-        await addSemester("winter", "2022-01-03", "2022-02-05");
-        await addSemester("fall", "2021-08-31", "2021-12-18");
-        await addSemester("summer 1", "2022-06-06", "2022-07-28");
+        expect(screen.getAllByText("fall")).toHaveLength(1);
 
-        const fall = screen.getByText("fall");
-        const winter = screen.getByText("winter");
-        const spring = screen.getByText("spring");
-        const summer1 = screen.getByText("summer 1");
-        const summer2 = screen.getByText("summer 2");
-
-        const fallCol = screen.getByTestId("Year 1 semester 1");
-        const winterCol = screen.getByTestId("Year 1 semester 2");
-        const springCol = screen.getByTestId("Year 1 semester 3");
-        const summer1Col = screen.getByTestId("Year 1 semester 4");
-        const summer2Col = screen.getByTestId("Year 1 semester 5");
-
-        expect(fallCol).toBe(fall);
-        expect(winterCol).toBe(winter);
-        expect(springCol).toBe(spring);
-        expect(summer1Col).toBe(summer1);
-        expect(summer2Col).toBe(summer2);
-    });
+    })
 });

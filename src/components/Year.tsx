@@ -17,6 +17,8 @@ interface FullYearProps extends YearProps {
     handleInput: (event: ChangeEvent<HTMLInputElement>) => void;
     formUuid: string | null;
     setFormUuid: (newId: string | null) => void;
+    removeSemester: (semesterUuid: string) => void;
+    clear: () => void;
 }
 
 function Year(props: FullYearProps): JSX.Element {
@@ -28,100 +30,108 @@ function Year(props: FullYearProps): JSX.Element {
     }, [props.semesters]);
     return (
         <Container className="container-sm">
-            <Col>
-                <Collapsible
-                    trigger={
-                        <button
-                            data-testid={`Year ${props.index} label`}
-                            className="trigger"
-                        >{`Year ${props.index} >`}</button>
-                    }
-                    transitionTime={200}
-                >
-                    <Row data-testid="collapsible-content">
-                        {sortedSemesters.map(
-                            (semesterProps: SemesterProps, index: number) => {
-                                return (
-                                    <Col
-                                        data-testid={`Year ${
-                                            props.index
-                                        } semester ${index + 1}`}
-                                        key={semesterProps.uuid}
-                                    >
-                                        <Semester {...semesterProps}></Semester>
-                                    </Col>
-                                );
-                            }
-                        )}
-
-                        <Col>
+            <Row>
+                <Col>
+                    <Collapsible
+                        trigger={
                             <button
-                                data-testid={`trigger ${props.index}`}
+                                data-testid={`Year ${props.index} label`}
                                 className="trigger"
-                                ref={overlayButton}
-                                onClick={() => {
-                                    props.setFormUuid(
-                                        props.formUuid === props.uuid
-                                            ? null
-                                            : props.uuid
-                                    );
-                                }}
-                            >
-                                +
-                            </button>
-                            <Overlay
-                                target={overlayButton}
-                                placement="right-end"
-                                show={props.formUuid === props.uuid}
-                                onHide={() => {
-                                    props.setFormUuid(null);
-                                }}
-                                rootClose={true}
-                                transition={false}
-                            >
-                                <Popover id="popover-basic">
-                                    <PopoverContent>
-                                        <form
-                                            data-testid={`semester-form ${props.index}`}
-                                            onSubmit={props.handleSubmit}
+                            >{`Year ${props.index} >`}</button>
+                        }
+                        transitionTime={200}
+                    >
+                        <Row data-testid="collapsible-content">
+                            {sortedSemesters.map(
+                                (semesterProps: SemesterProps, index: number) => {
+                                    return (
+                                        <Col
+                                            data-testid={`Year ${
+                                                props.index
+                                            } semester ${index + 1}`}
+                                            key={semesterProps.uuid}
                                         >
-                                            <label>season:</label>
-                                            <input
-                                                data-testid="season-input"
-                                                type="text"
-                                                name="season"
-                                                onChange={props.handleInput}
+                                            <Semester {...semesterProps} removeSemester={() =>{
+                                                props.removeSemester(semesterProps.uuid);
+                                            }}
                                             />
-                                            <br />
-                                            <label>starts:</label>
-                                            <input
-                                                data-testid="starts-input"
-                                                type="date"
-                                                name="starts"
-                                                onChange={props.handleInput}
-                                            />
-                                            <br />
-                                            <label>ends:</label>
-                                            <input
-                                                data-testid="ends-input"
-                                                type="date"
-                                                name="ends"
-                                                onChange={props.handleInput}
-                                            />
-                                            <br />
-                                            <input
-                                                data-testid="submit-button"
-                                                type="submit"
-                                                value="submit"
-                                            />
-                                        </form>
-                                    </PopoverContent>
-                                </Popover>
-                            </Overlay>
-                        </Col>
-                    </Row>
-                </Collapsible>
-            </Col>
+                                        </Col>
+                                    );
+                                }
+                            )}
+
+                            <Col>
+                                <button
+                                    data-testid={`trigger ${props.index}`}
+                                    className="trigger"
+                                    ref={overlayButton}
+                                    onClick={() => {
+                                        props.setFormUuid(
+                                            props.formUuid === props.uuid
+                                                ? null
+                                                : props.uuid
+                                        );
+                                    }}
+                                >
+                                    +
+                                </button>
+                                <Overlay
+                                    target={overlayButton}
+                                    placement="right-end"
+                                    show={props.formUuid === props.uuid}
+                                    onHide={() => {
+                                        props.setFormUuid(null);
+                                    }}
+                                    rootClose={true}
+                                    transition={false}
+                                >
+                                    <Popover id="popover-basic">
+                                        <PopoverContent>
+                                            <form
+                                                data-testid={`semester-form ${props.index}`}
+                                                onSubmit={props.handleSubmit}
+                                            >
+                                                <label>season:</label>
+                                                <input
+                                                    data-testid="season-input"
+                                                    type="text"
+                                                    name="season"
+                                                    onChange={props.handleInput}
+                                                />
+                                                <br />
+                                                <label>starts:</label>
+                                                <input
+                                                    data-testid="starts-input"
+                                                    type="date"
+                                                    name="starts"
+                                                    onChange={props.handleInput}
+                                                />
+                                                <br />
+                                                <label>ends:</label>
+                                                <input
+                                                    data-testid="ends-input"
+                                                    type="date"
+                                                    name="ends"
+                                                    onChange={props.handleInput}
+                                                />
+                                                <br />
+                                                <input
+                                                    data-testid="submit-button"
+                                                    type="submit"
+                                                    value="submit"
+                                                />
+                                            </form>
+                                        </PopoverContent>
+                                    </Popover>
+                                </Overlay>
+                            </Col>
+                        </Row>
+                    </Collapsible>
+                </Col>
+                <Col>
+                    <button onClick={props.clear} data-testid={`clear-year ${props.index}`}>Clear</button>
+                </Col>
+            </Row>
         </Container>
     );
 }
