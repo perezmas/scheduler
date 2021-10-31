@@ -1,6 +1,6 @@
 import React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import App from "../App";
+
 import { act } from "react-dom/test-utils";
 import { Scheduler } from "../components/Scheduler";
 
@@ -8,7 +8,7 @@ async function addSemester(
     name: string,
     start: string,
     end: string,
-    year: number = 1
+    year = 1
 ): Promise<void> {
     screen.getByTestId(`trigger ${year}`).click();
     const form = await screen.findByTestId(`semester-form ${year}`);
@@ -27,7 +27,9 @@ async function addSemester(
     submit.click();
 
     await waitFor(() => {
-        expect(screen.queryByTestId(`semester-form ${year}`)).not.toBeInTheDocument();
+        expect(
+            screen.queryByTestId(`semester-form ${year}`)
+        ).not.toBeInTheDocument();
     });
 }
 
@@ -44,9 +46,15 @@ describe("Scheduler", () => {
         expect(screen.getAllByText("spring")).toHaveLength(1);
 
         expect(screen.getByTestId("clear-button")).toBeInTheDocument();
-        expect(screen.getByTestId(`Semester fall ${currentYear}`)).toBeInTheDocument();
-        expect(screen.getByTestId(`Semester spring ${currentYear + 1}`)).toBeInTheDocument();
-        expect(screen.getByTestId(`Semester spring ${currentYear + 1}`)).toBeInTheDocument();
+        expect(
+            screen.getByTestId(`Semester fall ${currentYear}`)
+        ).toBeInTheDocument();
+        expect(
+            screen.getByTestId(`Semester spring ${currentYear + 1}`)
+        ).toBeInTheDocument();
+        expect(
+            screen.getByTestId(`Semester spring ${currentYear + 1}`)
+        ).toBeInTheDocument();
     });
 
     it("Can add another year by pressing the button", async () => {
@@ -56,7 +64,9 @@ describe("Scheduler", () => {
         for (let i = 0; i < 5; i++) {
             btn = screen.getByTestId("add-year-button");
             btn.click();
-            expect(screen.getByTestId(`Year ${4+i} label`)).toBeInTheDocument();
+            expect(
+                screen.getByTestId(`Year ${4 + i} label`)
+            ).toBeInTheDocument();
         }
     });
 
@@ -85,17 +95,22 @@ describe("Scheduler", () => {
     });
 
     it("Allows you to add semesters to a year.", async () => {
+        expect(
+            screen.queryByTestId("Semester summer 2019")
+        ).not.toBeInTheDocument();
 
-        expect(screen.queryByTestId(`Semester summer 2019`)).not.toBeInTheDocument();
+        await addSemester("summer", "2019-09-01", "2019-12-15");
 
-        await addSemester("summer","2019-09-01","2019-12-15");
-
-        expect(screen.queryByTestId(`Semester summer 2019`)).toBeInTheDocument();
+        expect(
+            screen.queryByTestId("Semester summer 2019")
+        ).toBeInTheDocument();
     });
 
     it("Should be able to remove a semester on clicking the '-' button next to the label", async () => {
         screen.getByTestId(`Remove Semester fall ${currentYear}`).click();
-        expect(screen.queryByTestId(`Semester fall ${currentYear}`)).not.toBeInTheDocument();
+        expect(
+            screen.queryByTestId(`Semester fall ${currentYear}`)
+        ).not.toBeInTheDocument();
     });
 
     it("Removes all the semesters in the plan when the clear button is clicked", async () => {
@@ -110,6 +125,5 @@ describe("Scheduler", () => {
         screen.getByTestId("clear-year 1").click();
 
         expect(screen.getAllByText("fall")).toHaveLength(1);
-
-    })
+    });
 });

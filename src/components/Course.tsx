@@ -8,8 +8,9 @@ interface CurrentCourseProps extends CourseProps {
 
 const Course = (props: CurrentCourseProps): JSX.Element => {
     return (
-        <>
+        <div>
             <div
+                style={{ display: "inline-block" }}
                 onClick={() => {
                     console.log(props.id);
                     props.onRemoveCourse(props);
@@ -17,17 +18,17 @@ const Course = (props: CurrentCourseProps): JSX.Element => {
             >
                 {props.name}
             </div>
-            <div>
-                <button
-                    className="trigger"
-                    onClick={() => {
-                        props.onClickEdit(props);
-                    }}
-                >
-                    O
-                </button>
-            </div>
-        </>
+            <button
+                style={{ display: "inline-block" }}
+                className="trigger"
+                data-testid="edit-course-button"
+                onClick={() => {
+                    props.onClickEdit(props);
+                }}
+            >
+                Edit
+            </button>
+        </div>
     );
 };
 

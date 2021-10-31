@@ -1,32 +1,7 @@
 import React from "react"; // eslint-disable-line no-unused-vars
 
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import App from "../App";
-async function addSemester(
-    name: string,
-    start: string,
-    end: string
-): Promise<void> {
-    screen.getByTestId("trigger 1").click();
-    const form = await screen.findByTestId("semester-form 1");
-
-    expect(form).toBeInTheDocument();
-
-    const seasonBox = screen.getByTestId("season-input");
-    const startBox = screen.getByTestId("starts-input");
-    const endBox = screen.getByTestId("ends-input");
-
-    fireEvent.change(seasonBox, { target: { value: name } });
-    fireEvent.change(startBox, { target: { value: start } });
-    fireEvent.change(endBox, { target: { value: end } });
-
-    const submit = screen.getByTestId("submit-button");
-    submit.click();
-
-    await waitFor(() => {
-        expect(screen.queryByTestId("semester-form 1")).not.toBeInTheDocument();
-    });
-}
 
 describe("AddCourse", () => {
     beforeEach(() => {
@@ -58,4 +33,12 @@ describe("AddCourse", () => {
         screen.getAllByTestId("add-course-button")[0].click();
         expect(screen.getByLabelText("Course Name")).toBeInTheDocument();
     });
-}); // addCourseTest ends here ...
+
+    it("Should close modal popup when close button is clicked", () => {
+        screen.getAllByTestId("add-course-button")[0].click();
+        expect(screen.getByLabelText("Course Name")).toBeInTheDocument();
+        screen.getByText("Close Button").click();
+        expect(screen.queryByLabelText("Course Name")).not.toBeInTheDocument();
+    });
+});
+// addCourseTest ends here ...

@@ -1,19 +1,19 @@
 import React from "react";
-import {render, screen, fireEvent} from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import Year from "../components/Year";
-import {v4 as uuid} from "uuid";
+import { v4 as uuid } from "uuid";
 import CourseProps from "../interfaces/Course";
 import { ChangeEvent, FormEvent } from "react";
 
 let POINTLESS_GLOBAL = 1; //This is to appease the linter by avoiding doNothing being empty
-function doNothing(){
+function doNothing() {
     POINTLESS_GLOBAL += 1;
 }
 
-describe("Year",() => {
-    const yrUuid = uuid();    
+describe("Year", () => {
+    const yrUuid = uuid();
     it("Should render the label correctly", async () => {
-        const {rerender} = render(
+        const { rerender } = render(
             <Year
                 uuid={yrUuid}
                 handleSubmit={doNothing}
@@ -44,27 +44,30 @@ describe("Year",() => {
         );
         expect(screen.queryByTestId("Year 1 label")).not.toBeInTheDocument();
         expect(screen.queryByText("Year 1 >")).not.toBeInTheDocument();
-        
+
         label = screen.getByTestId("Year 3 label");
         text = screen.getByText("Year 3 >");
         expect(text).toBe(label);
-        
     });
 
     it("Should be able to render a semester", async () => {
         render(
-            <Year 
+            <Year
                 uuid={yrUuid}
                 handleSubmit={doNothing}
                 handleInput={doNothing}
                 formUuid={null}
                 setFormUuid={doNothing}
                 index={1}
-                semesters={
-                    [
-                        {name: "summer 2", start: new Date("2022-07-11"), end: new Date("2022-08-12"), courses: new Map<string,CourseProps>(), uuid: uuid()},  
-                    ]
-                }
+                semesters={[
+                    {
+                        name: "summer 2",
+                        start: new Date("2022-07-11"),
+                        end: new Date("2022-08-12"),
+                        courses: new Map<string, CourseProps>(),
+                        uuid: uuid(),
+                    },
+                ]}
                 removeSemester={doNothing}
                 clear={doNothing}
             />
@@ -72,35 +75,63 @@ describe("Year",() => {
 
         const semesterLabel = screen.getByText("summer 2");
         const minusButton = screen.getByText("-");
-        
+
         expect(semesterLabel).toBeInTheDocument();
         expect(minusButton).toBeInTheDocument();
     });
 
     it("Should be able to several semesters, and they should be sorted by their starting dates.", async () => {
         render(
-            <Year 
+            <Year
                 uuid={yrUuid}
                 handleSubmit={doNothing}
                 handleInput={doNothing}
                 formUuid={null}
                 setFormUuid={doNothing}
                 index={1}
-                semesters={
-                    [
-                        {name: "summer 2", start: new Date("2022-07-11"), end: new Date("2022-08-12"), courses: new Map<string,CourseProps>(), uuid: uuid()},
-                        {name: "spring", start: new Date("2022-02-07"), end: new Date("2022-05-26"), courses: new Map<string,CourseProps>(), uuid: uuid()},
-                        {name: "winter", start: new Date("2022-01-03"), end: new Date("2022-02-05"), courses: new Map<string,CourseProps>(), uuid: uuid()},
-                        {name: "fall", start: new Date("2021-08-31"), end: new Date("2021-12-18"), courses: new Map<string,CourseProps>(), uuid: uuid()},
-                        {name: "summer 1", start: new Date("2022-06-06"), end: new Date("2022-07-28"), courses: new Map<string,CourseProps>(), uuid: uuid()},     
-                    ]
-                }
+                semesters={[
+                    {
+                        name: "summer 2",
+                        start: new Date("2022-07-11"),
+                        end: new Date("2022-08-12"),
+                        courses: new Map<string, CourseProps>(),
+                        uuid: uuid(),
+                    },
+                    {
+                        name: "spring",
+                        start: new Date("2022-02-07"),
+                        end: new Date("2022-05-26"),
+                        courses: new Map<string, CourseProps>(),
+                        uuid: uuid(),
+                    },
+                    {
+                        name: "winter",
+                        start: new Date("2022-01-03"),
+                        end: new Date("2022-02-05"),
+                        courses: new Map<string, CourseProps>(),
+                        uuid: uuid(),
+                    },
+                    {
+                        name: "fall",
+                        start: new Date("2021-08-31"),
+                        end: new Date("2021-12-18"),
+                        courses: new Map<string, CourseProps>(),
+                        uuid: uuid(),
+                    },
+                    {
+                        name: "summer 1",
+                        start: new Date("2022-06-06"),
+                        end: new Date("2022-07-28"),
+                        courses: new Map<string, CourseProps>(),
+                        uuid: uuid(),
+                    },
+                ]}
                 removeSemester={doNothing}
                 clear={doNothing}
             />
         );
 
-        const fall = screen.getByTestId("Semester fall 2021")
+        const fall = screen.getByTestId("Semester fall 2021");
         const winter = screen.getByTestId("Semester winter 2022");
         const spring = screen.getByTestId("Semester spring 2022");
         const summer1 = screen.getByTestId("Semester summer 1 2022");
@@ -111,7 +142,7 @@ describe("Year",() => {
         const springCol = screen.getByTestId("Year 1 semester 3");
         const summer1Col = screen.getByTestId("Year 1 semester 4");
         const summer2Col = screen.getByTestId("Year 1 semester 5");
-        
+
         expect(fallCol).toContainElement(fall);
         expect(winterCol).toContainElement(winter);
         expect(springCol).toContainElement(spring);
@@ -122,7 +153,7 @@ describe("Year",() => {
     it("calls setFormUuid when you click the trigger", async () => {
         const fn = jest.fn();
         render(
-            <Year 
+            <Year
                 uuid={yrUuid}
                 handleSubmit={doNothing}
                 handleInput={doNothing}
@@ -160,7 +191,7 @@ describe("Year",() => {
                 clear={doNothing}
             />
         );
-        
+
         await screen.findByTestId("semester-form 1");
 
         const seasonBox = screen.getByTestId("season-input");
@@ -179,21 +210,22 @@ describe("Year",() => {
     });
 
     it("Should call handleInput if the form is changed and handleSubmit if the form is submitted.", async () => {
-
         let newName: string | null = null;
         let newStart: string | null = null;
         let newEnd: string | null = null;
 
         const handleInputSpy = jest.fn((e: ChangeEvent<HTMLInputElement>) => {
             e.preventDefault();
-            switch(e.target.name){
+            switch (e.target.name) {
             case "season": {
                 newName = e.target.value;
                 break;
-            }case "starts": {
+            }
+            case "starts": {
                 newStart = e.target.value;
                 break;
-            }case "ends": {
+            }
+            case "ends": {
                 newEnd = e.target.value;
                 break;
             }
@@ -218,7 +250,7 @@ describe("Year",() => {
         );
 
         await screen.findByTestId("semester-form 1");
-        
+
         const seasonBox = screen.getByTestId("season-input");
         const startBox = screen.getByTestId("starts-input");
         const endBox = screen.getByTestId("ends-input");
@@ -229,12 +261,12 @@ describe("Year",() => {
         expect(handleInputSpy).toHaveBeenCalledTimes(2);
         fireEvent.change(endBox, { target: { value: "2021-12-15" } });
         expect(handleInputSpy).toHaveBeenCalledTimes(3);
-        
+
         expect(handleSubmitSpy).not.toHaveBeenCalled();
         const submit = screen.getByTestId("submit-button");
         submit.click();
         expect(handleSubmitSpy).toHaveBeenCalled();
-        
+
         expect(newName).toBe("fall");
         expect(newStart).toBe("2021-09-01");
         expect(newEnd).toBe("2021-12-15");
@@ -243,18 +275,22 @@ describe("Year",() => {
     it("Should call the function to remove a semester when the appropriate button is clicked.", async () => {
         const removeSpy = jest.fn();
         render(
-            <Year 
+            <Year
                 uuid={yrUuid}
                 handleSubmit={doNothing}
                 handleInput={doNothing}
                 formUuid={null}
                 setFormUuid={doNothing}
                 index={1}
-                semesters={
-                    [
-                        {name: "summer 2", start: new Date("2022-07-11"), end: new Date("2022-08-12"), courses: new Map<string,CourseProps>(), uuid: uuid()},  
-                    ]
-                }
+                semesters={[
+                    {
+                        name: "summer 2",
+                        start: new Date("2022-07-11"),
+                        end: new Date("2022-08-12"),
+                        courses: new Map<string, CourseProps>(),
+                        uuid: uuid(),
+                    },
+                ]}
                 removeSemester={removeSpy}
                 clear={doNothing}
             />
@@ -267,25 +303,28 @@ describe("Year",() => {
     it("Calls the function passed to the clear prop if the clear button is clicked", async () => {
         const clearSpy = jest.fn();
         render(
-            <Year 
+            <Year
                 uuid={yrUuid}
                 handleSubmit={doNothing}
                 handleInput={doNothing}
                 formUuid={null}
                 setFormUuid={doNothing}
                 index={1}
-                semesters={
-                    [
-                        {name: "summer 2", start: new Date("2022-07-11"), end: new Date("2022-08-12"), courses: new Map<string,CourseProps>(), uuid: uuid()},  
-                    ]
-                }
+                semesters={[
+                    {
+                        name: "summer 2",
+                        start: new Date("2022-07-11"),
+                        end: new Date("2022-08-12"),
+                        courses: new Map<string, CourseProps>(),
+                        uuid: uuid(),
+                    },
+                ]}
                 removeSemester={doNothing}
                 clear={clearSpy}
             />
         );
         screen.getByTestId("clear-year 1").click();
         expect(clearSpy).toHaveBeenCalled();
-
     });
     expect(typeof POINTLESS_GLOBAL).toBe("number");
 });
