@@ -2,14 +2,11 @@ import React, { ChangeEvent, FormEvent } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 
 import ReactDOM from "react-dom";
+import CourseProps from "../interfaces/Course";
 
 interface AddNewCourseProps {
     isOpen: boolean;
-    defaultValues: {
-        courseName: string;
-        courseID: string;
-        courseDescription: string;
-    };
+    defaultValues: CourseProps;
     isEditing: boolean; // if true, then we are editing an existing course
     onClickClose: () => void;
     onClickSubmit: (event: FormEvent<HTMLFormElement>) => void;
@@ -37,7 +34,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                 placeholder="Enter Course Name"
                                 data-testid="courseNameField"
                                 name="courseName"
-                                defaultValue={props.defaultValues.courseName}
+                                defaultValue={props.defaultValues.name}
                                 onChange={props.onChange}
                             />
                             <Form.Text className="text-muted">
@@ -59,7 +56,23 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                 name="courseID"
                                 placeholder="eg. CISC220"
                                 onChange={props.onChange}
-                                defaultValue={props.defaultValues.courseID}
+                                defaultValue={props.defaultValues.id}
+                            />
+                        </Form.Group>
+                    </Row>
+                    <Row>
+                        <Form.Group
+                            className="mb-3"
+                            as={Col}
+                            md={6}
+                            controlId="courseCredits"
+                        >
+                            <Form.Label>Number of credits</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="courseCredits"
+                                placeholder="eg. 3"
+                                onChange={props.onChange}
                             />
                         </Form.Group>
                     </Row>
@@ -70,7 +83,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                             name="courseDescription"
                             as="textarea"
                             placeholder="enter the course description here"
-                            defaultValue={props.defaultValues.courseDescription}
+                            defaultValue={props.defaultValues.description}
                             onChange={props.onChange}
                             style={{ height: "100px" }}
                         />
@@ -82,7 +95,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                 </Form>
             </div>
         </div>,
-        document.getElementById("modal-view") as Element || document.body
+        (document.getElementById("modal-view") as Element) || document.body
     );
 };
 

@@ -17,13 +17,13 @@ const courseReducer = (
     action: CourseAction
 ): Map<string, CourseProps> => {
     switch (action.type) {
-    case "ADD COURSE":
-        return state.set(action.payload.id, action.payload);
-    case "REMOVE COURSE": {
-        const newState = new Map<string, CourseProps>(state);
-        newState.delete(action.payload.id);
-        return newState;
-    }
+        case "ADD COURSE":
+            return state.set(action.payload.id, action.payload);
+        case "REMOVE COURSE": {
+            const newState = new Map<string, CourseProps>(state);
+            newState.delete(action.payload.id);
+            return newState;
+        }
     }
 };
 
@@ -43,12 +43,15 @@ interface FullSemesterProps extends SemesterProps {
     removeSemester: () => void;
 }
 const Semester = (props: FullSemesterProps): JSX.Element => {
+    const [newCourse, setNewCourse] = useState<CourseProps>({
+        id: "",
+        name: "",
+        description: "",
+        credits: 0,
+    });
     const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [newCourseName, setNewCourseName] = useState<string>("");
-    const [newCourseID, setNewCourseID] = useState<string>("");
-    const [newCourseDescription, setNewCourseDescription] =
-        useState<string>("");
+
     console.log("Semester render!");
     const [courses, updateCourses] = useReducer(
         courseReducer,
@@ -58,16 +61,18 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
+        const courseToAdd: CourseProps = { ...newCourse };
         switch (event.target.name) {
-        case "courseName":
-            setNewCourseName(event.target.value);
-            break;
-        case "courseID":
-            setNewCourseID(event.target.value);
-            break;
-        case "courseDescription":
-            setNewCourseDescription(event.target.value);
-            break;
+            case "courseName":
+                courseToAdd.name = event.target.value;
+
+                break;
+            case "courseID":
+                courseToAdd.id = event.target.value;
+                break;
+            case "courseDescription":
+                courseToAdd.description = event.target.value;
+                break;
         }
     };
     const onRemoveCourse = (courseToRemove: CourseProps) => {
@@ -80,19 +85,12 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
     };
 
     const onClickEdit = (courseToEdit: CourseProps) => {
-        setNewCourseName(courseToEdit.name);
-        setNewCourseDescription(courseToEdit.description);
-        setNewCourseID(courseToEdit.id);
+        setNewCourse(courseToEdit);
         setIsOpen(true);
         setIsEditing(true);
     };
     const handleCourseSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const newCourse: CourseProps = {
-            id: newCourseID,
-            name: newCourseName,
-            description: newCourseDescription,
-        };
 
         const action: CourseAction = {
             type: "ADD COURSE",
@@ -100,9 +98,12 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
         };
 
         updateCourses(action);
-        setNewCourseName("");
-        setNewCourseDescription("");
-        setNewCourseID("");
+        setNewCourse({
+            id: "",
+            name: "",
+            description: "",
+            credits: 0,
+        });
         if (isEditing) setIsEditing(false);
     };
     const addedCourses = Array.from(courses).map(
@@ -122,11 +123,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
     return (
         <>
             <AddCourse
-                defaultValues={{
-                    courseName: newCourseName,
-                    courseID: newCourseID,
-                    courseDescription: newCourseDescription,
-                }}
+                defaultValues={newCourse}
                 isEditing={isEditing}
                 isOpen={isOpen}
                 onClickClose={() => {

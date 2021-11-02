@@ -10,7 +10,7 @@ interface CourseProps /*extends AbstractProps*/ {
     /**The description of the course */
     description: string;
     /**How many credits the course is worth */
-    // credits: number;
+    credits: number;
     /**What courses need to be taken with this one.  */
     // coreqs: Array<CourseProps> | null;
     /**What courses need to be taken before this one. */

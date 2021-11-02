@@ -6,6 +6,8 @@ interface SemesterProps extends AbstractProps {
     start: Date;
     end: Date;
     courses: Map<string, CourseProps>;
+    /**How many credits the course is worth */
+    // credits: number;
 }
 
 export default SemesterProps;
