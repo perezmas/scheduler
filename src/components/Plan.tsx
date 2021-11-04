@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { /*Row, Col, CardGroup, Button,*/ Row, Col, Card, Button, CardProps, Form } from "react-bootstrap";
+import { /*Row, Col, CardGroup, Button,*/ Card } from "react-bootstrap";
 import "./styles.css";
 import { Link } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import PlanProps from "../interfaces/Plan";
-import useLocalStorage from "../hooks/useLocalStorage";
-import { Omit, BsPrefixProps } from "react-bootstrap/esm/helpers";
-import { isTemplateSpan, parseIsolatedEntityName, setConstantValue } from "typescript";
-import { Scheduler } from "./Scheduler";
+//import useLocalStorage from "../hooks/useLocalStorage";
+//import { Scheduler } from "./Scheduler";
 
 /*
 export const planList: PlanProps[] = [
@@ -33,17 +31,21 @@ export const planList: PlanProps[] = [
     }
 ];*/
 
-export function Plan(this: any, props: PlanProps): JSX.Element {
+export function Plan(props: PlanProps): JSX.Element {
 
     //const [cards, setCards] = useState([]);
-    const planList: PlanProps[] = [];
+    const planList: typeof props[] = [];
 
     const [plans, setPlans] = useState(planList);
-    //defaults upon page load
     /*
     if (props.name === undefined && props.uuid === undefined && props.date === undefined) {
         const [planName, setPlanName] = useLocalStorage("Plan Name", "");
-
+        setPlans([...plans, {
+            id: plans.length,
+            uuid: uuid(),
+            name: "New Plan",
+            date: new Date().toLocaleDateString()
+        }]);
     }*/
     
     const addPlan = () => {
@@ -51,12 +53,12 @@ export function Plan(this: any, props: PlanProps): JSX.Element {
             id: plans.length,
             uuid: uuid(),
             name: "New Plan",
-            date: new Date().toLocaleDateString()
+            date: new Date().toLocaleDateString(),
+            schedule: []
         }]);
-        console.log(plans);
     };
 
-    const deleteCard = (oldArray: any , planItem: PlanProps) => {
+    const deleteCard = (oldArray: typeof planList , planItem: PlanProps) => {
         if (window.confirm("Are you sure you want to delete this plan?")) {
             
             const newArray = [...plans];
@@ -80,19 +82,19 @@ export function Plan(this: any, props: PlanProps): JSX.Element {
         }
     };
 
-    const renderCard = (planItem: any) => {
+    const renderCard = (planItem: PlanProps) => {
         return (
             <Card style={{ width: "18rem" }} className="box">
                 <Card.Body>
                     <Card.Title>{planItem.name}</Card.Title>
                     <Card.Title>{planItem.uuid}</Card.Title>
-                    <Link to="/Plans">
+                    <Link to={`Plans/${planItem.uuid}`}>
                         <button>
                             Edit Plan
                         </button>
                     </Link>;
                     <Card.Text>{planItem.date}</Card.Text>
-                    <button onClick={(e) => {
+                    <button onClick={() => {
                         console.log("button pressed");
                         deleteCard(planList, planItem);
                     }}>-</button>
@@ -105,9 +107,9 @@ export function Plan(this: any, props: PlanProps): JSX.Element {
     return (
         <div className="grid">
             <button onClick={addPlan}>Add a plan +</button>
-            {plans.map(planItem => (
+            {plans.map(planItem => 
                 <li key={planItem.uuid}>{renderCard(planItem)}</li>
-            ))}
+            )}
         </div>
     );
 }

@@ -4,12 +4,11 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link, BrowserRouter as Router, Route, BrowserRouter } from "react-router-dom";
 import { Switch } from "react-router-dom";
-import { Scheduler } from "./components/Scheduler";
+//import { Scheduler } from "./components/Scheduler";
 import Plan from "./components/Plan";
 import { Button } from "react-bootstrap";
-import {v4 as uuid} from "uuid";
-import PlanProps from "./interfaces/Plan";
 //import ReactDOM from "react-dom";
+
 /*
 const users = [
     {
@@ -28,13 +27,14 @@ const IndexPage = () => {
     return (
         <div>
             <h1 className="center">Master Plan View</h1>
-            <Plan id={1} name="test" uuid="1234" date="today"/>
+            <Plan id={1} name="test" uuid="1234" date="today" schedule={[]}/>
         </div>
     );
     
 };
 
 // Specific Plan Page
+/*
 const Plans = () => {
     return (
         <>
@@ -44,19 +44,28 @@ const Plans = () => {
             <Scheduler />
         </>
     );
-};
-/*
+};*/
+
 const UsersPage = () => {
     return (
-        <>{users.map((user,index) => (
-            <h5 key={index}>
-                <Link to={"/user/${index+1}"}>{user.name}s Page</Link>
-            </h5>
-        ))}
+
+        <>
+            {/*
+            {users.map((user, index) => (
+                <h5 key={index}>
+                    <Link to={`/user/${index + 1}`}>{user.name}s Page</Link>
+                </h5>
+
+            ))}
+            */}
+            <Link to ="/">
+                <Button>Back
+                </Button>
+            </Link>
         </>
     );
 };
-
+/*
 const UserPage = () => {
  
     return (
@@ -80,7 +89,7 @@ function App(): JSX.Element {
                 <Switch>
                     <Router>
                         <Route exact path="/" component={IndexPage}></Route>
-                        <Route exact path="/:uuid" component={Plans}></Route>
+                        <Route path="/Plans/:uuid" component={UsersPage}></Route>
                     </Router>
                 </Switch>
             </BrowserRouter>

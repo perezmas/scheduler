@@ -5,6 +5,7 @@ interface PlanProps extends AbstractProps {
     id: number
     name: string
     date: string
+    schedule: []
 }
 
 export default PlanProps;
