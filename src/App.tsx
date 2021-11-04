@@ -2,36 +2,40 @@ import React from "react";
 import "./Year.css";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Link, BrowserRouter as Router, Route } from "react-router-dom";
+import { Link, BrowserRouter as Router, Route, BrowserRouter } from "react-router-dom";
 import { Switch } from "react-router-dom";
 import { Scheduler } from "./components/Scheduler";
-import Plans from "./components/Plans";
+import Plan from "./components/Plan";
 import { Button } from "react-bootstrap";
+import {v4 as uuid} from "uuid";
+import PlanProps from "./interfaces/Plan";
 //import ReactDOM from "react-dom";
-
+/*
 const users = [
     {
         name: "Max"
     },
     {
-        name:  "Emily"
+        name:  "Lucas"
     },
     {
-        name: "Egg boy"
+        name: "Amani"
     }
-];
+];*/
 
+// Master Plan View
 const IndexPage = () => {
     return (
         <div>
             <h1 className="center">Master Plan View</h1>
-            <Plans />
+            <Plan id={1} name="test" uuid="1234" date="today"/>
         </div>
     );
     
 };
 
-const Plan = () => {
+// Specific Plan Page
+const Plans = () => {
     return (
         <>
             <Link to="/">
@@ -41,7 +45,7 @@ const Plan = () => {
         </>
     );
 };
-
+/*
 const UsersPage = () => {
     return (
         <>{users.map((user,index) => (
@@ -66,20 +70,20 @@ const UserPage = () => {
         </p>
         </>
     );
-};
+};*/
 
 function App(): JSX.Element {
 
     return (
         <div className="container">
-            
-            <Router>
-
+            <BrowserRouter>
                 <Switch>
-                    <Route exact path="/" component={IndexPage}></Route>
-                    <Route exact path="/plan" component={Plan}></Route>
+                    <Router>
+                        <Route exact path="/" component={IndexPage}></Route>
+                        <Route exact path="/:uuid" component={Plans}></Route>
+                    </Router>
                 </Switch>
-            </Router>
+            </BrowserRouter>
         </div>
     );
 }
