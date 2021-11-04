@@ -64,7 +64,6 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                         <Form.Group
                             className="mb-3"
                             as={Col}
-                            md={6}
                             controlId="courseCredits"
                         >
                             <Form.Label>Number of credits</Form.Label>
@@ -72,7 +71,24 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                 type="number"
                                 name="courseCredits"
                                 placeholder="eg. 3"
+                                defaultValue={props.defaultValues.credits}
                                 onChange={props.onChange}
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3" as={Col}>
+                            <Form.Label>Select Corequisites</Form.Label>
+                            <Form.Check
+                                type="checkbox"
+                                label="CISC275"
+                                name="corequisites"
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3" as={Col}>
+                            <Form.Label>Select Prerequisites</Form.Label>
+                            <Form.Check
+                                type="checkbox"
+                                label="CISC275"
+                                name="corequisites"
                             />
                         </Form.Group>
                     </Row>

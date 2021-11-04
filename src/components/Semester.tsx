@@ -17,13 +17,13 @@ const courseReducer = (
     action: CourseAction
 ): Map<string, CourseProps> => {
     switch (action.type) {
-        case "ADD COURSE":
-            return state.set(action.payload.id, action.payload);
-        case "REMOVE COURSE": {
-            const newState = new Map<string, CourseProps>(state);
-            newState.delete(action.payload.id);
-            return newState;
-        }
+    case "ADD COURSE":
+        return state.set(action.payload.id, action.payload);
+    case "REMOVE COURSE": {
+        const newState = new Map<string, CourseProps>(state);
+        newState.delete(action.payload.id);
+        return newState;
+    }
     }
 };
 
@@ -62,18 +62,23 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
         const courseToAdd: CourseProps = { ...newCourse };
+        console.log(event.target.name);
         switch (event.target.name) {
-            case "courseName":
-                courseToAdd.name = event.target.value;
+        case "courseName":
+            courseToAdd.name = event.target.value;
 
-                break;
-            case "courseID":
-                courseToAdd.id = event.target.value;
-                break;
-            case "courseDescription":
-                courseToAdd.description = event.target.value;
-                break;
+            break;
+        case "courseID":
+            courseToAdd.id = event.target.value;
+            break;
+        case "courseDescription":
+            courseToAdd.description = event.target.value;
+            break;
+        case "courseCredits":
+            courseToAdd.credits = parseInt(event.target.value);
+            break;
         }
+        setNewCourse(courseToAdd);
     };
     const onRemoveCourse = (courseToRemove: CourseProps) => {
         const action: CourseAction = {

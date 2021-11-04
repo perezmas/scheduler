@@ -16,7 +16,7 @@ const Course = (props: CurrentCourseProps): JSX.Element => {
                     props.onRemoveCourse(props);
                 }}
             >
-                {props.name}
+                {`${props.credits} ${props.name}`}
             </div>
             <button
                 style={{ display: "inline-block" }}
