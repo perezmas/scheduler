@@ -7,6 +7,7 @@ import PlanProps from "../interfaces/Plan";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { Omit, BsPrefixProps } from "react-bootstrap/esm/helpers";
 import { isTemplateSpan, parseIsolatedEntityName, setConstantValue } from "typescript";
+import { Scheduler } from "./Scheduler";
 
 /*
 export const planList: PlanProps[] = [
@@ -85,6 +86,11 @@ export function Plan(this: any, props: PlanProps): JSX.Element {
                 <Card.Body>
                     <Card.Title>{planItem.name}</Card.Title>
                     <Card.Title>{planItem.uuid}</Card.Title>
+                    <Link to="/Plans">
+                        <button>
+                            Edit Plan
+                        </button>
+                    </Link>;
                     <Card.Text>{planItem.date}</Card.Text>
                     <button onClick={(e) => {
                         console.log("button pressed");
