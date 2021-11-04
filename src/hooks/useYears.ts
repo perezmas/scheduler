@@ -38,7 +38,7 @@ export interface AddYearAction extends AbstractAction {
     index: number;
 }
 
-function getByUUID<T extends AbstractProps>(
+export function getByUUID<T extends AbstractProps>(
     state: Array<T>,
     uuid: string
 ): number {

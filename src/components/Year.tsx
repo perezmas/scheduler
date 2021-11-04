@@ -11,6 +11,7 @@ import {
 } from "react-bootstrap";
 import SemesterProps from "../interfaces/Semester";
 import Semester from "./Semester";
+import SemesterForm from "./SemesterForm";
 
 interface FullYearProps extends YearProps {
     handleSubmit: (event: FormEvent<HTMLFormElement>) => void;
@@ -18,7 +19,9 @@ interface FullYearProps extends YearProps {
     formUuid: string | null;
     setFormUuid: (newId: string | null) => void;
     removeSemester: (semesterUuid: string) => void;
+    canSubmit: boolean;
     clear: () => void;
+    formInit: (uuid: string | null) => void;
 }
 
 function Year(props: FullYearProps): JSX.Element {
@@ -66,7 +69,7 @@ function Year(props: FullYearProps): JSX.Element {
                                     className="trigger"
                                     ref={overlayButton}
                                     onClick={() => {
-                                        props.setFormUuid(
+                                        props.formInit(
                                             props.formUuid === props.uuid
                                                 ? null
                                                 : props.uuid
@@ -80,47 +83,18 @@ function Year(props: FullYearProps): JSX.Element {
                                     placement="right-end"
                                     show={props.formUuid === props.uuid}
                                     onHide={() => {
-                                        props.setFormUuid(null);
+                                        props.formInit(null);
                                     }}
                                     rootClose={true}
                                     transition={false}
                                 >
                                     <Popover id="popover-basic">
                                         <PopoverContent>
-                                            <form
-                                                data-testid={`semester-form ${props.index}`}
-                                                onSubmit={props.handleSubmit}
-                                            >
-                                                <label>season:</label>
-                                                <input
-                                                    data-testid="season-input"
-                                                    type="text"
-                                                    name="season"
-                                                    onChange={props.handleInput}
-                                                />
-                                                <br />
-                                                <label>starts:</label>
-                                                <input
-                                                    data-testid="starts-input"
-                                                    type="date"
-                                                    name="starts"
-                                                    onChange={props.handleInput}
-                                                />
-                                                <br />
-                                                <label>ends:</label>
-                                                <input
-                                                    data-testid="ends-input"
-                                                    type="date"
-                                                    name="ends"
-                                                    onChange={props.handleInput}
-                                                />
-                                                <br />
-                                                <input
-                                                    data-testid="submit-button"
-                                                    type="submit"
-                                                    value="submit"
-                                                />
-                                            </form>
+                                            <SemesterForm
+                                                canSubmit={props.canSubmit}
+                                                handleInput={props.handleInput}
+                                                handleSubmit={props.handleSubmit}
+                                            />
                                         </PopoverContent>
                                     </Popover>
                                 </Overlay>

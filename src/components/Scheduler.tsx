@@ -1,10 +1,12 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
-import useYears from "../hooks/useYears";
+import React, { ChangeEvent, FormEvent, useState} from "react";
+import useYears, { getByUUID } from "../hooks/useYears";
 import { v4 as uuid } from "uuid";
 import { YearProps } from "../interfaces/Year";
 import CourseProps from "../interfaces/Course";
 import Year from "./Year";
-
+import SemesterProps from "../interfaces/Semester";
+import useProblems, {Problem} from "../hooks/useProblems";
+import ErrorStack from "./ErrorStack";
 interface SchedulerProps {
     csv?: string;
     json?: string;
@@ -23,6 +25,28 @@ function getStartingYears(): Array<YearProps>{
     return output;
 }
 
+function hasError(problems: Array<Problem>): boolean{
+    for(const problem of problems){
+        if(problem.error){
+            return true;
+        }
+    }
+    return false;
+}
+
+function endPointInInterval(point: number, interval: [number, number]): boolean{
+    return point > interval[0] && point < interval[1];
+}
+
+function dateOverlapsSemesters(newSemester: Date, semesters: Array<SemesterProps>): SemesterProps | null{
+    for(const semester of semesters){
+        if(endPointInInterval(newSemester.getTime(),[semester.start.getTime(), semester.end.getTime()])){
+            return semester;
+        }
+    }
+    return null;
+}
+
 export function Scheduler(props: SchedulerProps): JSX.Element {
     if (props.csv === undefined && props.json === undefined) {
         const years = useYears(getStartingYears);
@@ -30,17 +54,44 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
         const [newStart, setNewStart] = useState<string | null>(null);
         const [newEnd, setNewEnd] = useState<string | null>(null);
         const [currentForm, setCurrentForm] = useState<string | null>(null);
+        const [submissionAllowed, setSubmissionAllowed] = useState(false);
+        const problems = useProblems();
+        const semesterFormInit = (uuid: string | null) => {
+            setCurrentForm(uuid);
+            setSubmissionAllowed(false);
+            setNewName(null);
+            setNewStart(null);
+            setNewEnd(null);
+            problems.clear("semester-form");
+        };
         const handleSemesterInput = (event: ChangeEvent<HTMLInputElement>) => {
             switch (event.target.name) {
-            case "season":
+            case "season": {
                 setNewName(event.target.value);
                 break;
-            case "starts":
-                setNewStart(event.target.value);
+            }case "starts": {
+                const semesters = years.value[getByUUID(years.value,currentForm as string)].semesters;
+                const newDate = new Date(event.target.value);
+                const overlap = dateOverlapsSemesters(newDate, semesters);
+                if(overlap !== null){
+                    problems.add({uuid: uuid(), source: "semester-form", error: true, message: `New semester start overlaps with ${overlap.name}`, key: "starts-overlap"});
+                }else{
+                    setNewStart(event.target.value);
+                    problems.resolveByKey("starts-overlap");
+                }
                 break;
-            case "ends":
-                setNewEnd(event.target.value);
+            }case "ends": {
+                const semesters = years.value[getByUUID(years.value,currentForm as string)].semesters;
+                const newDate = new Date(event.target.value);
+                const overlap = dateOverlapsSemesters(newDate, semesters);
+                if(overlap !== null){
+                    problems.add({uuid: uuid(), source: "semester-form", error: true, message: `New semester end overlaps with ${overlap.name}`, key: "ends-overlap"});
+                }else{
+                    setNewEnd(event.target.value);
+                    problems.resolveByKey("ends-overlap");
+                }
                 break;
+            }
             }
         };
         const handleSemesterSubmit = (
@@ -62,6 +113,11 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                 setCurrentForm(null);
             }
         };
+        if(newName !== null && newEnd !== null && newStart !== null && !submissionAllowed && !hasError(problems.value)){
+            setSubmissionAllowed(true);
+        }else if((newName === null || newEnd === null || newStart === null || hasError(problems.value)) && submissionAllowed){
+            setSubmissionAllowed(false);
+        }
         return (
             <>
                 <button
@@ -77,6 +133,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                         return (
                             <div data-testid={"Year"} key={props.uuid}>
                                 <Year
+                                    canSubmit={submissionAllowed}
                                     handleInput={handleSemesterInput}
                                     handleSubmit={(
                                         event: FormEvent<HTMLFormElement>
@@ -96,6 +153,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                                     clear={() => {
                                         years.clear(props.uuid);
                                     }}
+                                    formInit={semesterFormInit}
                                 />
                             </div>
                         );
@@ -109,6 +167,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                         +
                     </button>
                 </div>
+                <ErrorStack problems={problems.value}/>
             </>
         );
     }
