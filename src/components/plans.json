@@ -1,0 +1,25 @@
+[
+    "plan1",
+    {
+        "id": "number",
+        "name": "string",
+        "date": "string",
+        "years": [
+            {
+                "index": "number",
+                "semesters": [
+                    {
+                        "name": "string",
+                        "start": "Date",
+                        "end": "Date",
+                        "courses": {
+                            "id": "string",
+                            "courseName": "string",
+                            "description": "string"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+]

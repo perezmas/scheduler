@@ -6,6 +6,8 @@ import { v4 as uuid } from "uuid";
 import PlanProps from "../interfaces/Plan";
 //import useLocalStorage from "../hooks/useLocalStorage";
 //import { Scheduler } from "./Scheduler";
+//import useLocalStorage from "../hooks/useLocalStorage";
+//import { Scheduler } from "./Scheduler";
 
 /*
 export const planList: PlanProps[] = [
@@ -38,13 +40,14 @@ export function Plan(props: PlanProps): JSX.Element {
 
     const [plans, setPlans] = useState(planList);
     /*
-    if (props.name === undefined && props.uuid === undefined && props.date === undefined) {
-        const [planName, setPlanName] = useLocalStorage("Plan Name", "");
+    if (props.id === 1) {
+        //const [planName, setPlanName] = useLocalStorage("Plan Name", "");
         setPlans([...plans, {
             id: plans.length,
             uuid: uuid(),
-            name: "New Plan",
-            date: new Date().toLocaleDateString()
+            name: "Enter Plan Name",
+            date: new Date().toLocaleDateString(),
+            years: []
         }]);
     }*/
     
@@ -54,8 +57,9 @@ export function Plan(props: PlanProps): JSX.Element {
             uuid: uuid(),
             name: "New Plan",
             date: new Date().toLocaleDateString(),
-            schedule: []
+            years: []
         }]);
+        localStorage.setItem("plan", props.uuid);
     };
 
     const deleteCard = (oldArray: typeof planList , planItem: PlanProps) => {
@@ -64,7 +68,7 @@ export function Plan(props: PlanProps): JSX.Element {
             const newArray = [...plans];
             console.log("plans array", plans);
             console.log(planItem.id);
-            const index = planItem.id;
+            const index = newArray.indexOf(planItem);
             
             //const index = newArray.findIndex((element: any) => element === planItem);
             console.log("index is", index);
@@ -96,7 +100,7 @@ export function Plan(props: PlanProps): JSX.Element {
                     <Card.Text>{planItem.date}</Card.Text>
                     <button onClick={() => {
                         console.log("button pressed");
-                        deleteCard(planList, planItem);
+                        deleteCard(plans, planItem);
                     }}>-</button>
                 </Card.Body>
             </Card>

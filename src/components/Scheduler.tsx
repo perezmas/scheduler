@@ -5,6 +5,7 @@ import { YearProps } from "../interfaces/Year";
 import CourseProps from "../interfaces/Course";
 import Year from "./Year";
 
+
 interface SchedulerProps {
     csv?: string;
     json?: string;
@@ -33,7 +34,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
         const handleSemesterInput = (event: ChangeEvent<HTMLInputElement>) => {
             switch (event.target.name) {
             case "season":
-                setNewPlan(event.target.value);
+                setNewName(event.target.value);
                 break;
             case "starts":
                 setNewStart(event.target.value);

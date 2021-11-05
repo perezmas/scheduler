@@ -2,11 +2,12 @@ import React from "react";
 import "./Year.css";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Link, BrowserRouter as Router, Route, BrowserRouter } from "react-router-dom";
+import { Link, HashRouter as Router, Route, HashRouter } from "react-router-dom";
 import { Switch } from "react-router-dom";
 //import { Scheduler } from "./components/Scheduler";
 import Plan from "./components/Plan";
 import { Button } from "react-bootstrap";
+import { Scheduler } from "./components/Scheduler";
 //import ReactDOM from "react-dom";
 
 /*
@@ -27,7 +28,7 @@ const IndexPage = () => {
     return (
         <div>
             <h1 className="center">Master Plan View</h1>
-            <Plan id={1} name="test" uuid="1234" date="today" schedule={[]}/>
+            <Plan id={1} name="test" uuid="1234" date="today" years={[]}/>
         </div>
     );
     
@@ -58,6 +59,7 @@ const UsersPage = () => {
 
             ))}
             */}
+            <Scheduler />
             <Link to ="/">
                 <Button>Back
                 </Button>
@@ -85,14 +87,14 @@ function App(): JSX.Element {
 
     return (
         <div className="container">
-            <BrowserRouter>
+            <HashRouter>
                 <Switch>
                     <Router>
                         <Route exact path="/" component={IndexPage}></Route>
                         <Route path="/Plans/:uuid" component={UsersPage}></Route>
                     </Router>
                 </Switch>
-            </BrowserRouter>
+            </HashRouter>
         </div>
     );
 }
