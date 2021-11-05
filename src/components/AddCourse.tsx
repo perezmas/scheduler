@@ -10,6 +10,7 @@ interface AddNewCourseProps {
         courseID: string;
         courseDescription: string;
     };
+    isEditing: boolean; // if true, then we are editing an existing course
     onClickClose: () => void;
     onClickSubmit: (event: FormEvent<HTMLFormElement>) => void;
     onChange: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -76,7 +77,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                     </Form.Group>
 
                     <Button variant="primary" type="submit">
-                        Add Course
+                        {props.isEditing ? "Edit Course" : "Add Course"}
                     </Button>
                 </Form>
             </div>

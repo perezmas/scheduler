@@ -1,61 +1,37 @@
-import React, {ChangeEvent, FormEvent, useState} from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import useYears from "../hooks/useYears";
-import {v4 as uuid} from "uuid";
-import SemesterProps from "../interfaces/Semester";
+import { v4 as uuid } from "uuid";
 import { YearProps } from "../interfaces/Year";
+import CourseProps from "../interfaces/Course";
 import Year from "./Year";
-import useLocalStorage from "../hooks/useLocalStorage";
-import PlanProps from "../interfaces/Plan";
-interface SchedulerProps{
-    csv?: string,
-    json?: string
+
+interface SchedulerProps {
+    csv?: string;
+    json?: string;
 }
 
+function getStartingYears(): Array<YearProps>{
+    const year = new Date().getFullYear();
+    const output = new Array<YearProps>();
+    const yearOne: YearProps = {index: 1, uuid: uuid(), semesters: []};
+    yearOne.semesters.push({uuid: uuid(), name: "fall", start: new Date(`${year}-08-31`), end: new Date(`${year}-12-15`), courses: new Map<string, CourseProps>()});
+    yearOne.semesters.push({uuid: uuid(), name: "spring", start: new Date(`${year+1}-02-07`), end: new Date(`${year+1}-05-26`), courses: new Map<string, CourseProps>()});
+    const yearTwo: YearProps = {index: 2, uuid: uuid(), semesters: []};
+    yearTwo.semesters.push({uuid: uuid(), name: "fall", start: new Date(`${year+1}-08-31`), end: new Date(`${year+1}-12-15`), courses: new Map<string, CourseProps>()});
+    output.push(yearOne);
+    output.push(yearTwo);
+    return output;
+}
 
-/*
-export const plans: Props[] = [
-    plan1: {
-
-    }
-]*/
-
-/*
-\
-[  {"id":"1"}              ]
-
-plans [
-
-    plan1 : {
-        id: 324
-        years: [
-            {
-
-            }
-        ]
-    }
-
-]
-// put object into storage
-localStorage.setItem("plans", JSON.stringify(plans));
-
-// retreieve object from storage
-var retrievedPlans = localStorage.getItem("plans");
-console.log("plans: ", JSON.parse(retrievedObject));
-*/
-export function Scheduler(props: SchedulerProps): JSX.Element{
-    if(props.csv === undefined && props.json === undefined){
-
-
-
-        const years = useYears([{index: 1, uuid: uuid(), semesters: new Array<SemesterProps>()}]);
-        
-        const [numYears, setNumYears] = useLocalStorage("Years", "1");
-        const [newPlan, setNewPlan] = useLocalStorage("Plan", "");
+export function Scheduler(props: SchedulerProps): JSX.Element {
+    if (props.csv === undefined && props.json === undefined) {
+        const years = useYears(getStartingYears);
+        const [newName, setNewName] = useState<string | null>(null);
         const [newStart, setNewStart] = useState<string | null>(null);
         const [newEnd, setNewEnd] = useState<string | null>(null);
         const [currentForm, setCurrentForm] = useState<string | null>(null);
         const handleSemesterInput = (event: ChangeEvent<HTMLInputElement>) => {
-            switch(event.target.name){
+            switch (event.target.name) {
             case "season":
                 setNewPlan(event.target.value);
                 break;
@@ -67,29 +43,73 @@ export function Scheduler(props: SchedulerProps): JSX.Element{
                 break;
             }
         };
-        const handleSemesterSubmit = (event: FormEvent<HTMLFormElement>,id: string) => {
+        const handleSemesterSubmit = (
+            event: FormEvent<HTMLFormElement>,
+            id: string
+        ) => {
             event.preventDefault();
-            years.putSemester(id, uuid(),new Date(newStart as string),new Date(newEnd as string),newPlan as string);
+            if (newName !== null && newEnd !== null && newStart !== null) {
+                years.putSemester(
+                    id,
+                    uuid(),
+                    new Date(newStart as string),
+                    new Date(newEnd as string),
+                    newName as string
+                );
+                setNewName(null);
+                setNewStart(null);
+                setNewEnd(null);
+                setCurrentForm(null);
+            }
         };
         return (
-            <div>
-                <form>
-                    <input type="text" value={newPlan} onChange={(e) => setNewPlan(e.target.value)} placeholder="Full name" aria-label="fullname"></input>
-                </form>
-                {years.value.map((props: YearProps, i: number) => {
-                    return (
-                        <div data-testid={"Year"} key={props.uuid}>
-                            <Year handleInput={handleSemesterInput} handleSubmit={(event: FormEvent<HTMLFormElement>) => {
-                                handleSemesterSubmit(event,props.uuid);
-                            }} semesters={props.semesters} uuid={props.uuid} index={i+1} formUuid={currentForm} setFormUuid={setCurrentForm}/>
-                        </div>
-                    );
-                })}
-                <button data-testid="addYearButton" onClick={() => {
-                    years.push(uuid(),years.value.length);
-                    setNumYears(numYears+1);
-                }}>+</button>
-            </div>
+            <>
+                <button
+                    onClick={() => {
+                        years.clear();
+                    }}
+                    data-testid="clear-button"
+                >
+                    Clear
+                </button>
+                <div>
+                    {years.value.map((props: YearProps, i: number) => {
+                        return (
+                            <div data-testid={"Year"} key={props.uuid}>
+                                <Year
+                                    handleInput={handleSemesterInput}
+                                    handleSubmit={(
+                                        event: FormEvent<HTMLFormElement>
+                                    ) => {
+                                        handleSemesterSubmit(event, props.uuid);
+                                    }}
+                                    semesters={props.semesters}
+                                    uuid={props.uuid}
+                                    index={i + 1}
+                                    formUuid={currentForm}
+                                    setFormUuid={setCurrentForm}
+                                    removeSemester={(
+                                        semesterUuid: string
+                                    ) => {
+                                        years.removeSemester(props.uuid,semesterUuid);
+                                    }}
+                                    clear={() => {
+                                        years.clear(props.uuid);
+                                    }}
+                                />
+                            </div>
+                        );
+                    })}
+                    <button
+                        data-testid="add-year-button"
+                        onClick={() => {
+                            years.push(uuid(), years.value.length);
+                        }}
+                    >
+                        +
+                    </button>
+                </div>
+            </>
         );
     }
     return <></>;
