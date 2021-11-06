@@ -59,7 +59,14 @@
   border-width: 0.1em;
   border-color: red;
   background-color: rgba(255,0,0,0.5);
+}
 
+.error-stack .warning{
+  border-radius: 1.5vh;
+  border-style: solid;
+  border-width: 0.1em;
+  border-color: orange;
+  background-color: rgba(255, 153, 0, 0.733);
 }
 
 .error-stack span{

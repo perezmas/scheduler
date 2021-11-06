@@ -84,6 +84,15 @@ function problemReducer(prev: Array<Problem>, action: AbstractProblemAction): Ar
     }
 }
 
+export function getByKey(problems: Array<Problem>, key: string): Problem | null{
+    for(const problem of problems){
+        if(problem.key === key){
+            return problem;
+        }
+    }
+    return null;
+}
+
 /**Contains a state object and some convenience functions that interact with it through reduceProblem.*/
 interface ProblemsInterface{
     /**Contains the current problem and the backlog of problems. */

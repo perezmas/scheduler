@@ -4,9 +4,10 @@ import { v4 as uuid } from "uuid";
 import { YearProps } from "../interfaces/Year";
 import CourseProps from "../interfaces/Course";
 import Year from "./Year";
-import SemesterProps from "../interfaces/Semester";
 import useProblems, {Problem} from "../hooks/useProblems";
 import ErrorStack from "./ErrorStack";
+import validate from "../util/validation/dates";
+
 interface SchedulerProps {
     csv?: string;
     json?: string;
@@ -34,19 +35,6 @@ function hasError(problems: Array<Problem>): boolean{
     return false;
 }
 
-function endPointInInterval(point: number, interval: [number, number]): boolean{
-    return point > interval[0] && point < interval[1];
-}
-
-function dateOverlapsSemesters(newSemester: Date, semesters: Array<SemesterProps>): SemesterProps | null{
-    for(const semester of semesters){
-        if(endPointInInterval(newSemester.getTime(),[semester.start.getTime(), semester.end.getTime()])){
-            return semester;
-        }
-    }
-    return null;
-}
-
 export function Scheduler(props: SchedulerProps): JSX.Element {
     if (props.csv === undefined && props.json === undefined) {
         const years = useYears(getStartingYears);
@@ -72,27 +60,40 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
             }case "starts": {
                 const semesters = years.value[getByUUID(years.value,currentForm as string)].semesters;
                 const newDate = new Date(event.target.value);
-                const overlap = dateOverlapsSemesters(newDate, semesters);
-                if(overlap !== null){
-                    problems.add({uuid: uuid(), source: "semester-form", error: true, message: `New semester start overlaps with ${overlap.name}`, key: "starts-overlap"});
+                const newProblems = validate(newDate,newEnd !== null ? new Date(newEnd) : null, semesters, "starts");
+                if(newEnd === null){
+                    problems.clear("semester-form");
+                    if(newProblems.length === 1){
+                        problems.add(newProblems[0]);
+                    }
                 }else{
-                    setNewStart(event.target.value);
-                    problems.resolveByKey("starts-overlap");
+                    problems.clear("semester-form");
+                    for(const problem of newProblems){
+                        problems.add(problem);
+                    }
                 }
+                setNewStart(event.target.value);
                 break;
             }case "ends": {
                 const semesters = years.value[getByUUID(years.value,currentForm as string)].semesters;
                 const newDate = new Date(event.target.value);
-                const overlap = dateOverlapsSemesters(newDate, semesters);
-                if(overlap !== null){
-                    problems.add({uuid: uuid(), source: "semester-form", error: true, message: `New semester end overlaps with ${overlap.name}`, key: "ends-overlap"});
+                const newProblems = validate(newStart !== null ? new Date(newStart) : null,newDate, semesters, "ends");
+                if(newEnd === null){
+                    problems.clear("semester-form");
+                    if(newProblems.length === 1){
+                        problems.add(newProblems[0]);
+                    }
                 }else{
-                    setNewEnd(event.target.value);
-                    problems.resolveByKey("ends-overlap");
+                    problems.clear("semester-form");
+                    for(const problem of newProblems){
+                        problems.add(problem);
+                    }
                 }
+                setNewEnd(event.target.value);
                 break;
             }
             }
+
         };
         const handleSemesterSubmit = (
             event: FormEvent<HTMLFormElement>,

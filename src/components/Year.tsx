@@ -90,11 +90,13 @@ function Year(props: FullYearProps): JSX.Element {
                                 >
                                     <Popover id="popover-basic">
                                         <PopoverContent>
-                                            <SemesterForm
-                                                canSubmit={props.canSubmit}
-                                                handleInput={props.handleInput}
-                                                handleSubmit={props.handleSubmit}
-                                            />
+                                            <div data-testid={`semester-form ${props.index}`}>
+                                                <SemesterForm
+                                                    canSubmit={props.canSubmit}
+                                                    handleInput={props.handleInput}
+                                                    handleSubmit={props.handleSubmit}
+                                                />
+                                            </div>
                                         </PopoverContent>
                                     </Popover>
                                 </Overlay>
