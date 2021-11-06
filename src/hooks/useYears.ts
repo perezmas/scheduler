@@ -1,5 +1,5 @@
 import { useReducer } from "react";
-import CourseProps from "../interfaces/Course";
+
 import SemesterProps from "../interfaces/Semester";
 import { YearProps } from "../interfaces/Year";
 import AbstractProps from "../interfaces/Props";
@@ -58,61 +58,61 @@ function semesterReducer(
         return x;
     });
     switch (action.type) {
-        case "ADD SEMESTER": {
-            const semAction: AddSemesterAction = action as AddSemesterAction;
-            const targetIndex: number = getByUUID(next, semAction.uuid);
-            const target: YearProps = next[targetIndex];
-            const newYear1 = new Array<SemesterProps>().concat(
-                target.semesters
-            );
-            newYear1.push({
-                name: semAction.name,
-                start: semAction.start,
-                end: semAction.end,
-                uuid: semAction.semesterUuid,
-            });
-            next[targetIndex] = {
-                index: next[targetIndex].index,
-                uuid: next[targetIndex].uuid,
-                semesters: newYear1,
-            };
-            return next;
-        }
-        case "ADD YEAR": {
-            const addYear = action as AddYearAction;
-            const newYear2: YearProps = {
-                index: addYear.index,
-                uuid: addYear.uuid,
-                semesters: new Array<SemesterProps>(),
-            };
-            next.push(newYear2);
-            return next;
-        }
-        case "DELETE SEMESTER": {
-            const removeSemester = action as DeleteSemesterAction;
-            const targetIndex: number = getByUUID(next, removeSemester.uuid);
-            const targetYear: YearProps = next[targetIndex];
-            const newYear = targetYear.semesters.filter(
-                (semester: SemesterProps) => {
-                    return semester.uuid !== removeSemester.semesterUuid;
-                }
-            );
-            next[targetIndex] = {
-                index: next[targetIndex].index,
-                uuid: next[targetIndex].uuid,
-                semesters: newYear,
-            };
-            return next;
-        }
-        case "DELETE YEAR": {
-            const removeYear = action as DeleteYearAction;
-            const output = next.filter((value: YearProps) => {
-                return value.uuid !== removeYear.uuid;
-            });
-            return output;
-        }
-        default:
-            throw Error(`${action.type} not implemented!`);
+    case "ADD SEMESTER": {
+        const semAction: AddSemesterAction = action as AddSemesterAction;
+        const targetIndex: number = getByUUID(next, semAction.uuid);
+        const target: YearProps = next[targetIndex];
+        const newYear1 = new Array<SemesterProps>().concat(
+            target.semesters
+        );
+        newYear1.push({
+            name: semAction.name,
+            start: semAction.start,
+            end: semAction.end,
+            uuid: semAction.semesterUuid,
+        });
+        next[targetIndex] = {
+            index: next[targetIndex].index,
+            uuid: next[targetIndex].uuid,
+            semesters: newYear1,
+        };
+        return next;
+    }
+    case "ADD YEAR": {
+        const addYear = action as AddYearAction;
+        const newYear2: YearProps = {
+            index: addYear.index,
+            uuid: addYear.uuid,
+            semesters: new Array<SemesterProps>(),
+        };
+        next.push(newYear2);
+        return next;
+    }
+    case "DELETE SEMESTER": {
+        const removeSemester = action as DeleteSemesterAction;
+        const targetIndex: number = getByUUID(next, removeSemester.uuid);
+        const targetYear: YearProps = next[targetIndex];
+        const newYear = targetYear.semesters.filter(
+            (semester: SemesterProps) => {
+                return semester.uuid !== removeSemester.semesterUuid;
+            }
+        );
+        next[targetIndex] = {
+            index: next[targetIndex].index,
+            uuid: next[targetIndex].uuid,
+            semesters: newYear,
+        };
+        return next;
+    }
+    case "DELETE YEAR": {
+        const removeYear = action as DeleteYearAction;
+        const output = next.filter((value: YearProps) => {
+            return value.uuid !== removeYear.uuid;
+        });
+        return output;
+    }
+    default:
+        throw Error(`${action.type} not implemented!`);
     }
 }
 
@@ -164,8 +164,8 @@ function useYears(init?: () => Array<YearProps>): Years {
         undefined,
         init === undefined
             ? () => {
-                  return new Array<YearProps>();
-              }
+                return new Array<YearProps>();
+            }
             : init
     );
 

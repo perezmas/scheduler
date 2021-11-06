@@ -5,6 +5,7 @@ import ReactDOM from "react-dom";
 import CourseProps from "../interfaces/Course";
 
 interface AddNewCourseProps {
+    courses: CourseProps[];
     isOpen: boolean;
     defaultValues: CourseProps;
     isEditing: boolean; // if true, then we are editing an existing course
@@ -77,19 +78,45 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                         </Form.Group>
                         <Form.Group className="mb-3" as={Col}>
                             <Form.Label>Select Corequisites</Form.Label>
-                            <Form.Check
-                                type="checkbox"
-                                label="CISC275"
-                                name="corequisites"
-                            />
+                            {props.courses
+                                .filter(
+                                    (course) =>
+                                        course.id != props.defaultValues.id
+                                )
+                                .map((course: CourseProps) => 
+                                    <Form.Check
+                                        key={course.id}
+                                        type="checkbox"
+                                        label={course.name}
+                                        name="courseCorequisites"
+                                        value={course.id}
+                                        defaultChecked={props.defaultValues.coreqs.includes(
+                                            course.id
+                                        )}
+                                        onChange={props.onChange}
+                                    />
+                                )}
                         </Form.Group>
                         <Form.Group className="mb-3" as={Col}>
                             <Form.Label>Select Prerequisites</Form.Label>
-                            <Form.Check
-                                type="checkbox"
-                                label="CISC275"
-                                name="corequisites"
-                            />
+                            {props.courses
+                                .filter(
+                                    (course) =>
+                                        course.id != props.defaultValues.id
+                                )
+                                .map((course: CourseProps) => 
+                                    <Form.Check
+                                        key={course.id}
+                                        type="checkbox"
+                                        label={course.name}
+                                        name="coursePrerequisites"
+                                        value={course.id}
+                                        defaultChecked={props.defaultValues.prereqs.includes(
+                                            course.id
+                                        )}
+                                        onChange={props.onChange}
+                                    />
+                                )}
                         </Form.Group>
                     </Row>
 
@@ -111,7 +138,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                 </Form>
             </div>
         </div>,
-        (document.getElementById("modal-view") as Element) || document.body
+        document.getElementById("modal-view") as Element || document.body
     );
 };
 

@@ -1,4 +1,3 @@
-import CourseProps from "./Course";
 import AbstractProps from "./Props";
 
 interface SemesterProps extends AbstractProps {

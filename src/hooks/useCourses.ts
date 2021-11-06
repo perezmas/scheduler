@@ -1,8 +1,5 @@
 import { useReducer } from "react";
 import CourseProps from "../interfaces/Course";
-import SemesterProps from "../interfaces/Semester";
-import { YearProps } from "../interfaces/Year";
-import AbstractProps from "../interfaces/Props";
 
 export interface CourseAction {
     type: "ADD COURSE" | "REMOVE COURSE";
@@ -16,13 +13,13 @@ const courseReducer = (
     action: CourseAction
 ): Map<string, CourseProps> => {
     switch (action.type) {
-        case "ADD COURSE":
-            return state.set(action.payload.id, action.payload);
-        case "REMOVE COURSE": {
-            const newState = new Map<string, CourseProps>(state);
-            newState.delete(action.payload.id);
-            return newState;
-        }
+    case "ADD COURSE":
+        return state.set(action.payload.id, action.payload);
+    case "REMOVE COURSE": {
+        const newState = new Map<string, CourseProps>(state);
+        newState.delete(action.payload.id);
+        return newState;
+    }
     }
 };
 
@@ -40,7 +37,7 @@ const courseInit = (
 export interface Courses {
     courseList: Map<string, CourseProps>;
     removeCourse: (courseID: string) => void;
-    getCourseForSemester: (semesterID: string) => CourseProps[];
+
     updateCourses: (action: CourseAction) => void;
 }
 function useCourses(initialCourses?: Map<string, CourseProps>): Courses {
@@ -50,12 +47,6 @@ function useCourses(initialCourses?: Map<string, CourseProps>): Courses {
             initialCourses,
             courseInit
         );
-
-        const getCourseForSemester = (semesterUuid: string) => {
-            return Array.from(courses.values()).filter(
-                (course) => course.semester === semesterUuid
-            );
-        };
 
         const onRemoveCourse = (courseID: string) => {
             //get the course to remove
@@ -73,7 +64,7 @@ function useCourses(initialCourses?: Map<string, CourseProps>): Courses {
         return {
             courseList: courses,
             removeCourse: onRemoveCourse,
-            getCourseForSemester: getCourseForSemester,
+
             updateCourses: updateCourses,
         };
     }

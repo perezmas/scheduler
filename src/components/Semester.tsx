@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useReducer, useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { CourseAction } from "../hooks/useCourses";
 import CourseProps from "../interfaces/Course";
 
@@ -7,20 +7,11 @@ import AddCourse from "./AddCourse";
 import Course from "./Course";
 
 interface FullSemesterProps extends SemesterProps {
-    coursesForThisSemester: CourseProps[];
     courses: Map<string, CourseProps>;
     removeSemester: () => void;
     updateCourses: (action: CourseAction) => void;
 }
 const Semester = (props: FullSemesterProps): JSX.Element => {
-    const [coursesForThisSemester, setCoursesForThisSemester] = useState<
-        CourseProps[]
-    >(new Array<CourseProps>());
-
-    useEffect(() => {
-        setCoursesForThisSemester(props.coursesForThisSemester);
-    }, [props.coursesForThisSemester]);
-
     const [newCourse, setNewCourse] = useState<CourseProps>({
         id: "",
         name: "",
@@ -40,19 +31,33 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
         const courseToAdd: CourseProps = { ...newCourse };
         console.log(event.target.name);
         switch (event.target.name) {
-            case "courseName":
-                courseToAdd.name = event.target.value;
+        case "courseName":
+            courseToAdd.name = event.target.value;
 
-                break;
-            case "courseID":
-                courseToAdd.id = event.target.value;
-                break;
-            case "courseDescription":
-                courseToAdd.description = event.target.value;
-                break;
-            case "courseCredits":
-                courseToAdd.credits = parseInt(event.target.value);
-                break;
+            break;
+        case "courseID":
+            courseToAdd.id = event.target.value;
+            break;
+        case "courseDescription":
+            courseToAdd.description = event.target.value;
+            break;
+        case "courseCredits":
+            courseToAdd.credits = parseInt(event.target.value);
+            break;
+        case "courseCorequisites":
+            courseToAdd.coreqs = event.target.checked
+                ? [...courseToAdd.coreqs, event.target.value]
+                : courseToAdd.coreqs.filter(
+                    (x) => x !== event.target.value
+                );
+            break;
+        case "coursePrerequisites":
+            courseToAdd.prereqs = event.target.checked
+                ? [...courseToAdd.prereqs, event.target.value]
+                : courseToAdd.prereqs.filter(
+                    (x) => x !== event.target.value
+                );
+            break;
         }
         setNewCourse(courseToAdd);
     };
@@ -90,23 +95,26 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
         });
         if (isEditing) setIsEditing(false);
     };
-    const addedCourses = coursesForThisSemester.map((course) => {
-        return (
-            <div key={course.id}>
-                {
-                    <Course
-                        {...course}
-                        onClickEdit={onClickEdit}
-                        onRemoveCourse={unAttachCourse}
-                    />
-                }
-            </div>
-        );
-    });
+    const addedCourses = Array.from(props.courses.values())
+        .filter((course) => course.semester === props.uuid)
+        .map((course) => {
+            return (
+                <div key={course.id}>
+                    {
+                        <Course
+                            {...course}
+                            onClickEdit={onClickEdit}
+                            onRemoveCourse={unAttachCourse}
+                        />
+                    }
+                </div>
+            );
+        });
 
     return (
         <>
             <AddCourse
+                courses={Array.from(props.courses.values())}
                 defaultValues={newCourse}
                 isEditing={isEditing}
                 isOpen={isOpen}

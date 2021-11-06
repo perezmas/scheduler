@@ -2,7 +2,7 @@ import React, { ChangeEvent, FormEvent, useState } from "react";
 import useYears from "../hooks/useYears";
 import { v4 as uuid } from "uuid";
 import { YearProps } from "../interfaces/Year";
-import CourseProps from "../interfaces/Course";
+
 import useCourses from "../hooks/useCourses";
 import Year from "./Year";
 
@@ -50,15 +50,15 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
         const [currentForm, setCurrentForm] = useState<string | null>(null);
         const handleSemesterInput = (event: ChangeEvent<HTMLInputElement>) => {
             switch (event.target.name) {
-                case "season":
-                    setNewName(event.target.value);
-                    break;
-                case "starts":
-                    setNewStart(event.target.value);
-                    break;
-                case "ends":
-                    setNewEnd(event.target.value);
-                    break;
+            case "season":
+                setNewName(event.target.value);
+                break;
+            case "starts":
+                setNewStart(event.target.value);
+                break;
+            case "ends":
+                setNewEnd(event.target.value);
+                break;
             }
         };
         const handleSemesterSubmit = (
