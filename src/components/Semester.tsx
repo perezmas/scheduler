@@ -1,91 +1,67 @@
-import React, { FormEvent, useReducer, useState } from "react";
+import React, { FormEvent, useEffect, useReducer, useState } from "react";
+import { CourseAction } from "../hooks/useCourses";
 import CourseProps from "../interfaces/Course";
 
 import SemesterProps from "../interfaces/Semester";
 import AddCourse from "./AddCourse";
 import Course from "./Course";
 
-interface CourseAction {
-    type: "ADD COURSE" | "REMOVE COURSE";
-    payload: CourseProps;
-}
-
-// easy access to the courses
-
-const courseReducer = (
-    state: Map<string, CourseProps>,
-    action: CourseAction
-): Map<string, CourseProps> => {
-    switch (action.type) {
-    case "ADD COURSE":
-        return state.set(action.payload.id, action.payload);
-    case "REMOVE COURSE": {
-        const newState = new Map<string, CourseProps>(state);
-        newState.delete(action.payload.id);
-        return newState;
-    }
-    }
-};
-
-// const onRightClickCourse = (event: React.MouseEvent<HTMLDivElement>) => {
-//     event.preventDefault();
-//     console.log("Right Clicked");
-// };
-
-const courseInit = (
-    courses: Map<string, CourseProps>
-): Map<string, CourseProps> => {
-    if (courses) return courses;
-    else return new Map<string, CourseProps>();
-};
-
 interface FullSemesterProps extends SemesterProps {
+    coursesForThisSemester: CourseProps[];
+    courses: Map<string, CourseProps>;
     removeSemester: () => void;
+    updateCourses: (action: CourseAction) => void;
 }
 const Semester = (props: FullSemesterProps): JSX.Element => {
+    const [coursesForThisSemester, setCoursesForThisSemester] = useState<
+        CourseProps[]
+    >(new Array<CourseProps>());
+
+    useEffect(() => {
+        setCoursesForThisSemester(props.coursesForThisSemester);
+    }, [props.coursesForThisSemester]);
+
     const [newCourse, setNewCourse] = useState<CourseProps>({
         id: "",
         name: "",
         description: "",
         credits: 0,
+        semester: props.uuid,
+        coreqs: [],
+        prereqs: [],
     });
     const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
 
     console.log("Semester render!");
-    const [courses, updateCourses] = useReducer(
-        courseReducer,
-        props.courses,
-        courseInit
-    );
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
         const courseToAdd: CourseProps = { ...newCourse };
         console.log(event.target.name);
         switch (event.target.name) {
-        case "courseName":
-            courseToAdd.name = event.target.value;
+            case "courseName":
+                courseToAdd.name = event.target.value;
 
-            break;
-        case "courseID":
-            courseToAdd.id = event.target.value;
-            break;
-        case "courseDescription":
-            courseToAdd.description = event.target.value;
-            break;
-        case "courseCredits":
-            courseToAdd.credits = parseInt(event.target.value);
-            break;
+                break;
+            case "courseID":
+                courseToAdd.id = event.target.value;
+                break;
+            case "courseDescription":
+                courseToAdd.description = event.target.value;
+                break;
+            case "courseCredits":
+                courseToAdd.credits = parseInt(event.target.value);
+                break;
         }
         setNewCourse(courseToAdd);
     };
-    const onRemoveCourse = (courseToRemove: CourseProps) => {
+    const unAttachCourse = (courseToRemove: CourseProps) => {
         const action: CourseAction = {
             type: "REMOVE COURSE",
             payload: courseToRemove,
         };
-        updateCourses(action);
+        props.updateCourses(action);
         console.log("Remove Course", courseToRemove.id);
     };
 
@@ -102,28 +78,31 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
             payload: newCourse,
         };
 
-        updateCourses(action);
+        props.updateCourses(action);
         setNewCourse({
             id: "",
             name: "",
             description: "",
             credits: 0,
+            semester: props.uuid,
+            coreqs: [],
+            prereqs: [],
         });
         if (isEditing) setIsEditing(false);
     };
-    const addedCourses = Array.from(courses).map(
-        ([courseID, course]: [string, CourseProps]) => {
-            return (
-                <div key={courseID}>
+    const addedCourses = coursesForThisSemester.map((course) => {
+        return (
+            <div key={course.id}>
+                {
                     <Course
-                        onClickEdit={onClickEdit}
-                        onRemoveCourse={onRemoveCourse}
                         {...course}
-                    />{" "}
-                </div>
-            );
-        }
-    );
+                        onClickEdit={onClickEdit}
+                        onRemoveCourse={unAttachCourse}
+                    />
+                }
+            </div>
+        );
+    });
 
     return (
         <>
