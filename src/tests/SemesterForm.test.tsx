@@ -92,6 +92,5 @@ describe(SemesterForm,() => {
         expect(handleSubmitSpy).not.toHaveBeenCalled();
         screen.getByTestId("submit-button").click();
         expect(handleSubmitSpy).toHaveBeenCalled();
-
-    })
+    });
 });

@@ -1,12 +1,11 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen} from "@testing-library/react";
 import Year from "../components/Year";
 import { v4 as uuid } from "uuid";
 import CourseProps from "../interfaces/Course";
-import { ChangeEvent, FormEvent } from "react";
 
 
-describe("Year", () => {
+describe(Year,() => {
     const doNothing = jest.fn();
     const yrUuid = uuid();
     it("Should render the label correctly", async () => {

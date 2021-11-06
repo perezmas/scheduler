@@ -10,10 +10,7 @@ async function addSemester(
     end: string,
     year = 1
 ): Promise<void> {
-    screen.getByTestId(`trigger ${year}`).click();
-    const form = await screen.findByTestId(`semester-form ${year}`);
-
-    expect(form).toBeInTheDocument();
+    await openForm(year);
 
     const seasonBox = screen.getByTestId("season-input");
     const startBox = screen.getByTestId("starts-input");
@@ -22,6 +19,8 @@ async function addSemester(
     fireEvent.change(seasonBox, { target: { value: name } });
     fireEvent.change(startBox, { target: { value: start } });
     fireEvent.change(endBox, { target: { value: end } });
+
+    expect(screen.queryAllByTestId("error")).toHaveLength(0);
 
     const submit = screen.getByTestId("submit-button");
     submit.click();
@@ -33,7 +32,33 @@ async function addSemester(
     });
 }
 
-describe("Scheduler", () => {
+async function openForm(year: number): Promise<void>{
+    screen.getByTestId(`trigger ${year}`).click();
+    await screen.findByTestId(`semester-form ${year}`);
+}
+
+async function testForError(baseline: [string, string], errorConditions: Array<["starts-input" | "ends-input",string]>, expectError: () => void, expectNoError: () => void, year: number = 1){
+    await openForm(year);
+
+    const startsBox = screen.getByTestId("starts-input");
+    const endsBox = screen.getByTestId("ends-input");
+    fireEvent.change(startsBox, {target: {value: baseline[0]}});
+    fireEvent.change(endsBox, {target: {value: baseline[1]}});
+    expectNoError();
+
+    for(const condition of errorConditions){
+        let box = condition[0] === "starts-input" ? startsBox : endsBox
+        fireEvent.change(box,{target: {value: condition[1]}});
+        expectError();
+
+        fireEvent.change(box,{target: {value: box === startsBox ? baseline[0] : baseline[1]}});
+        expectNoError();
+    }
+
+
+}
+
+describe(Scheduler,() => {
     const currentYear = new Date().getUTCFullYear();
     beforeEach(() => {
         render(<Scheduler />);
@@ -71,14 +96,12 @@ describe("Scheduler", () => {
     });
 
     it("renders a form when you click on the new semester button", async () => {
-        screen.getByTestId("trigger 1").click();
+        openForm(1);
 
-        const form = await screen.findByTestId("semester-form 1");
         const seasonBox = screen.getByTestId("season-input");
         const startBox = screen.getByTestId("starts-input");
         const endBox = screen.getByTestId("ends-input");
 
-        expect(form).toBeInTheDocument();
         expect(seasonBox).toBeInTheDocument();
         expect(startBox).toBeInTheDocument();
         expect(endBox).toBeInTheDocument();
@@ -126,4 +149,63 @@ describe("Scheduler", () => {
 
         expect(screen.getAllByText("fall")).toHaveLength(1);
     });
+
+    it("Displays an error when the user enters a date into the starts field of a semester form that overlaps an existing semester.", async () => {
+        await openForm(1);
+
+        const startsBox = screen.getByTestId("starts-input");
+        expect(screen.queryByText("starts overlaps with fall")).not.toBeInTheDocument();
+        fireEvent.change(startsBox,{target: {value: "2021-10-10"}});
+        expect(screen.getByText("starts overlaps with fall")).toBeInTheDocument();
+        expect(screen.getByTestId("error")).toBeInTheDocument();
+    });
+
+    it("Displays an error when the user enters a date into the ends field of a semester form that overlaps an existing semester", async () => {
+        await openForm(1);
+
+        const endsBox = screen.getByTestId("ends-input");
+        expect(screen.queryByText("starts overlaps with fall")).not.toBeInTheDocument();
+        fireEvent.change(endsBox,{target: {value: "2021-10-10"}});
+        expect(screen.getByText("ends overlaps with fall")).toBeInTheDocument();
+        expect(screen.getByTestId("error")).toBeInTheDocument();
+    });
+
+    it("Displays an error if the user tries to create a semester that starts after it ends.", async () => {
+        const expectError = () => {
+            expect(screen.getByText("Semesters cannot start after they end!")).toBeInTheDocument();
+            expect(screen.getByTestId("error")).toBeInTheDocument();
+        };
+
+        const expectNoError = () => {
+            expect(screen.queryByText("Semesters cannot start after they end!")).not.toBeInTheDocument();
+            expect(screen.queryByTestId("error")).not.toBeInTheDocument();
+        }
+
+        await testForError(["2022-08-31","2022-12-15"],[["starts-input","2022-12-16"],["ends-input","2022-08-30"]],expectError,expectNoError);
+        
+    });
+
+    it("Displays an error if the user tries to add a semester that overlaps an existing one.", async () => {
+
+    });
+
+    it("Displays a warning iff a semester is three weeks or shorter.", async () => {
+        const expectWarning = () => {
+            expect(screen.getByTestId("warning")).toBeInTheDocument();
+            expect(screen.getByText("Semester is less than three weeks long; is this a mistake?")).toBeInTheDocument();
+        };
+
+        const expectNoWarning = () => {
+            expect(screen.queryByTestId("warning")).not.toBeInTheDocument();
+            expect(screen.queryByText("Semester is less than three weeks long; is this a mistake?")).not.toBeInTheDocument();
+        };
+
+        await testForError(["2022-08-31","2022-12-15"], [["ends-input","2022-09-14"],["starts-input","2022-11-24"]],expectWarning,expectNoWarning);
+
+    });
+
+
+
+
+
 });
