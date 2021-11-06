@@ -8,7 +8,7 @@ interface CurrentCourseProps extends CourseProps {
 
 const Course = (props: CurrentCourseProps): JSX.Element => {
     return (
-        <div>
+        <div draggable={true}>
             <div
                 style={{ display: "inline-block" }}
                 onClick={() => {

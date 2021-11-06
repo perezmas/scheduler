@@ -11,8 +11,10 @@ import {
 } from "react-bootstrap";
 import SemesterProps from "../interfaces/Semester";
 import Semester from "./Semester";
+import { Courses } from "../hooks/useCourses";
 
 interface FullYearProps extends YearProps {
+    courses: Courses;
     handleSubmit: (event: FormEvent<HTMLFormElement>) => void;
     handleInput: (event: ChangeEvent<HTMLInputElement>) => void;
     formUuid: string | null;
@@ -43,7 +45,10 @@ function Year(props: FullYearProps): JSX.Element {
                     >
                         <Row data-testid="collapsible-content">
                             {sortedSemesters.map(
-                                (semesterProps: SemesterProps, index: number) => {
+                                (
+                                    semesterProps: SemesterProps,
+                                    index: number
+                                ) => {
                                     return (
                                         <Col
                                             data-testid={`Year ${
@@ -51,9 +56,22 @@ function Year(props: FullYearProps): JSX.Element {
                                             } semester ${index + 1}`}
                                             key={semesterProps.uuid}
                                         >
-                                            <Semester {...semesterProps} removeSemester={() =>{
-                                                props.removeSemester(semesterProps.uuid);
-                                            }}
+                                            <Semester
+                                                courses={
+                                                    props.courses.courseList
+                                                }
+                                                coursesForThisSemester={props.courses.getCourseForSemester(
+                                                    semesterProps.uuid
+                                                )}
+                                                {...semesterProps}
+                                                removeSemester={() => {
+                                                    props.removeSemester(
+                                                        semesterProps.uuid
+                                                    );
+                                                }}
+                                                updateCourses={
+                                                    props.courses.updateCourses
+                                                }
                                             />
                                         </Col>
                                     );
@@ -129,7 +147,12 @@ function Year(props: FullYearProps): JSX.Element {
                     </Collapsible>
                 </Col>
                 <Col>
-                    <button onClick={props.clear} data-testid={`clear-year ${props.index}`}>Clear</button>
+                    <button
+                        onClick={props.clear}
+                        data-testid={`clear-year ${props.index}`}
+                    >
+                        Clear
+                    </button>
                 </Col>
             </Row>
         </Container>

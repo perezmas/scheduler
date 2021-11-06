@@ -3,6 +3,7 @@ import useYears from "../hooks/useYears";
 import { v4 as uuid } from "uuid";
 import { YearProps } from "../interfaces/Year";
 import CourseProps from "../interfaces/Course";
+import useCourses from "../hooks/useCourses";
 import Year from "./Year";
 
 interface SchedulerProps {
@@ -10,14 +11,29 @@ interface SchedulerProps {
     json?: string;
 }
 
-function getStartingYears(): Array<YearProps>{
+function getStartingYears(): Array<YearProps> {
     const year = new Date().getFullYear();
     const output = new Array<YearProps>();
-    const yearOne: YearProps = {index: 1, uuid: uuid(), semesters: []};
-    yearOne.semesters.push({uuid: uuid(), name: "fall", start: new Date(`${year}-08-31`), end: new Date(`${year}-12-15`), courses: new Map<string, CourseProps>()});
-    yearOne.semesters.push({uuid: uuid(), name: "spring", start: new Date(`${year+1}-02-07`), end: new Date(`${year+1}-05-26`), courses: new Map<string, CourseProps>()});
-    const yearTwo: YearProps = {index: 2, uuid: uuid(), semesters: []};
-    yearTwo.semesters.push({uuid: uuid(), name: "fall", start: new Date(`${year+1}-08-31`), end: new Date(`${year+1}-12-15`), courses: new Map<string, CourseProps>()});
+    const yearOne: YearProps = { index: 1, uuid: uuid(), semesters: [] };
+    yearOne.semesters.push({
+        uuid: uuid(),
+        name: "fall",
+        start: new Date(`${year}-08-31`),
+        end: new Date(`${year}-12-15`),
+    });
+    yearOne.semesters.push({
+        uuid: uuid(),
+        name: "spring",
+        start: new Date(`${year + 1}-02-07`),
+        end: new Date(`${year + 1}-05-26`),
+    });
+    const yearTwo: YearProps = { index: 2, uuid: uuid(), semesters: [] };
+    yearTwo.semesters.push({
+        uuid: uuid(),
+        name: "fall",
+        start: new Date(`${year + 1}-08-31`),
+        end: new Date(`${year + 1}-12-15`),
+    });
     output.push(yearOne);
     output.push(yearTwo);
     return output;
@@ -26,21 +42,23 @@ function getStartingYears(): Array<YearProps>{
 export function Scheduler(props: SchedulerProps): JSX.Element {
     if (props.csv === undefined && props.json === undefined) {
         const years = useYears(getStartingYears);
+
+        const courses = useCourses(undefined);
         const [newName, setNewName] = useState<string | null>(null);
         const [newStart, setNewStart] = useState<string | null>(null);
         const [newEnd, setNewEnd] = useState<string | null>(null);
         const [currentForm, setCurrentForm] = useState<string | null>(null);
         const handleSemesterInput = (event: ChangeEvent<HTMLInputElement>) => {
             switch (event.target.name) {
-            case "season":
-                setNewName(event.target.value);
-                break;
-            case "starts":
-                setNewStart(event.target.value);
-                break;
-            case "ends":
-                setNewEnd(event.target.value);
-                break;
+                case "season":
+                    setNewName(event.target.value);
+                    break;
+                case "starts":
+                    setNewStart(event.target.value);
+                    break;
+                case "ends":
+                    setNewEnd(event.target.value);
+                    break;
             }
         };
         const handleSemesterSubmit = (
@@ -77,6 +95,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                         return (
                             <div data-testid={"Year"} key={props.uuid}>
                                 <Year
+                                    courses={courses}
                                     handleInput={handleSemesterInput}
                                     handleSubmit={(
                                         event: FormEvent<HTMLFormElement>
@@ -88,10 +107,11 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                                     index={i + 1}
                                     formUuid={currentForm}
                                     setFormUuid={setCurrentForm}
-                                    removeSemester={(
-                                        semesterUuid: string
-                                    ) => {
-                                        years.removeSemester(props.uuid,semesterUuid);
+                                    removeSemester={(semesterUuid: string) => {
+                                        years.removeSemester(
+                                            props.uuid,
+                                            semesterUuid
+                                        );
                                     }}
                                     clear={() => {
                                         years.clear(props.uuid);
