@@ -114,9 +114,9 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                 setCurrentForm(null);
             }
         };
-        if(newName !== null && newEnd !== null && newStart !== null && !submissionAllowed && !hasError(problems.value)){
+        if(newName && newEnd && newStart && !submissionAllowed && !hasError(problems.value)){
             setSubmissionAllowed(true);
-        }else if((newName === null || newEnd === null || newStart === null || hasError(problems.value)) && submissionAllowed){
+        }else if((!newName || !newEnd || !newStart || hasError(problems.value)) && submissionAllowed){
             setSubmissionAllowed(false);
         }
         return (

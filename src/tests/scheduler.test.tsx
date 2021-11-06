@@ -117,6 +117,41 @@ describe(Scheduler,() => {
         });
     });
 
+    it("Allows you to submit the form iff all the fields are filled and there are no errors.", async () => {
+        await openForm(1);
+        const submit = screen.getByTestId("submit-button");
+        const expectNoSubmission = () => {
+            submit.click();
+            expect(screen.queryByText("winter")).not.toBeInTheDocument();
+            expect(screen.getByTestId("semester-form 1")).toBeInTheDocument();
+        }
+
+
+        const seasonBox = screen.getByTestId("season-input");
+        const startsBox = screen.getByTestId("starts-input");
+        const endsBox = screen.getByTestId("ends-input");
+        expectNoSubmission();
+
+        fireEvent.change(seasonBox,{target: {value: "winter"}});
+        expectNoSubmission();
+
+        fireEvent.change(endsBox, {target: {value: "2022-02-05"}});
+        expectNoSubmission();
+
+        fireEvent.change(endsBox, {target: {value: ""}});
+        fireEvent.change(startsBox, {target: {value: "2022-01-03"}});
+        expectNoSubmission();
+
+        fireEvent.change(endsBox, {target: {value: "2022-01-01"}});
+        expectNoSubmission();
+
+        fireEvent.change(endsBox, {target: {value: "2022-02-05"}});
+        submit.click();
+
+        expect(screen.getByText("winter")).toBeInTheDocument();
+        expect(screen.queryByTestId("semester-form 1")).not.toBeInTheDocument();
+    });
+
     it("Allows you to add semesters to a year.", async () => {
         expect(
             screen.queryByTestId("Semester summer 2019")
@@ -186,7 +221,22 @@ describe(Scheduler,() => {
     });
 
     it("Displays an error if the user tries to add a semester that overlaps an existing one.", async () => {
+        const expectError = () => {
+            expect(screen.getByTestId("error")).toBeInTheDocument();
+            const fallOverlap = screen.queryByText("Semester overlaps fall");
+            const springOverlap = screen.queryByText("Semester overlaps spring");
 
+            if(fallOverlap === null && springOverlap === null){
+                fail("Expected an overlap error");
+            }
+        }
+        
+        const expectNoError = () => {
+            expect(screen.queryByText("Semester overlaps fall")).not.toBeInTheDocument();
+            expect(screen.queryByTestId("error")).not.toBeInTheDocument();
+        }
+
+        await testForError(["2021-12-16","2022-01-03"],[["starts-input","2021-12-15"],["ends-input","2022-02-08"]],expectError,expectNoError);
     });
 
     it("Displays a warning iff a semester is three weeks or shorter.", async () => {
@@ -203,9 +253,4 @@ describe(Scheduler,() => {
         await testForError(["2022-08-31","2022-12-15"], [["ends-input","2022-09-14"],["starts-input","2022-11-24"]],expectWarning,expectNoWarning);
 
     });
-
-
-
-
-
 });
