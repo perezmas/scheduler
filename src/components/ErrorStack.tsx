@@ -14,9 +14,9 @@ export default function ErrorStack(props: ErrorStackProps): JSX.Element{
         return ReactDOM.createPortal(
             <div className="error-stack-container">
                 <div className="error-stack">
-                    {ctr.concat(props.problems.map((problem: Problem) => {
+                    {ctr.concat(props.problems.map((problem: Problem, index: number) => {
                         return (
-                            <span className={problem.error ? "error" : "warning"} key={problem.uuid} data-testid={problem.error ? "error" : "warning"}>
+                            <span className={problem.error ? "error" : "warning"} key={index+1} data-testid={problem.error ? "error" : "warning"}>
                                 {problem.message}
                             </span>
                         );

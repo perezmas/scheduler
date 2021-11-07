@@ -6,7 +6,7 @@ import { YearProps } from "../interfaces/Year";
 import SemesterProps from "../interfaces/Semester";
 import CourseProps from "../interfaces/Course";
 
-export interface HookTesterProps {
+interface HookTesterProps {
     testIndex: number
     initSpy?: () => Array<YearProps>
 }

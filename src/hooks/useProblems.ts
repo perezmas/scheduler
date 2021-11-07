@@ -2,8 +2,6 @@ import { useReducer } from "react";
 
 /**An error or warning within a form that the user is filling out.*/
 export interface Problem{
-    /**An identifier that allows removing problems later.*/
-    uuid: string
     /**Whether or not this problem will stop the user from submitting the form.*/
     error: boolean,
     /**The message that is displayed to the user when this problem occurs. Also used internally to determine the cause of problems and find if they need to be removed.*/
@@ -11,27 +9,15 @@ export interface Problem{
 
     source: string
 
-    key: string
-}
-
-export function getByUUID<T extends Problem>(
-    state: Array<T>,
-    uuid: string
-): number {
-    for (let i = 0; i < state.length; i++) {
-        if (state[i].uuid === uuid) {
-            return i;
-        }
-    }
-    return -1;
+    problemType: string
 }
 
 interface AbstractProblemAction{
-    type: "RESOLVE-UUID" | "ADD" | "CLEAR" | "RESOLVE-KEY"
+    type:  "ADD" | "CLEAR" | "RESOLVE-TYPE"
 }
 
 interface ResolveProblemAction extends AbstractProblemAction{
-    type: "RESOLVE-UUID" | "RESOLVE-KEY",
+    type: "RESOLVE-TYPE",
     target: string
 }
 
@@ -47,20 +33,13 @@ interface ClearProblemAction extends AbstractProblemAction{
 
 function problemReducer(prev: Array<Problem>, action: AbstractProblemAction): Array<Problem>{
     const newState: Array<Problem> = prev.map((value: Problem) => {
-        return {uuid: value.uuid, error: value.error, message: value.message, source: value.source, key: value.key};
+        return {error: value.error, message: value.message, source: value.source, problemType: value.problemType};
     });
     switch(action.type){
-    case "RESOLVE-UUID": {
-        const realAction = action as ResolveProblemAction;
-        const targetIndex = getByUUID(newState, realAction.target);
-        if(targetIndex !== -1){
-            newState.splice(targetIndex,1);
-        }
-        return newState;
-    }case "RESOLVE-KEY": {
+    case "RESOLVE-TYPE": {
         const realAction = action as ResolveProblemAction;
         for(let i = 0; i < newState.length; i++){
-            if(newState[i].key === realAction.target){
+            if(newState[i].problemType === realAction.target){
                 newState.splice(i,1);
             }
         }
@@ -84,25 +63,15 @@ function problemReducer(prev: Array<Problem>, action: AbstractProblemAction): Ar
     }
 }
 
-export function getByKey(problems: Array<Problem>, key: string): Problem | null{
-    for(const problem of problems){
-        if(problem.key === key){
-            return problem;
-        }
-    }
-    return null;
-}
-
 /**Contains a state object and some convenience functions that interact with it through reduceProblem.*/
 interface ProblemsInterface{
-    /**Contains the current problem and the backlog of problems. */
+    /**Contains the current list of problems*/
     value: Array<Problem>,
-    /**Resolves the problem in the backlog with the uuid matching the target argument. */
-    resolve: (target: string) => void,
-    resolveByKey: (target: string) => void
-    /**Adds a problem to the backlog. If current is empty, this will be put in the current field instead. Problems with error=true will be prioritized for the current field. */
+    /**Resolves the problem with the desired type. */
+    resolve: (target: string) => void
+    /**Adds a problem to the current list of problems. */
     add: (problem: Problem) => void,
-    /**Sets the current problem to null and empties the backlog. */
+    /**Removes all problems with the source matching the input. */
     clear: (source: string) => void
 }
 
@@ -114,12 +83,7 @@ export default function useProblems(): ProblemsInterface{
     const [output, dispatchOutput] = useReducer(problemReducer,undefined,initializer);
 
     const resolve = (target: string) => {
-        const action: ResolveProblemAction = {type: "RESOLVE-UUID", target: target};
-        dispatchOutput(action);
-    };
-
-    const resolveByKey = (target: string) => {
-        const action: ResolveProblemAction = {type: "RESOLVE-KEY", target: target};
+        const action: ResolveProblemAction = {type: "RESOLVE-TYPE", target: target};
         dispatchOutput(action);
     };
 
@@ -133,7 +97,7 @@ export default function useProblems(): ProblemsInterface{
         dispatchOutput(action);
     };
 
-    return {add: add, resolve: resolve, resolveByKey: resolveByKey, clear: clear, value: output};
+    return {add: add, resolve: resolve, clear: clear, value: output};
 
 
 }
