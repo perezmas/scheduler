@@ -11,122 +11,93 @@ export interface HookTesterProps {
     initSpy?: () => Array<YearProps>
 }
 
+interface Years{
+    value: Array<YearProps>;
+    push: (uuid: string, index: number) => void;
+    putSemester: (
+        uuid: string,
+        semesterUuid: string,
+        start: Date,
+        end: Date,
+        name: string
+    ) => void;
+    removeSemester: (
+        uuid: string,
+        semesterUuid: string
+    ) => void;
+    removeYear: (
+        uuid: string
+    ) => void;
+    clear: (
+        uuid?: string
+    ) => void;
+}
+
 function UseYearsTest(props: HookTesterProps): JSX.Element{
+    let years: Years | null = null
     switch(props.testIndex){
         case 1: {
-            const years = useYears();
-            return (<div>
-                {years.value.map((year: YearProps, index: number) => {
-                    return (<div data-testid={`Year ${index}`} key = {index}>
-                            <Year uuid ={year.uuid} semesters={year.semesters} index={year.index}/>
-                        </div>);
-                })}
-                <div data-testid="years-length">
-                    {years.value.length}
-                </div>
-            </div>);
+            years = useYears();
+            break;
         }case 2: {
-            const years = useYears(() => {return [{uuid: uuid(), index: 1, semesters: []}]});
-            return (<div>
-                {years.value.map((year: YearProps, index: number) => {
-                    return (<div data-testid={`Year ${index}`} key = {index}>
-                            <Year uuid ={year.uuid} semesters={year.semesters} index={year.index}/>
-                        </div>);
-                })}
-                <div data-testid="years-length">
-                    {years.value.length}
-                </div>
-            </div>);
+            years = useYears(() => {return [{uuid: uuid(), index: 1, semesters: []}]});
+            break;
         }case 3: {
-            const years = useYears(props.initSpy);
-            return (<div>
-                {years.value.map((year: YearProps, index: number) => {
-                    return (<div data-testid={`Year ${index}`} key = {index}>
-                            <Year uuid ={year.uuid} semesters={year.semesters} index={year.index}/>
-                        </div>);
-                })}
-                <div data-testid="years-length">
-                    {years.value.length}
-                </div>
-            </div>);
+            years = useYears(props.initSpy);
+            break;
         }case 4: {
-            const years = useYears();
+            years = useYears();
             const [push, setPush] = useState<boolean>(true);
             if(push){
                 years.push(uuid(), 1);
                 years.push(uuid(), 2);
                 setPush(false);
             }
-            return (<div>
-                {years.value.map((year: YearProps, index: number) => {
-                    return (<div data-testid={`Year ${index}`} key = {index}>
-                            <Year uuid ={year.uuid} semesters={year.semesters} index={year.index}/>
-                        </div>);
-                })}
-                <div data-testid="years-length">
-                    {years.value.length}
-                </div>
-            </div>);
+            break;
         }case 5: {
             const targetUuid = uuid();
-            const years = useYears(() => {return [{index: 1, uuid: uuid(), semesters: []},{index: 2, uuid: targetUuid, semesters: []}]});
+            years = useYears(() => {return [{index: 1, uuid: uuid(), semesters: []},{index: 2, uuid: targetUuid, semesters: []}]});
             const [remove, setRemove] = useState(true);
             if(remove && years.value.length > 0){
                 years.removeYear(targetUuid);
                 setRemove(false);
             }
-            return (<div>
-                {years.value.map((year: YearProps, index: number) => {
-                    return (<div data-testid={`Year ${index}`} key = {index}>
-                            <Year uuid ={year.uuid} semesters={year.semesters} index={year.index}/>
-                        </div>);
-                })}
-                <div data-testid="years-length">
-                    {years.value.length}
-                </div>
-            </div>);
+            break;
         }case 6: {
             const targetUuid = uuid();
-            const years = useYears(() => {return [{index: 1, uuid: targetUuid, semesters: []}]});
+            years = useYears(() => {return [{index: 1, uuid: targetUuid, semesters: []}]});
             const [add, setAdd] = useState(true);
             if(add){
                 years.putSemester(targetUuid,uuid(),new Date("2021-08-31"), new Date("2021-12-15"), "fall");
                 setAdd(false);
             };
-            return (<div>
-                {years.value.map((year: YearProps, index: number) => {
-                    return (<div data-testid={`Year ${index}`} key = {index}>
-                            <Year {...year}/>
-                        </div>);
-                })}
-                <div data-testid="years-length">
-                    {years.value.length}
-                </div>
-            </div>);
+            break;
         }case 7: {
             const targetYearUuid = uuid();
             const targetSemesterUuid = uuid();
-            const years = useYears(() => {return [{index: 1, uuid: targetYearUuid, semesters: [{name: "fall", start: new Date("2021-08-31"), end: new Date("2021-12-15"), courses: new Map<string,CourseProps>(), uuid: targetSemesterUuid}]}]});
+            years = useYears(() => {return [{index: 1, uuid: targetYearUuid, semesters: [{name: "fall", start: new Date("2021-08-31"), end: new Date("2021-12-15"), courses: new Map<string,CourseProps>(), uuid: targetSemesterUuid}]}]});
             const [remove, setRemove] = useState(true);
             if(remove){
                 years.removeSemester(targetYearUuid,targetSemesterUuid);
                 setRemove(false);
             }
-            return (<div>
-                {years.value.map((year: YearProps, index: number) => {
-                    return (<div data-testid={`Year ${index}`} key = {index}>
-                            <Year {...year}/>
-                        </div>);
-                })}
-                <div data-testid="years-length">
-                    {years.value.length}
-                </div>
-            </div>);
+            break;
+
         }
     default: {
         throw Error(`Unimplemented test ${props.testIndex}`);
     }
     }
+    return (<div>
+        {years.value.map((year: YearProps, index: number) => {
+            return (<div data-testid={`Year ${index}`} key = {index}>
+                    <Year {...year}/>
+                </div>);
+        })}
+        <div data-testid="years-length">
+            {years.value.length}
+        </div>
+    </div>);
 }
 
 

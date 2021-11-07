@@ -104,8 +104,6 @@ interface ProblemsInterface{
     add: (problem: Problem) => void,
     /**Sets the current problem to null and empties the backlog. */
     clear: (source: string) => void
-
-
 }
 
 function initializer(): Array<Problem>{
