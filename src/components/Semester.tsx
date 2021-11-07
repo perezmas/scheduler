@@ -49,7 +49,6 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
     const [newCourseID, setNewCourseID] = useState<string>("");
     const [newCourseDescription, setNewCourseDescription] =
         useState<string>("");
-    console.log("Semester render!");
     const [courses, updateCourses] = useReducer(
         courseReducer,
         props.courses,
@@ -76,7 +75,6 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
             payload: courseToRemove,
         };
         updateCourses(action);
-        console.log("Remove Course", courseToRemove.id);
     };
 
     const onClickEdit = (courseToEdit: CourseProps) => {

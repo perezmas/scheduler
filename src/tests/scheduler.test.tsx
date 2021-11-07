@@ -96,7 +96,7 @@ describe(Scheduler,() => {
     });
 
     it("renders a form when you click on the new semester button", async () => {
-        openForm(1);
+        await openForm(1);
 
         const seasonBox = screen.getByTestId("season-input");
         const startBox = screen.getByTestId("starts-input");
@@ -219,7 +219,7 @@ describe(Scheduler,() => {
         await testForError(["2022-08-31","2022-12-15"],[["starts-input","2022-12-16"],["ends-input","2022-08-30"]],expectError,expectNoError);
         
     });
-
+    
     it("Displays an error if the user tries to add a semester that overlaps an existing one.", async () => {
         const expectError = () => {
             expect(screen.getByTestId("error")).toBeInTheDocument();
@@ -229,12 +229,12 @@ describe(Scheduler,() => {
             if(fallOverlap === null && springOverlap === null){
                 fail("Expected an overlap error");
             }
-        }
-        
+        };
+    
         const expectNoError = () => {
             expect(screen.queryByText("Semester overlaps fall")).not.toBeInTheDocument();
             expect(screen.queryByTestId("error")).not.toBeInTheDocument();
-        }
+        };
 
         await testForError(["2021-12-16","2022-01-03"],[["starts-input","2021-12-15"],["ends-input","2022-02-08"]],expectError,expectNoError);
     });
