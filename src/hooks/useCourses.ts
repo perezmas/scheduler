@@ -50,6 +50,7 @@ function useCourses(initialCourses?: Map<string, CourseProps>): Courses {
 
         const onRemoveCourse = (courseID: string) => {
             //get the course to remove
+
             const courseToRemove = courses.get(courseID);
             if (courseToRemove) {
                 const action: CourseAction = {
@@ -58,6 +59,8 @@ function useCourses(initialCourses?: Map<string, CourseProps>): Courses {
                 };
                 updateCourses(action);
                 console.log("Removed course ID: ", courseID);
+            } else {
+                throw new Error("Course not found");
             }
         };
 
