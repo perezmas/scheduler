@@ -10,6 +10,7 @@ interface FullSemesterProps extends SemesterProps {
     courses: Map<string, CourseProps>;
     removeSemester: () => void;
     updateCourses: (action: CourseAction) => void;
+    clearCourses: () => void;
 }
 const Semester = (props: FullSemesterProps): JSX.Element => {
     const [newCourse, setNewCourse] = useState<CourseProps>({
@@ -154,6 +155,13 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                 data-testid="add-course-button"
             >
                 +
+            </button>
+            <br/>
+            <button
+                onClick={props.clearCourses}
+                data-testid="clear-courses-button"
+            >
+                clear
             </button>
         </>
     );

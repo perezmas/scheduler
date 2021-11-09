@@ -83,7 +83,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                     (course) =>
                                         course.id != props.defaultValues.id
                                 )
-                                .map((course: CourseProps) => (
+                                .map((course: CourseProps) => 
                                     <Form.Check
                                         key={course.id}
                                         type="checkbox"
@@ -95,7 +95,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                         )}
                                         onChange={props.onChange}
                                     />
-                                ))}
+                                )}
                         </Form.Group>
                         <Form.Group className="mb-3" as={Col}>
                             <Form.Label>Select Prerequisites</Form.Label>
@@ -104,7 +104,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                     (course) =>
                                         course.id != props.defaultValues.id
                                 )
-                                .map((course: CourseProps) => (
+                                .map((course: CourseProps) => 
                                     <Form.Check
                                         key={course.id}
                                         type="checkbox"
@@ -116,7 +116,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                         )}
                                         onChange={props.onChange}
                                     />
-                                ))}
+                                )}
                         </Form.Group>
                     </Row>
 
@@ -138,7 +138,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                 </Form>
             </div>
         </div>,
-        (document.getElementById("modal-view") as Element) || document.body
+        document.getElementById("modal-view") as Element || document.body
     );
 };
 
