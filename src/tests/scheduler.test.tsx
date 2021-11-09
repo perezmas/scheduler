@@ -1,5 +1,5 @@
 import React from "react";
-import { findByTestId, fireEvent, getByTestId, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, getByTestId, render, screen, waitFor } from "@testing-library/react";
 
 import { act } from "react-dom/test-utils";
 import { Scheduler } from "../components/Scheduler";
@@ -167,5 +167,5 @@ describe("Scheduler", () => {
 
 
 
-    })
+    });
 });
