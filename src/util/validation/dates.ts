@@ -1,6 +1,5 @@
 import SemesterProps from "../../interfaces/Semester";
 import { Problem } from "../../hooks/useProblems";
-import {v4 as uuid} from "uuid";
 
 export default function validate(start: Date | null, end: Date | null, existing: Array<SemesterProps>, source: string): Array<Problem>{
     if(start !== null && end !== null){

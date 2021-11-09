@@ -8,11 +8,11 @@ describe(SemesterForm,() => {
     const doNothing = jest.fn();
     it("Should render a form with the starts, ends, and season input boxes.", async () => {
         render(
-        <SemesterForm
-            canSubmit={false}
-            handleInput={doNothing}
-            handleSubmit={doNothing}
-        />);
+            <SemesterForm
+                canSubmit={false}
+                handleInput={doNothing}
+                handleSubmit={doNothing}
+            />);
         const seasonBox = screen.getByTestId("season-input");
         const startBox = screen.getByTestId("starts-input");
         const endBox = screen.getByTestId("ends-input");

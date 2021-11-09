@@ -34,70 +34,78 @@ interface Years{
 }
 
 function UseYearsTest(props: HookTesterProps): JSX.Element{
-    let years: Years | null = null
+    let years: Years | null = null;
     switch(props.testIndex){
-        case 1: {
-            years = useYears();
-            break;
-        }case 2: {
-            years = useYears(() => {return [{uuid: uuid(), index: 1, semesters: []}]});
-            break;
-        }case 3: {
-            years = useYears(props.initSpy);
-            break;
-        }case 4: {
-            years = useYears();
-            const [push, setPush] = useState<boolean>(true);
-            if(push){
-                years.push(uuid(), 1);
-                years.push(uuid(), 2);
-                setPush(false);
-            }
-            break;
-        }case 5: {
-            const targetUuid = uuid();
-            years = useYears(() => {return [{index: 1, uuid: uuid(), semesters: []},{index: 2, uuid: targetUuid, semesters: []}]});
-            const [remove, setRemove] = useState(true);
-            if(remove && years.value.length > 0){
-                years.removeYear(targetUuid);
-                setRemove(false);
-            }
-            break;
-        }case 6: {
-            const targetUuid = uuid();
-            years = useYears(() => {return [{index: 1, uuid: targetUuid, semesters: []}]});
-            const [add, setAdd] = useState(true);
-            if(add){
-                years.putSemester(targetUuid,uuid(),new Date("2021-08-31"), new Date("2021-12-15"), "fall");
-                setAdd(false);
-            };
-            break;
-        }case 7: {
-            const targetYearUuid = uuid();
-            const targetSemesterUuid = uuid();
-            years = useYears(() => {return [{index: 1, uuid: targetYearUuid, semesters: [{name: "fall", start: new Date("2021-08-31"), end: new Date("2021-12-15"), courses: new Map<string,CourseProps>(), uuid: targetSemesterUuid}]}]});
-            const [remove, setRemove] = useState(true);
-            if(remove){
-                years.removeSemester(targetYearUuid,targetSemesterUuid);
-                setRemove(false);
-            }
-            break;
-
+    case 1: {
+        years = useYears();
+        break;
+    }case 2: {
+        years = useYears(() => {
+            return [{uuid: uuid(), index: 1, semesters: []}];
+        });
+        break;
+    }case 3: {
+        years = useYears(props.initSpy);
+        break;
+    }case 4: {
+        years = useYears();
+        const [push, setPush] = useState<boolean>(true);
+        if(push){
+            years.push(uuid(), 1);
+            years.push(uuid(), 2);
+            setPush(false);
         }
+        break;
+    }case 5: {
+        const targetUuid = uuid();
+        years = useYears(() => {
+            return [{index: 1, uuid: uuid(), semesters: []},{index: 2, uuid: targetUuid, semesters: []}];
+        });
+        const [remove, setRemove] = useState(true);
+        if(remove && years.value.length > 0){
+            years.removeYear(targetUuid);
+            setRemove(false);
+        }
+        break;
+    }case 6: {
+        const targetUuid = uuid();
+        years = useYears(() => {
+            return [{index: 1, uuid: targetUuid, semesters: []}];
+        });
+        const [add, setAdd] = useState(true);
+        if(add){
+            years.putSemester(targetUuid,uuid(),new Date("2021-08-31"), new Date("2021-12-15"), "fall");
+            setAdd(false);
+        }
+        break;
+    }case 7: {
+        const targetYearUuid = uuid();
+        const targetSemesterUuid = uuid();
+        years = useYears(() => {
+            return [{index: 1, uuid: targetYearUuid, semesters: [{name: "fall", start: new Date("2021-08-31"), end: new Date("2021-12-15"), courses: new Map<string,CourseProps>(), uuid: targetSemesterUuid}]}];
+        });
+        const [remove, setRemove] = useState(true);
+        if(remove){
+            years.removeSemester(targetYearUuid,targetSemesterUuid);
+            setRemove(false);
+        }
+        break;
+
+    }
     default: {
         throw Error(`Unimplemented test ${props.testIndex}`);
     }
     }
-    return (<div>
+    return <div>
         {years.value.map((year: YearProps, index: number) => {
-            return (<div data-testid={`Year ${index}`} key = {index}>
-                    <Year {...year}/>
-                </div>);
+            return <div data-testid={`Year ${index}`} key = {index}>
+                <Year {...year}/>
+            </div>;
         })}
         <div data-testid="years-length">
             {years.value.length}
         </div>
-    </div>);
+    </div>;
 }
 
 
@@ -112,18 +120,18 @@ function Year(props: YearProps): JSX.Element{
             </div>
             <div data-testid={"semesters"}>
                 {props.semesters.length === 0 ? "[]" : props.semesters.map((semesterProps: SemesterProps, index: number) => {
-                    return (<div key={index} data-testid={`Semester ${index}`}>
+                    return <div key={index} data-testid={`Semester ${index}`}>
                         <Semester
                             {...semesterProps}
                         />
-                    </div>);
+                    </div>;
                 })}
             </div>
             <div data-testid="semesters-length">
                 {props.semesters.length}
             </div>
         </div>
-    )
+    );
 }
 
 
@@ -146,7 +154,7 @@ function Semester(props: SemesterProps): JSX.Element{
                 {props.courses.toString()} 
             </div>
         </div>
-    )
+    );
 }
 
 function expectSemesters(year: HTMLElement, expected: Array<SemesterProps>): void{
@@ -154,8 +162,8 @@ function expectSemesters(year: HTMLElement, expected: Array<SemesterProps>): voi
     expect(getByText(ln,expected.length)).toBeInTheDocument();
 
     for(let i = 0;i < expected.length; i++){
-        let semester = getByTestId(year,`Semester ${i}`);
-        let entries = Object.entries(expected[i]);
+        const semester = getByTestId(year,`Semester ${i}`);
+        const entries = Object.entries(expected[i]);
         for(const entry of entries){
             if(entry[0] === "uuid"){
                 expect(getByTestId(semester,"semester-uuid")).toBeInTheDocument();
@@ -171,7 +179,7 @@ function expectYears(years: Array<[number, Array<SemesterProps>]>){
     expect(getByText(ln,years.length.toString())).toBeInTheDocument();
 
     for(let i = 0;i < years.length;i++){
-        let year = screen.getByTestId(`Year ${i}`);
+        const year = screen.getByTestId(`Year ${i}`);
         expect(getByTestId(year,"year-uuid")).toBeInTheDocument();
         const index = getByTestId(year,"index");
         expect(getByText(index,years[i][0])).toBeInTheDocument();
@@ -186,15 +194,15 @@ function expectYears(years: Array<[number, Array<SemesterProps>]>){
 describe(useYears,() => {
     
     it("Initializes to an empty list if no argument is passed", async () => {
-            render(<UseYearsTest
-                testIndex={1}
-            />);
-            expectYears([]);
+        render(<UseYearsTest
+            testIndex={1}
+        />);
+        expectYears([]);
     });
 
     it("Initializes to the output of the function passed to useYears", async () => {
         render(<UseYearsTest
-                testIndex={2}
+            testIndex={2}
         />);
         
         expectYears([[1,[]]]);
@@ -242,7 +250,7 @@ describe(useYears,() => {
         render(<UseYearsTest
             testIndex={6}
         />);
-        expectYears([[1,[{uuid: uuid(), start: new Date("2021-08-31"), end: new Date("2021-12-15"), name: "fall", courses: new Map<string, CourseProps>()}]]])
+        expectYears([[1,[{uuid: uuid(), start: new Date("2021-08-31"), end: new Date("2021-12-15"), name: "fall", courses: new Map<string, CourseProps>()}]]]);
     });
 
     it("Should allow removing semesters from a year", async () => {
@@ -250,5 +258,5 @@ describe(useYears,() => {
             testIndex={7}
         />);
         expectYears([[1,[]]]);
-    })
+    });
 });

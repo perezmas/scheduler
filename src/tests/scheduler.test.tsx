@@ -37,7 +37,7 @@ async function openForm(year: number): Promise<void>{
     await screen.findByTestId(`semester-form ${year}`);
 }
 
-async function testForError(baseline: [string, string], errorConditions: Array<["starts-input" | "ends-input",string]>, expectError: () => void, expectNoError: () => void, year: number = 1){
+async function testForError(baseline: [string, string], errorConditions: Array<["starts-input" | "ends-input",string]>, expectError: () => void, expectNoError: () => void, year = 1){
     await openForm(year);
 
     const startsBox = screen.getByTestId("starts-input");
@@ -47,7 +47,7 @@ async function testForError(baseline: [string, string], errorConditions: Array<[
     expectNoError();
 
     for(const condition of errorConditions){
-        let box = condition[0] === "starts-input" ? startsBox : endsBox
+        const box = condition[0] === "starts-input" ? startsBox : endsBox;
         fireEvent.change(box,{target: {value: condition[1]}});
         expectError();
 
@@ -124,7 +124,7 @@ describe(Scheduler,() => {
             submit.click();
             expect(screen.queryByText("winter")).not.toBeInTheDocument();
             expect(screen.getByTestId("semester-form 1")).toBeInTheDocument();
-        }
+        };
 
 
         const seasonBox = screen.getByTestId("season-input");
@@ -214,7 +214,7 @@ describe(Scheduler,() => {
         const expectNoError = () => {
             expect(screen.queryByText("Semesters cannot start after they end!")).not.toBeInTheDocument();
             expect(screen.queryByTestId("error")).not.toBeInTheDocument();
-        }
+        };
 
         await testForError(["2022-08-31","2022-12-15"],[["starts-input","2022-12-16"],["ends-input","2022-08-30"]],expectError,expectNoError);
         
