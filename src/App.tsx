@@ -28,7 +28,9 @@ const IndexPage = () => {
     return (
         <div>
             <h1 className="center">Master Plan View</h1>
-            <Plan id={1} name="test" uuid="1234" date="today" years={[]}/>
+            <Plan uuid="" id={0}/>
+            {console.log("the plan is : ", JSON.stringify(Plan))}
+            {localStorage.getItem(JSON.stringify(Plan))}
         </div>
     );
     
@@ -47,7 +49,7 @@ const Plans = () => {
     );
 };*/
 
-const UsersPage = () => {
+const PlansPage = () => {
     return (
 
         <>
@@ -59,7 +61,7 @@ const UsersPage = () => {
 
             ))}
             */}
-            <Scheduler />
+            <Scheduler/>
             <Link to ="/">
                 <Button>Back
                 </Button>
@@ -91,7 +93,7 @@ function App(): JSX.Element {
                 <Switch>
                     <Router>
                         <Route exact path="/" component={IndexPage}></Route>
-                        <Route path="/Plans/:uuid" component={UsersPage}></Route>
+                        <Route path="/Plans/:uuid" component={PlansPage}></Route>
                     </Router>
                 </Switch>
             </HashRouter>

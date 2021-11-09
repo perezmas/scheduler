@@ -4,13 +4,15 @@ import "./styles.css";
 import { Link } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import PlanProps from "../interfaces/Plan";
+import { YearProps } from "../interfaces/Year";
+//import { useLocalStorage } from "../hooks/useLocalStorage";
 //import useLocalStorage from "../hooks/useLocalStorage";
 //import { Scheduler } from "./Scheduler";
 //import useLocalStorage from "../hooks/useLocalStorage";
 //import { Scheduler } from "./Scheduler";
 
 /*
-export const planList: PlanProps[] = [
+export const testList: PlanProps[] = [
     {
         uuid: "1",
         name: "max",
@@ -20,16 +22,6 @@ export const planList: PlanProps[] = [
         uuid: "2",
         name: "amani",
         date: "02/02/2021"
-    },
-    {
-        uuid: "3",
-        name: "lucas",
-        date: "03/03/2021"
-    },
-    {
-        uuid: "4",
-        name: "bert",
-        date: "04/04/2021"
     }
 ];*/
 
@@ -37,11 +29,25 @@ export function Plan(props: PlanProps): JSX.Element {
 
     //const [cards, setCards] = useState([]);
     const planList: typeof props[] = [];
-
+    
     const [plans, setPlans] = useState(planList);
     /*
-    if (props.id === 1) {
-        //const [planName, setPlanName] = useLocalStorage("Plan Name", "");
+    const [newId, setNewId] = useState<number | null>(null);
+    const [newName, setNewName] = useState<string | null>(null);
+    const [newDate, setNewDate] = useState<string | null>(null);
+    const [currentYears, setCurrentYears] = useState<Array<YearProps> | null>(null);
+    */
+    //const arr: typeof props[] = [];
+    //const [newName, setNewName] = useState<props.name>(null);
+
+    // if array is empty, initialize basic values
+    /*
+    if (props.id === undefined && props.name === undefined && props.date === undefined && props.years === undefined ) {
+        const [newId, setNewId] = useState<number | null>(null);
+        const [newName, setNewName] = useState<string | null>(null);
+        const [newDate, setNewDate] = useState<string | null>(null);
+        const [currentYears, setCurrentYears] = useState<Array<YearProps> | null>(null);
+        /*
         setPlans([...plans, {
             id: plans.length,
             uuid: uuid(),
@@ -50,53 +56,97 @@ export function Plan(props: PlanProps): JSX.Element {
             years: []
         }]);
     }*/
+    /*
+    const modal = () => {
+        <form>
+            ENTER PLAN NAME:
+            <input type="text" onChange={(e) => e.target.value} />
+        </form>;
+
+    };*/
     
     const addPlan = () => {
+        // sets array of all cards
         setPlans([...plans, {
             id: plans.length,
             uuid: uuid(),
-            name: "New Plan",
+            name: "",
             date: new Date().toLocaleDateString(),
-            years: []
+            years: Array<YearProps>()
         }]);
-        localStorage.setItem("plan", props.uuid);
-    };
+        const index = plans.length;
+        console.log("index: ", index);
+        const arr: typeof props[] = [];
+        
+        // if empty array of plans
+        
+        if (index <= 0){
+            arr.push(plans[0]);
+            //localStorage.setItem(`plan:${0}`, JSON.stringify(arr));
+        }
 
-    const deleteCard = (oldArray: typeof planList , planItem: PlanProps) => {
+        // temp array that saves the plan info to new key and values in localStorage
+        if (index > 0){
+            arr.push(plans[index-1]);
+            //localStorage.setItem(`plan:${index-1}`, JSON.stringify(arr));
+            console.log("array: ", arr);
+        }
+        //arr.push({id: plans.length, uuid: uuid(), name: "", date: new Date().toLocaleDateString(), years: Array<YearProps>()});
+    };
+    //localStorage.setItem(`plan:${plans.length}`, JSON.stringify(plans[plans.length-1]));
+    //console.log(JSON.stringify(plans));
+    //localStorage.setItem(`plan:${0}`, JSON.stringify(plans));
+    /*const findIndex = (item: PlanProps) => {
+        return (item.uuid === props.uuid);
+    };*/
+    //localStorage.setItem(`plan:${plans.length}`, JSON.stringify(plans));
+    //useLocalStorage(`plan:${props.uuid}`, JSON.stringify(plans));
+    //const json = "{"id": "string", "uuid": "string", "name": "string", "date": "string", "years":}";
+    //const pla: PlanProps = JSON.parse(json);
+    //console.log(pla);
+
+    const deleteCard = (oldArray: typeof planList, planItem: PlanProps) => {
         if (window.confirm("Are you sure you want to delete this plan?")) {
-            
+
             const newArray = [...plans];
             console.log("plans array", plans);
             console.log(planItem.id);
             const index = newArray.indexOf(planItem);
-            
+
             //const index = newArray.findIndex((element: any) => element === planItem);
             console.log("index is", index);
-            
-            if (index !== -1 ){
+
+            if (index !== -1) {
                 newArray.splice(index, 1);
                 console.log("plan deleted");
                 console.log("new array is", newArray);
                 setPlans(newArray);
             }
-            
+
             //plans.filter((i: any) => i.id !== index );
             //console.log("new array is", plans);
-            
+
         }
     };
 
+    
     const renderCard = (planItem: PlanProps) => {
+        /*const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+            setNewName(event.currentTarget.value);
+        };*/
+        //const planName = planItem.name;
+        //const index = plans.length;
+        
         return (
             <Card style={{ width: "18rem" }} className="box">
                 <Card.Body>
-                    <Card.Title>{planItem.name}</Card.Title>
-                    <Card.Title>{planItem.uuid}</Card.Title>
+                    <Card.Title>Plan #{(planItem.id+1)} </Card.Title>
+                    <Card.Text>{planItem.uuid}</Card.Text>
                     <Link to={`Plans/${planItem.uuid}`}>
                         <button>
                             Edit Plan
                         </button>
-                    </Link>;
+                    </Link>
                     <Card.Text>{planItem.date}</Card.Text>
                     <button onClick={() => {
                         console.log("button pressed");
@@ -106,12 +156,31 @@ export function Plan(props: PlanProps): JSX.Element {
             </Card>
         );
     };
+
+    const save = (plans: PlanProps[]) => {
+        if (plans.length <= 0){
+            localStorage.setItem(`plan: ${0}`, JSON.stringify(plans[plans.length]));
+        }
+
+        // temp array that saves the plan info to new key and values in localStorage
+        if (plans.length > 0){
+            localStorage.setItem(`plan: ${plans.length-1}`, JSON.stringify(plans[plans.length-1]));
+        }
+    };
+
+    const load = (planItem: PlanProps, plans: PlanProps[]) => {
+        localStorage.getItem(`plan:${planItem.id}`);
+        renderCard(planItem);
+    };
+    
     //classes = useStyles();
     //const dispatch = useDispatch();
     return (
         <div className="grid">
             <button onClick={addPlan}>Add a plan +</button>
-            {plans.map(planItem => 
+            {localStorage.setItem("Plans Array", JSON.stringify(plans))}
+            {save(plans)}
+            {plans.map(planItem =>
                 <li key={planItem.uuid}>{renderCard(planItem)}</li>
             )}
         </div>
