@@ -2,7 +2,7 @@ import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import App from "../App";
 
-describe("Semester", () => {
+describe("Semester",() => {
     beforeEach(() => {
         render(<App />);
     });

@@ -41,6 +41,74 @@
   color: #61dafb;
 }
 
+.input-warning{
+  background-color: orange;
+}
+
+.input-error{
+  background-color: #ff2a55
+}
+
+.input-normal{
+  background-color: white;
+}
+
+.error-stack .error{
+  border-radius: 1.5vh;
+  border-style: solid;
+  border-width: 0.1em;
+  border-color: red;
+  background-color: rgba(255,0,0,0.5);
+}
+
+.error-stack .warning{
+  border-radius: 1.5vh;
+  border-style: solid;
+  border-width: 0.1em;
+  border-color: orange;
+  background-color: rgba(255, 153, 0, 0.733);
+}
+
+.error-stack span{
+  text-align: center;
+  font-size: small;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  margin-top: 0.05em;  
+  margin-bottom: 0.05em;
+}
+
+.error-stack{
+  position: absolute;
+  height: 100%;
+  width: 33%;
+  display: flex;
+  top: 0;
+  right: 0;
+  flex: 1 0 auto;
+  flex-direction: column-reverse;
+  flex-wrap: wrap;
+  overflow-x: hidden;
+
+}
+
+.error-stack-container .error-counter{
+  min-width: 10.9vw;
+  text-align: center;
+}
+
+.error-stack-container{
+  position: fixed;
+  height: 100vh;
+  width: 33vw;
+  right: 0;
+  top: 0;
+  margin-right: 0.5vh;
+  z-index: 1071;
+  overflow-y: scroll;
+
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
