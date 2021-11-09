@@ -1,9 +1,10 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, getByTestId } from "@testing-library/react";
 import Year from "../components/Year";
 import { v4 as uuid } from "uuid";
 import CourseProps from "../interfaces/Course";
 import { ChangeEvent, FormEvent } from "react";
+import { Courses } from "../hooks/useCourses";
 
 let POINTLESS_GLOBAL = 1; //This is to appease the linter by avoiding doNothing being empty
 function doNothing() {
@@ -12,6 +13,7 @@ function doNothing() {
 
 describe("Year", () => {
     const yrUuid = uuid();
+    const emptyCourses: Courses = {courseList: new Map<string, CourseProps>(), removeCourse: doNothing, updateCourses: doNothing};
     it("Should render the label correctly", async () => {
         const { rerender } = render(
             <Year
@@ -24,6 +26,8 @@ describe("Year", () => {
                 semesters={[]}
                 removeSemester={doNothing}
                 clear={doNothing}
+                courses={emptyCourses}
+                clearCourses={doNothing}
             />
         );
         let label = screen.getByTestId("Year 1 label");
@@ -40,6 +44,8 @@ describe("Year", () => {
                 semesters={[]}
                 removeSemester={doNothing}
                 clear={doNothing}
+                courses={emptyCourses}
+                clearCourses={doNothing}
             />
         );
         expect(screen.queryByTestId("Year 1 label")).not.toBeInTheDocument();
@@ -64,12 +70,13 @@ describe("Year", () => {
                         name: "summer 2",
                         start: new Date("2022-07-11"),
                         end: new Date("2022-08-12"),
-                        courses: new Map<string, CourseProps>(),
                         uuid: uuid(),
                     },
                 ]}
                 removeSemester={doNothing}
                 clear={doNothing}
+                clearCourses={doNothing}
+                courses={emptyCourses}
             />
         );
 
@@ -94,40 +101,37 @@ describe("Year", () => {
                         name: "summer 2",
                         start: new Date("2022-07-11"),
                         end: new Date("2022-08-12"),
-                        courses: new Map<string, CourseProps>(),
                         uuid: uuid(),
                     },
                     {
                         name: "spring",
                         start: new Date("2022-02-07"),
                         end: new Date("2022-05-26"),
-                        courses: new Map<string, CourseProps>(),
                         uuid: uuid(),
                     },
                     {
                         name: "winter",
                         start: new Date("2022-01-03"),
                         end: new Date("2022-02-05"),
-                        courses: new Map<string, CourseProps>(),
                         uuid: uuid(),
                     },
                     {
                         name: "fall",
                         start: new Date("2021-08-31"),
                         end: new Date("2021-12-18"),
-                        courses: new Map<string, CourseProps>(),
                         uuid: uuid(),
                     },
                     {
                         name: "summer 1",
                         start: new Date("2022-06-06"),
                         end: new Date("2022-07-28"),
-                        courses: new Map<string, CourseProps>(),
                         uuid: uuid(),
                     },
                 ]}
                 removeSemester={doNothing}
                 clear={doNothing}
+                courses={emptyCourses}
+                clearCourses={doNothing}
             />
         );
 
@@ -163,6 +167,8 @@ describe("Year", () => {
                 semesters={[]}
                 removeSemester={doNothing}
                 clear={doNothing}
+                courses={emptyCourses}
+                clearCourses={doNothing}
             />
         );
         screen.getByTestId("Year 1 label").click();
@@ -189,6 +195,8 @@ describe("Year", () => {
                 semesters={[]}
                 removeSemester={doNothing}
                 clear={doNothing}
+                courses={emptyCourses}
+                clearCourses={doNothing}
             />
         );
 
@@ -246,6 +254,8 @@ describe("Year", () => {
                 semesters={[]}
                 removeSemester={doNothing}
                 clear={doNothing}
+                courses={emptyCourses}
+                clearCourses={doNothing}
             />
         );
 
@@ -287,12 +297,13 @@ describe("Year", () => {
                         name: "summer 2",
                         start: new Date("2022-07-11"),
                         end: new Date("2022-08-12"),
-                        courses: new Map<string, CourseProps>(),
                         uuid: uuid(),
                     },
                 ]}
                 removeSemester={removeSpy}
                 clear={doNothing}
+                courses={emptyCourses}
+                clearCourses={doNothing}
             />
         );
 
@@ -315,16 +326,67 @@ describe("Year", () => {
                         name: "summer 2",
                         start: new Date("2022-07-11"),
                         end: new Date("2022-08-12"),
-                        courses: new Map<string, CourseProps>(),
                         uuid: uuid(),
                     },
                 ]}
                 removeSemester={doNothing}
                 clear={clearSpy}
+                courses={emptyCourses}
+                clearCourses={doNothing}
             />
         );
         screen.getByTestId("clear-year 1").click();
         expect(clearSpy).toHaveBeenCalled();
     });
+    it("Correctly passes the clearCourses prop to all of its Semesters", async () => {
+        let lastClickedUuid = "";
+        const clearCoursesSpy = jest.fn((uuid: string) => {
+            lastClickedUuid=uuid;
+        });
+        const springUuid = uuid();
+        const summer2Uuid = uuid();
+        render(
+            <Year
+                uuid={yrUuid}
+                handleSubmit={doNothing}
+                handleInput={doNothing}
+                formUuid={null}
+                setFormUuid={doNothing}
+                index={1}
+                semesters={[
+                    {
+                        name: "summer 2",
+                        start: new Date("2022-07-11"),
+                        end: new Date("2022-08-12"),
+                        uuid: summer2Uuid,
+                    },
+                    {
+                        name: "spring",
+                        start: new Date("02-07-2022"),
+                        end: new Date("2022-06-15"),
+                        uuid: springUuid
+                    }
+                ]}
+                removeSemester={doNothing}
+                clear={doNothing}
+                courses={emptyCourses}
+                clearCourses={clearCoursesSpy}
+            />
+        );
+
+
+        const spring = screen.getByTestId("Year 1 semester 1");
+        expect(clearCoursesSpy).not.toHaveBeenCalled();
+        getByTestId(spring,"clear-courses-button").click();
+        expect(clearCoursesSpy).toHaveBeenCalled();
+        expect(lastClickedUuid).toBe(springUuid);
+        
+        const summer2 = screen.getByTestId("Year 1 semester 2");
+        expect(clearCoursesSpy).toHaveBeenCalledTimes(1);
+        getByTestId(summer2,"clear-courses-button").click();
+        expect(clearCoursesSpy).toHaveBeenCalledTimes(2);
+        expect(lastClickedUuid).toBe(summer2Uuid);
+    });
+
     expect(typeof POINTLESS_GLOBAL).toBe("number");
 });

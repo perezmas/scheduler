@@ -1,5 +1,5 @@
 import React from "react";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { findByTestId, fireEvent, getByTestId, render, screen, waitFor } from "@testing-library/react";
 
 import { act } from "react-dom/test-utils";
 import { Scheduler } from "../components/Scheduler";
@@ -29,6 +29,36 @@ async function addSemester(
     await waitFor(() => {
         expect(
             screen.queryByTestId(`semester-form ${year}`)
+        ).not.toBeInTheDocument();
+    });
+}
+
+async function addCourse(year: number, semester: number, name: string, id: string, description?: string){
+    const semesterElement = screen.getByTestId(`Year ${year} semester ${semester}`);
+    getByTestId(semesterElement,"add-course-button").click();
+
+    await screen.findByTestId("course-form");
+
+    const courseName = screen.getByLabelText("Course Name");
+    const courseID = screen.getByLabelText("Course ID");
+    const courseDescription = screen.getByLabelText(
+        "Course Description (Optional)"
+    );
+
+    fireEvent.change(courseName, { target: { value: name } });
+    fireEvent.change(courseID, { target: { value: id } });
+    fireEvent.change(courseDescription, {
+        target: { value: description !== undefined ? description : "" },
+    });
+
+    screen.getByText("Add Course").click();
+
+    screen.getByTestId("close-course-form").click();
+
+
+    await waitFor(() => {
+        expect(
+            screen.queryByTestId("course-form")
         ).not.toBeInTheDocument();
     });
 }
@@ -126,4 +156,16 @@ describe("Scheduler", () => {
 
         expect(screen.getAllByText("fall")).toHaveLength(1);
     });
+
+    it("Can clear all the courses in a semester", async () => {
+        await addCourse(1, 1,"Irish Dance", "IRSH-201");
+        await addCourse(1, 1,"Intro to Scots", "SCOT-201", "No, we don't sound like scots wikipedia.");
+
+        const fall = screen.getByTestId("Year 1 semester 1");
+        
+        getByTestId(fall, "clear-courses-button").click();
+
+
+
+    })
 });
