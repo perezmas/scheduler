@@ -1,19 +1,21 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import useYears from "../hooks/useYears";
 import { v4 as uuid } from "uuid";
 import { YearProps } from "../interfaces/Year";
 
 import useCourses from "../hooks/useCourses";
 import Year from "./Year";
-
+import CourseProps from "../interfaces/Course";
 
 interface SchedulerProps {
     csv?: string;
     json?: string;
+    requirements: Array<string>;
 }
 
 function getStartingYears(): Array<YearProps> {
     const year = new Date().getFullYear();
+
     const output = new Array<YearProps>();
     const yearOne: YearProps = { index: 1, uuid: uuid(), semesters: [] };
     yearOne.semesters.push({
@@ -45,6 +47,10 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
         const years = useYears(getStartingYears);
 
         const courses = useCourses(undefined);
+
+        const [unmetRequirements, setUnmetRequirements] = useState<
+            Array<string>
+        >([]);
         const [newName, setNewName] = useState<string | null>(null);
         const [newStart, setNewStart] = useState<string | null>(null);
         const [newEnd, setNewEnd] = useState<string | null>(null);
@@ -62,6 +68,24 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                 break;
             }
         };
+
+        //set if courses match requirements using props.requirements
+        useEffect(() => {
+            const requirements = props.requirements;
+            const newCourses = Array<string>();
+
+            for (const requirement of requirements) {
+                if (!courses.courseList.has(requirement)) {
+                    console.log(requirement);
+                    newCourses.push(requirement);
+                }
+            }
+            console.log("NewCourses", newCourses);
+            setUnmetRequirements(newCourses);
+            console.log("change!", unmetRequirements);
+            console.log("I'm here!!!");
+        }, [props.requirements, courses.courseList]);
+
         const handleSemesterSubmit = (
             event: FormEvent<HTMLFormElement>,
             id: string
@@ -130,6 +154,16 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                         +
                     </button>
                 </div>
+                Here are courses
+                {Array.from(courses.courseList.values()).map(
+                    (course: CourseProps) => {
+                        return (
+                            <div key={course.id}>
+                                {course.name} {course.id}
+                            </div>
+                        );
+                    }
+                )}
             </>
         );
     }

@@ -13,8 +13,11 @@ const courseReducer = (
     action: CourseAction
 ): Map<string, CourseProps> => {
     switch (action.type) {
-    case "ADD COURSE":
-        return state.set(action.payload.id, action.payload);
+    case "ADD COURSE": {
+        const newState = new Map<string, CourseProps>(state);
+        newState.set(action.payload.id, action.payload);
+        return newState;
+    }
     case "REMOVE COURSE": {
         const newState = new Map<string, CourseProps>(state);
         newState.delete(action.payload.id);
