@@ -34,3 +34,10 @@ code {
     background-color: rgba(0, 0, 0, 0.7);
     z-index: 1000;
 }
+
+.requirements-list {
+    background-color: rgba(255, 0, 0, 0.7);
+}
+.requirements-list.met-requirement {
+    background-color: rgba(0, 255, 0, 0.7);
+}

@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import "./Year.css";
 import "./App.css";
+import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
     Link,
     HashRouter as Router,
     Route,
     HashRouter,
+    RouteComponentProps,
 } from "react-router-dom";
 import { Switch } from "react-router-dom";
 //import { Scheduler } from "./components/Scheduler";
@@ -54,7 +56,11 @@ const Plans = () => {
     );
 };*/
 
-const PlansPage = () => {
+type PlansPageProps = RouteComponentProps & {
+    requirements: string[];
+};
+
+const PlansPage: FC<PlansPageProps> = (props) => {
     return (
         <>
             {/*
@@ -65,7 +71,7 @@ const PlansPage = () => {
 
             ))}
             */}
-            <Scheduler />
+            <Scheduler requirements={props.requirements} />
             <Link to="/">
                 <Button>Back</Button>
             </Link>
@@ -89,7 +95,9 @@ const UserPage = () => {
 };*/
 
 function App(): JSX.Element {
-    const [requirements, setRequirements] = useState<string[]>(Array<string>());
+    const [requirements, setRequirements] = useState<string[]>(
+        Array<string>("CISC220", "CISC275", "MATH243")
+    );
     const addRequirement = (requirement: string) => {
         setRequirements([...requirements, requirement]);
     };
@@ -104,18 +112,23 @@ function App(): JSX.Element {
                         <Route exact path="/" component={IndexPage}></Route>
                         <Route
                             path="/Plans/:uuid"
-                            component={PlansPage}
+                            render={(props) => 
+                                <PlansPage
+                                    {...props}
+                                    requirements={requirements}
+                                />
+                            }
                         ></Route>
                         <Route
                             path="/Requirements"
-                            render={(props) => (
+                            render={(props) => 
                                 <Requirements
                                     {...props}
                                     requirements={requirements}
                                     onAddRequirement={addRequirement}
                                     onRemoveRequirement={removeRequirement}
                                 />
-                            )}
+                            }
                         ></Route>
                     </Router>
                 </Switch>
