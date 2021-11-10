@@ -1,13 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Year.css";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Link, HashRouter as Router, Route, HashRouter } from "react-router-dom";
+import {
+    Link,
+    HashRouter as Router,
+    Route,
+    HashRouter,
+} from "react-router-dom";
 import { Switch } from "react-router-dom";
 //import { Scheduler } from "./components/Scheduler";
 import Plan from "./components/Plan";
 import { Button } from "react-bootstrap";
 import { Scheduler } from "./components/Scheduler";
+import Requirements from "./components/Requirements";
 //import ReactDOM from "react-dom";
 
 /*
@@ -28,12 +34,11 @@ const IndexPage = () => {
     return (
         <div>
             <h1 className="center">Master Plan View</h1>
-            <Plan uuid="" id={0}/>
+            <Plan uuid="" id={0} />
             {console.log("the plan is : ", JSON.stringify(Plan))}
             {localStorage.getItem(JSON.stringify(Plan))}
         </div>
     );
-    
 };
 
 // Specific Plan Page
@@ -51,7 +56,6 @@ const Plans = () => {
 
 const PlansPage = () => {
     return (
-
         <>
             {/*
             {users.map((user, index) => (
@@ -61,10 +65,9 @@ const PlansPage = () => {
 
             ))}
             */}
-            <Scheduler/>
-            <Link to ="/">
-                <Button>Back
-                </Button>
+            <Scheduler />
+            <Link to="/">
+                <Button>Back</Button>
             </Link>
         </>
     );
@@ -86,14 +89,34 @@ const UserPage = () => {
 };*/
 
 function App(): JSX.Element {
-
+    const [requirements, setRequirements] = useState<string[]>(Array<string>());
+    const addRequirement = (requirement: string) => {
+        setRequirements([...requirements, requirement]);
+    };
+    const removeRequirement = (requirement: string) => {
+        setRequirements(requirements.filter((r) => r !== requirement));
+    };
     return (
         <div className="container">
             <HashRouter>
                 <Switch>
                     <Router>
                         <Route exact path="/" component={IndexPage}></Route>
-                        <Route path="/Plans/:uuid" component={PlansPage}></Route>
+                        <Route
+                            path="/Plans/:uuid"
+                            component={PlansPage}
+                        ></Route>
+                        <Route
+                            path="/Requirements"
+                            render={(props) => (
+                                <Requirements
+                                    {...props}
+                                    requirements={requirements}
+                                    onAddRequirement={addRequirement}
+                                    onRemoveRequirement={removeRequirement}
+                                />
+                            )}
+                        ></Route>
                     </Router>
                 </Switch>
             </HashRouter>
