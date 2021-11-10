@@ -112,6 +112,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                 setNewStart(null);
                 setNewEnd(null);
                 setCurrentForm(null);
+                problems.clear("semester-form");
             }
         };
         if(newName && newEnd && newStart && !submissionAllowed && !hasError(problems.value)){
