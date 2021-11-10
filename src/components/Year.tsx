@@ -29,6 +29,20 @@ function Year(props: FullYearProps): JSX.Element {
     const sortedSemesters = useMemo(() => {
         return props.semesters.sort((a: SemesterProps, b: SemesterProps) => {
             return a.start.getTime() - b.start.getTime();
+        }).map((semester: SemesterProps, index: number, array: Array<SemesterProps>) => {
+            let count = 0;
+            for(let i = 0;i < index; i++){
+                if(semester.name === array[i].name){
+                    count++;
+                }
+            }
+            const newSemester: SemesterProps = {name: count > 0 ? `${semester.name} ${count+1}` : semester.name, end: semester.end, courses: semester.courses, uuid: semester.uuid, start: semester.start};
+            for(let i = index + 1; i < array.length && semester.name === newSemester.name; i++){
+                if(array[i].name === semester.name){
+                    newSemester.name = `${semester.name} 1`;
+                }
+            }
+            return newSemester;
         });
     }, [props.semesters]);
     return (
