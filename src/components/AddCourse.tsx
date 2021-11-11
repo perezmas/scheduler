@@ -2,14 +2,12 @@ import React, { ChangeEvent, FormEvent } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 
 import ReactDOM from "react-dom";
+import CourseProps from "../interfaces/Course";
 
 interface AddNewCourseProps {
+    courses: CourseProps[];
     isOpen: boolean;
-    defaultValues: {
-        courseName: string;
-        courseID: string;
-        courseDescription: string;
-    };
+    defaultValues: CourseProps;
     isEditing: boolean; // if true, then we are editing an existing course
     onClickClose: () => void;
     onClickSubmit: (event: FormEvent<HTMLFormElement>) => void;
@@ -22,9 +20,9 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
         <div>
             {/* <div className="non-modal-overlay" /> */}
             <div className="modal-add-course">
-                <button onClick={props.onClickClose}>Close Button</button>
+                <button onClick={props.onClickClose} data-testid="close-course-form">Close Button</button>
 
-                <Form onSubmit={props.onClickSubmit}>
+                <Form onSubmit={props.onClickSubmit} data-testid="course-form">
                     <Row className="mb-3">
                         <Form.Group
                             className="mb-3"
@@ -37,7 +35,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                 placeholder="Enter Course Name"
                                 data-testid="courseNameField"
                                 name="courseName"
-                                defaultValue={props.defaultValues.courseName}
+                                defaultValue={props.defaultValues.name}
                                 onChange={props.onChange}
                             />
                             <Form.Text className="text-muted">
@@ -59,8 +57,66 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                 name="courseID"
                                 placeholder="eg. CISC220"
                                 onChange={props.onChange}
-                                defaultValue={props.defaultValues.courseID}
+                                defaultValue={props.defaultValues.id}
                             />
+                        </Form.Group>
+                    </Row>
+                    <Row>
+                        <Form.Group
+                            className="mb-3"
+                            as={Col}
+                            controlId="courseCredits"
+                        >
+                            <Form.Label>Number of credits</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="courseCredits"
+                                placeholder="eg. 3"
+                                defaultValue={props.defaultValues.credits}
+                                onChange={props.onChange}
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3" as={Col}>
+                            <Form.Label>Select Corequisites</Form.Label>
+                            {props.courses
+                                .filter(
+                                    (course) =>
+                                        course.id != props.defaultValues.id
+                                )
+                                .map((course: CourseProps) => 
+                                    <Form.Check
+                                        key={course.id}
+                                        type="checkbox"
+                                        label={course.name}
+                                        name="courseCorequisites"
+                                        value={course.id}
+                                        defaultChecked={props.defaultValues.coreqs.includes(
+                                            course.id
+                                        )}
+                                        onChange={props.onChange}
+                                    />
+                                )}
+                        </Form.Group>
+                        <Form.Group className="mb-3" as={Col}>
+                            <Form.Label>Select Prerequisites</Form.Label>
+                            {props.courses
+                                .filter(
+                                    (course) =>
+                                        course.id != props.defaultValues.id
+                                )
+                                .map((course: CourseProps) => 
+                                    <Form.Check
+                                        key={course.id}
+                                        type="checkbox"
+                                        label={course.name}
+                                        name="coursePrerequisites"
+                                        value={course.id}
+                                        defaultChecked={props.defaultValues.prereqs.includes(
+                                            course.id
+                                        )}
+                                        onChange={props.onChange}
+                                    />
+                                )}
                         </Form.Group>
                     </Row>
 
@@ -70,7 +126,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                             name="courseDescription"
                             as="textarea"
                             placeholder="enter the course description here"
-                            defaultValue={props.defaultValues.courseDescription}
+                            defaultValue={props.defaultValues.description}
                             onChange={props.onChange}
                             style={{ height: "100px" }}
                         />

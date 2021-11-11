@@ -10,11 +10,14 @@ interface CourseProps /*extends AbstractProps*/ {
     /**The description of the course */
     description: string;
     /**How many credits the course is worth */
-    // credits: number;
+    credits: number;
+    /* The uuid of the year the course is being taken */
+    // year: string;
+    semester: string;
     /**What courses need to be taken with this one.  */
-    // coreqs: Array<CourseProps> | null;
+    coreqs: Array<string>;
     /**What courses need to be taken before this one. */
-    // prereqs: Array<CourseProps> | null
+    prereqs: Array<string>;
 }
 
 export default CourseProps;

@@ -1,130 +1,122 @@
-import React, { FormEvent, useReducer, useState } from "react";
+import React, { FormEvent, useState } from "react";
+import { CourseAction } from "../hooks/useCourses";
 import CourseProps from "../interfaces/Course";
-
+import { ListGroup, ListGroupItem } from "react-bootstrap";
 import SemesterProps from "../interfaces/Semester";
 import AddCourse from "./AddCourse";
 import Course from "./Course";
 
-interface CourseAction {
-    type: "ADD COURSE" | "REMOVE COURSE";
-    payload: CourseProps;
-}
-
-// easy access to the courses
-
-const courseReducer = (
-    state: Map<string, CourseProps>,
-    action: CourseAction
-): Map<string, CourseProps> => {
-    switch (action.type) {
-    case "ADD COURSE":
-        return state.set(action.payload.id, action.payload);
-    case "REMOVE COURSE": {
-        const newState = new Map<string, CourseProps>(state);
-        newState.delete(action.payload.id);
-        return newState;
-    }
-    }
-};
-
-// const onRightClickCourse = (event: React.MouseEvent<HTMLDivElement>) => {
-//     event.preventDefault();
-//     console.log("Right Clicked");
-// };
-
-const courseInit = (
-    courses: Map<string, CourseProps>
-): Map<string, CourseProps> => {
-    if (courses) return courses;
-    else return new Map<string, CourseProps>();
-};
-
 interface FullSemesterProps extends SemesterProps {
+    courses: Map<string, CourseProps>;
     removeSemester: () => void;
+    updateCourses: (action: CourseAction) => void;
+    clearCourses: () => void;
 }
 const Semester = (props: FullSemesterProps): JSX.Element => {
+    const [newCourse, setNewCourse] = useState<CourseProps>({
+        id: "",
+        name: "",
+        description: "",
+        credits: 0,
+        semester: props.uuid,
+        coreqs: [],
+        prereqs: [],
+    });
     const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [newCourseName, setNewCourseName] = useState<string>("");
-    const [newCourseID, setNewCourseID] = useState<string>("");
-    const [newCourseDescription, setNewCourseDescription] =
-        useState<string>("");
-    const [courses, updateCourses] = useReducer(
-        courseReducer,
-        props.courses,
-        courseInit
-    );
+
+    // console.log("Semester render!");
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
+        const courseToAdd: CourseProps = { ...newCourse };
+        console.log(event.target.name);
         switch (event.target.name) {
         case "courseName":
-            setNewCourseName(event.target.value);
+            courseToAdd.name = event.target.value;
+
             break;
         case "courseID":
-            setNewCourseID(event.target.value);
+            courseToAdd.id = event.target.value;
             break;
         case "courseDescription":
-            setNewCourseDescription(event.target.value);
+            courseToAdd.description = event.target.value;
+            break;
+        case "courseCredits":
+            courseToAdd.credits = parseInt(event.target.value);
+            break;
+        case "courseCorequisites":
+            courseToAdd.coreqs = event.target.checked
+                ? [...courseToAdd.coreqs, event.target.value]
+                : courseToAdd.coreqs.filter(
+                    (x) => x !== event.target.value
+                );
+            break;
+        case "coursePrerequisites":
+            courseToAdd.prereqs = event.target.checked
+                ? [...courseToAdd.prereqs, event.target.value]
+                : courseToAdd.prereqs.filter(
+                    (x) => x !== event.target.value
+                );
             break;
         }
+        setNewCourse(courseToAdd);
     };
-    const onRemoveCourse = (courseToRemove: CourseProps) => {
+    const unAttachCourse = (courseToRemove: CourseProps) => {
         const action: CourseAction = {
             type: "REMOVE COURSE",
             payload: courseToRemove,
         };
-        updateCourses(action);
+        props.updateCourses(action);
+        console.log("Remove Course", courseToRemove.id);
     };
 
     const onClickEdit = (courseToEdit: CourseProps) => {
-        setNewCourseName(courseToEdit.name);
-        setNewCourseDescription(courseToEdit.description);
-        setNewCourseID(courseToEdit.id);
+        setNewCourse(courseToEdit);
         setIsOpen(true);
         setIsEditing(true);
     };
     const handleCourseSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const newCourse: CourseProps = {
-            id: newCourseID,
-            name: newCourseName,
-            description: newCourseDescription,
-        };
 
         const action: CourseAction = {
             type: "ADD COURSE",
             payload: newCourse,
         };
 
-        updateCourses(action);
-        setNewCourseName("");
-        setNewCourseDescription("");
-        setNewCourseID("");
+        props.updateCourses(action);
+        setNewCourse({
+            id: "",
+            name: "",
+            description: "",
+            credits: 0,
+            semester: props.uuid,
+            coreqs: [],
+            prereqs: [],
+        });
         if (isEditing) setIsEditing(false);
     };
-    const addedCourses = Array.from(courses).map(
-        ([courseID, course]: [string, CourseProps]) => {
+    const addedCourses = Array.from(props.courses.values())
+        .filter((course) => course.semester === props.uuid)
+        .map((course) => {
             return (
-                <div key={courseID}>
-                    <Course
-                        onClickEdit={onClickEdit}
-                        onRemoveCourse={onRemoveCourse}
-                        {...course}
-                    />{" "}
-                </div>
+                <ListGroupItem key={course.id}>
+                    {
+                        <Course
+                            {...course}
+                            onClickEdit={onClickEdit}
+                            onRemoveCourse={unAttachCourse}
+                        />
+                    }
+                </ListGroupItem>
             );
-        }
-    );
+        });
 
     return (
         <>
             <AddCourse
-                defaultValues={{
-                    courseName: newCourseName,
-                    courseID: newCourseID,
-                    courseDescription: newCourseDescription,
-                }}
+                courses={Array.from(props.courses.values())}
+                defaultValues={newCourse}
                 isEditing={isEditing}
                 isOpen={isOpen}
                 onClickClose={() => {
@@ -154,7 +146,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                 -
             </button>
 
-            <div className="courses">{addedCourses}</div>
+            <ListGroup className="courses">{addedCourses}</ListGroup>
             <button
                 className="trigger"
                 onClick={() => {
@@ -163,6 +155,13 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                 data-testid="add-course-button"
             >
                 +
+            </button>
+            <br />
+            <button
+                onClick={props.clearCourses}
+                data-testid="clear-courses-button"
+            >
+                clear
             </button>
         </>
     );

@@ -1,35 +1,55 @@
-import React, { ChangeEvent, FormEvent, useState} from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import useYears, { getByUUID } from "../hooks/useYears";
 import { v4 as uuid } from "uuid";
 import { YearProps } from "../interfaces/Year";
-import CourseProps from "../interfaces/Course";
+
 import Year from "./Year";
-import useProblems, {Problem} from "../hooks/useProblems";
+import useProblems, { Problem } from "../hooks/useProblems";
 import ErrorStack from "./ErrorStack";
 import validate from "../util/validation/dates";
 
+import useCourses from "../hooks/useCourses";
+
+import { Table } from "react-bootstrap";
 
 interface SchedulerProps {
     csv?: string;
     json?: string;
+    requirements: Array<string>;
 }
 
-function getStartingYears(): Array<YearProps>{
+function getStartingYears(): Array<YearProps> {
     const year = new Date().getFullYear();
+
     const output = new Array<YearProps>();
-    const yearOne: YearProps = {index: 1, uuid: uuid(), semesters: []};
-    yearOne.semesters.push({uuid: uuid(), name: "fall", start: new Date(`${year}-08-31`), end: new Date(`${year}-12-15`), courses: new Map<string, CourseProps>()});
-    yearOne.semesters.push({uuid: uuid(), name: "spring", start: new Date(`${year+1}-02-07`), end: new Date(`${year+1}-05-26`), courses: new Map<string, CourseProps>()});
-    const yearTwo: YearProps = {index: 2, uuid: uuid(), semesters: []};
-    yearTwo.semesters.push({uuid: uuid(), name: "fall", start: new Date(`${year+1}-08-31`), end: new Date(`${year+1}-12-15`), courses: new Map<string, CourseProps>()});
+    const yearOne: YearProps = { index: 1, uuid: uuid(), semesters: [] };
+    yearOne.semesters.push({
+        uuid: uuid(),
+        name: "fall",
+        start: new Date(`${year}-08-31`),
+        end: new Date(`${year}-12-15`),
+    });
+    yearOne.semesters.push({
+        uuid: uuid(),
+        name: "spring",
+        start: new Date(`${year + 1}-02-07`),
+        end: new Date(`${year + 1}-05-26`),
+    });
+    const yearTwo: YearProps = { index: 2, uuid: uuid(), semesters: [] };
+    yearTwo.semesters.push({
+        uuid: uuid(),
+        name: "fall",
+        start: new Date(`${year + 1}-08-31`),
+        end: new Date(`${year + 1}-12-15`),
+    });
     output.push(yearOne);
     output.push(yearTwo);
     return output;
 }
 
-function hasError(problems: Array<Problem>): boolean{
-    for(const problem of problems){
-        if(problem.error){
+function hasError(problems: Array<Problem>): boolean {
+    for (const problem of problems) {
+        if (problem.error) {
             return true;
         }
     }
@@ -39,10 +59,30 @@ function hasError(problems: Array<Problem>): boolean{
 export function Scheduler(props: SchedulerProps): JSX.Element {
     if (props.csv === undefined && props.json === undefined) {
         const years = useYears(getStartingYears);
+
+        const courses = useCourses(undefined);
+
+        const [unmetRequirements, setUnmetRequirements] = useState<
+            Array<string>
+        >([]);
         const [newName, setNewName] = useState<string | null>(null);
         const [newStart, setNewStart] = useState<string | null>(null);
         const [newEnd, setNewEnd] = useState<string | null>(null);
         const [currentForm, setCurrentForm] = useState<string | null>(null);
+
+        const clearCourses = (semesterUuid: string) => {
+            const entries = courses.courseList.entries();
+            for (
+                let entry = entries.next();
+                !entry.done;
+                entry = entries.next()
+            ) {
+                if (entry.value[1].semester === semesterUuid) {
+                    courses.removeCourse(entry.value[0]);
+                }
+            }
+        };
+
         const [submissionAllowed, setSubmissionAllowed] = useState(false);
         const problems = useProblems();
         const semesterFormInit = (uuid: string | null) => {
@@ -58,35 +98,53 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
             case "season": {
                 setNewName(event.target.value);
                 break;
-            }case "starts": {
-                const semesters = years.value[getByUUID(years.value,currentForm as string)].semesters;
+            }
+            case "starts": {
+                const semesters =
+                        years.value[
+                            getByUUID(years.value, currentForm as string)
+                        ].semesters;
                 const newDate = new Date(event.target.value);
-                const newProblems = validate(newDate,newEnd !== null ? new Date(newEnd) : null, semesters, "starts");
-                if(newEnd === null){
+                const newProblems = validate(
+                    newDate,
+                    newEnd !== null ? new Date(newEnd) : null,
+                    semesters,
+                    "starts"
+                );
+                if (newEnd === null) {
                     problems.clear("semester-form");
-                    if(newProblems.length === 1){
+                    if (newProblems.length === 1) {
                         problems.add(newProblems[0]);
                     }
-                }else{
+                } else {
                     problems.clear("semester-form");
-                    for(const problem of newProblems){
+                    for (const problem of newProblems) {
                         problems.add(problem);
                     }
                 }
                 setNewStart(event.target.value);
                 break;
-            }case "ends": {
-                const semesters = years.value[getByUUID(years.value,currentForm as string)].semesters;
+            }
+            case "ends": {
+                const semesters =
+                        years.value[
+                            getByUUID(years.value, currentForm as string)
+                        ].semesters;
                 const newDate = new Date(event.target.value);
-                const newProblems = validate(newStart !== null ? new Date(newStart) : null,newDate, semesters, "ends");
-                if(newEnd === null){
+                const newProblems = validate(
+                    newStart !== null ? new Date(newStart) : null,
+                    newDate,
+                    semesters,
+                    "ends"
+                );
+                if (newEnd === null) {
                     problems.clear("semester-form");
-                    if(newProblems.length === 1){
+                    if (newProblems.length === 1) {
                         problems.add(newProblems[0]);
                     }
-                }else{
+                } else {
                     problems.clear("semester-form");
-                    for(const problem of newProblems){
+                    for (const problem of newProblems) {
                         problems.add(problem);
                     }
                 }
@@ -94,8 +152,25 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                 break;
             }
             }
-
         };
+
+        //set if courses match requirements using props.requirements
+        useEffect(() => {
+            const requirements = props.requirements;
+            const newCourses = Array<string>();
+
+            for (const requirement of requirements) {
+                if (!courses.courseList.has(requirement)) {
+                    // console.log(requirement);
+                    newCourses.push(requirement);
+                }
+            }
+            // console.log("NewCourses", newCourses);
+            setUnmetRequirements(newCourses);
+            // console.log("change!", unmetRequirements);
+            // console.log("I'm here!!!");
+        }, [props.requirements, courses.courseList]);
+
         const handleSemesterSubmit = (
             event: FormEvent<HTMLFormElement>,
             id: string
@@ -116,9 +191,18 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                 problems.clear("semester-form");
             }
         };
-        if(newName && newEnd && newStart && !submissionAllowed && !hasError(problems.value)){
+        if (
+            newName &&
+            newEnd &&
+            newStart &&
+            !submissionAllowed &&
+            !hasError(problems.value)
+        ) {
             setSubmissionAllowed(true);
-        }else if((!newName || !newEnd || !newStart || hasError(problems.value)) && submissionAllowed){
+        } else if (
+            (!newName || !newEnd || !newStart || hasError(problems.value)) &&
+            submissionAllowed
+        ) {
             setSubmissionAllowed(false);
         }
         return (
@@ -136,6 +220,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                         return (
                             <div data-testid={"Year"} key={props.uuid}>
                                 <Year
+                                    courses={courses}
                                     canSubmit={submissionAllowed}
                                     handleInput={handleSemesterInput}
                                     handleSubmit={(
@@ -148,13 +233,17 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                                     index={i + 1}
                                     formUuid={currentForm}
                                     setFormUuid={setCurrentForm}
-                                    removeSemester={(
-                                        semesterUuid: string
-                                    ) => {
-                                        years.removeSemester(props.uuid,semesterUuid);
+                                    removeSemester={(semesterUuid: string) => {
+                                        years.removeSemester(
+                                            props.uuid,
+                                            semesterUuid
+                                        );
                                     }}
                                     clear={() => {
                                         years.clear(props.uuid);
+                                    }}
+                                    clearCourses={(semesterUuid: string) => {
+                                        clearCourses(semesterUuid);
                                     }}
                                     formInit={semesterFormInit}
                                 />
@@ -170,7 +259,31 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                         +
                     </button>
                 </div>
-                <ErrorStack problems={problems.value}/>
+                {/* Here are courses
+                {Array.from(courses.courseList.values()).map(
+                    (course: CourseProps) => {
+                        return (
+                            <div key={course.id}>
+                                {course.name} {course.id}
+                            </div>
+                        );
+                    }
+                )} */}
+                <Table>
+                    <thead>
+                        <tr>
+                            <th>Degree Requirements</th>
+                            <th>Unmet Requirements</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>School of Engineering</td>
+                            <td>{unmetRequirements.join(", ")}</td>
+                        </tr>
+                    </tbody>
+                </Table>
+                <ErrorStack problems={problems.value} />
             </>
         );
     }
