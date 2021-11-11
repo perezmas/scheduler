@@ -177,3 +177,64 @@ function Year(props: FullYearProps): JSX.Element {
 }
 
 export default Year;
+/*
+
+<Container className="container-sm">
+            <Row>
+                <Col>
+                    <Collapsible
+                        trigger={
+                            <button
+                                data-testid={`Year ${props.index} label`}
+                                className="trigger"
+                            >{`Year ${props.index} >`}</button>
+                        }
+                        transitionTime={200}
+                    >
+                        <Row data-testid="collapsible-content">
+                            {sortedSemesters.map(
+                                (
+                                    semesterProps: SemesterProps,
+                                    index: number
+                                ) => {
+                                    return (
+                                        <Col
+                                            data-testid={`Year ${
+                                                props.index
+                                            } semester ${index + 1}`}
+                                            key={semesterProps.uuid}
+                                        >
+                                            <Semester
+                                                courses={
+                                                    props.courses.courseList
+                                                }
+                                                // coursesForThisSemester={Array.from(
+                                                //     props.courses.courseList.values()
+                                                // ).filter(
+                                                //     (course) =>
+                                                //         course.semester ===
+                                                //         semesterProps.uuid
+                                                // )}
+
+                                                {...semesterProps}
+                                                removeSemester={() => {
+                                                    props.removeSemester(
+                                                        semesterProps.uuid
+                                                    );
+                                                }}
+                                                updateCourses={
+                                                    props.courses.updateCourses
+                                                }
+                                                clearCourses={
+                                                    () => {
+                                                        props.clearCourses(semesterProps.uuid);
+                                                    }
+                                                }
+                                            />
+                                        </Col>
+                                    );
+                                }
+                            )}
+
+                            <Col>
+*/
