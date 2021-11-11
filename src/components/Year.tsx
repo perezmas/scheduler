@@ -81,6 +81,11 @@ function Year(props: FullYearProps): JSX.Element {
                                                         props.courses
                                                             .updateCourses
                                                     }
+                                                    clearCourses={() => {
+                                                        props.clearCourses(
+                                                            semesterProps.uuid
+                                                        );
+                                                    }}
                                                 />
                                             </Col>
                                         );
