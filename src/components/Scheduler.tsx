@@ -155,7 +155,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                         +
                     </button>
                 </div>
-                Here are courses
+                {/* Here are courses
                 {Array.from(courses.courseList.values()).map(
                     (course: CourseProps) => {
                         return (
@@ -164,7 +164,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                             </div>
                         );
                     }
-                )}
+                )} */}
                 <Table>
                     <thead>
                         <tr>
