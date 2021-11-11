@@ -20,9 +20,9 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
         <div>
             {/* <div className="non-modal-overlay" /> */}
             <div className="modal-add-course">
-                <button onClick={props.onClickClose}>Close Button</button>
+                <button onClick={props.onClickClose} data-testid="close-course-form">Close Button</button>
 
-                <Form onSubmit={props.onClickSubmit}>
+                <Form onSubmit={props.onClickSubmit} data-testid="course-form">
                     <Row className="mb-3">
                         <Form.Group
                             className="mb-3"

@@ -56,6 +56,16 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
         const [newStart, setNewStart] = useState<string | null>(null);
         const [newEnd, setNewEnd] = useState<string | null>(null);
         const [currentForm, setCurrentForm] = useState<string | null>(null);
+
+        const clearCourses = (semesterUuid: string) => {
+            const entries = courses.courseList.entries();
+            for(let entry = entries.next(); !entry.done; entry = entries.next()){
+                if(entry.value[1].semester === semesterUuid){
+                    courses.removeCourse(entry.value[0]);
+                }
+            }
+        };
+
         const handleSemesterInput = (event: ChangeEvent<HTMLInputElement>) => {
             switch (event.target.name) {
             case "season":
@@ -141,6 +151,9 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                                     }}
                                     clear={() => {
                                         years.clear(props.uuid);
+                                    }}
+                                    clearCourses={(semesterUuid: string) => {
+                                        clearCourses(semesterUuid);
                                     }}
                                 />
                             </div>

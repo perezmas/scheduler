@@ -22,6 +22,7 @@ interface FullYearProps extends YearProps {
     setFormUuid: (newId: string | null) => void;
     removeSemester: (semesterUuid: string) => void;
     clear: () => void;
+    clearCourses: (semesterUuid: string) => void;
 }
 
 function Year(props: FullYearProps): JSX.Element {
