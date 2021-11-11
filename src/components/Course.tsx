@@ -12,7 +12,6 @@ const Course = (props: CurrentCourseProps): JSX.Element => {
             <div
                 style={{ display: "inline-block" }}
                 onClick={() => {
-                    console.log(props.id);
                     props.onRemoveCourse(props);
                 }}
             >

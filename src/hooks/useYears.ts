@@ -38,7 +38,7 @@ export interface AddYearAction extends AbstractAction {
     index: number;
 }
 
-function getByUUID<T extends AbstractProps>(
+export function getByUUID<T extends AbstractProps>(
     state: Array<T>,
     uuid: string
 ): number {
@@ -50,7 +50,7 @@ function getByUUID<T extends AbstractProps>(
     return -1;
 }
 
-function semesterReducer(
+function yearReducer(
     prev: Array<YearProps>,
     action: AbstractAction
 ): Array<YearProps> {
@@ -159,8 +159,8 @@ interface Years {
 }
 
 function useYears(init?: () => Array<YearProps>): Years {
-    const [semesters, updateSemesters] = useReducer(
-        semesterReducer,
+    const [years, updateYears] = useReducer(
+        yearReducer,
         undefined,
         init === undefined
             ? () => {
@@ -175,7 +175,7 @@ function useYears(init?: () => Array<YearProps>): Years {
             uuid: uuid,
             index: index,
         };
-        updateSemesters(action);
+        updateYears(action);
     };
     const addSemester = (
         uuid: string,
@@ -192,7 +192,7 @@ function useYears(init?: () => Array<YearProps>): Years {
             end: end,
             semesterUuid: semesterUuid,
         };
-        updateSemesters(action);
+        updateYears(action);
     };
     const removeSemester = (uuid: string, semesterUuid: string) => {
         const action: DeleteSemesterAction = {
@@ -200,29 +200,23 @@ function useYears(init?: () => Array<YearProps>): Years {
             uuid: uuid,
             semesterUuid: semesterUuid,
         };
-        updateSemesters(action);
+        updateYears(action);
     };
     const removeYear = (uuid: string) => {
         const action: DeleteYearAction = {
             type: "DELETE YEAR",
             uuid: uuid,
         };
-        updateSemesters(action);
+        updateYears(action);
     };
     return {
-        value: semesters,
+        value: years,
         push: addYear,
         putSemester: addSemester,
         removeSemester: removeSemester,
         removeYear: removeYear,
         clear: (uuid?: string) => {
-            clearSemesters(
-                semesters,
-                addYear,
-                removeSemester,
-                removeYear,
-                uuid
-            );
+            clearSemesters(years, addYear, removeSemester, removeYear, uuid);
         },
     };
 }

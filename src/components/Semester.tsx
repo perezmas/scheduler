@@ -25,7 +25,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
     const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
 
-    console.log("Semester render!");
+    // console.log("Semester render!");
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -156,7 +156,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
             >
                 +
             </button>
-            <br/>
+            <br />
             <button
                 onClick={props.clearCourses}
                 data-testid="clear-courses-button"

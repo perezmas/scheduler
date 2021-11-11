@@ -11,35 +11,24 @@ import {
     RouteComponentProps,
 } from "react-router-dom";
 import { Switch } from "react-router-dom";
-//import { Scheduler } from "./components/Scheduler";
 import Plan from "./components/Plan";
 import { Button } from "react-bootstrap";
 import { Scheduler } from "./components/Scheduler";
 import Requirements from "./components/Requirements";
 //import ReactDOM from "react-dom";
 
-/*
-const users = [
-    {
-        name: "Max"
-    },
-    {
-        name:  "Lucas"
-    },
-    {
-        name: "Amani"
-    }
-];*/
-
 // Master Plan View
 const IndexPage = () => {
     return (
         <>
             <div>
-                <h1 className="center">Master Plan View</h1>
+                <h1 className="center">UD CIS Scheduler</h1>
+                <h3 className="center">Designed By: Lucas, Max, and Amani</h3>
+                <div role="alert" className="welcome">
+                    <p>Welcome to the UD Degree Planner!</p>
+                    <b>Click Add/Edit Plan below to Get Started</b>
+                </div>
                 <Plan uuid="" id={0} />
-                {console.log("the plan is : ", JSON.stringify(Plan))}
-                {localStorage.getItem(JSON.stringify(Plan))}
             </div>
             <Link to="/Requirements">
                 <Button className="my-2">Modify Requirements</Button>
@@ -47,19 +36,6 @@ const IndexPage = () => {
         </>
     );
 };
-
-// Specific Plan Page
-/*
-const Plans = () => {
-    return (
-        <>
-            <Link to="/">
-                <Button variant="secondary" >
-                    Home</Button></Link>
-            <Scheduler />
-        </>
-    );
-};*/
 
 type PlansPageProps = RouteComponentProps & {
     requirements: string[];
@@ -80,24 +56,10 @@ const PlansPage: FC<PlansPageProps> = (props) => {
             <Link to="/">
                 <Button>Back</Button>
             </Link>
+            {console.log("the uuid is : ", localStorage.getItem("plan: 0"))}
         </>
     );
 };
-/*
-const UserPage = () => {
- 
-    return (
-        <><p>
-            <strong>User ID: </strong>
-            {}
-        </p>
-        <p>
-            <strong>User Name: </strong>
-            {users}
-        </p>
-        </>
-    );
-};*/
 
 function App(): JSX.Element {
     const [requirements, setRequirements] = useState<string[]>(

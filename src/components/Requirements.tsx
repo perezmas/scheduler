@@ -24,8 +24,8 @@ const Requirements: FC<RequirementsProps> = (props): JSX.Element => {
     };
     return (
         <Container className="flex-column-reverse">
-            <h3>Computer Science Requirements</h3>
-            {requirements.map((requirement) => (
+            <h3>School of Engineering Requirements</h3>
+            {requirements.map((requirement) => 
                 <Row
                     key={requirement}
                     className="justify-content-md-center my-3"
@@ -43,7 +43,7 @@ const Requirements: FC<RequirementsProps> = (props): JSX.Element => {
                         </Button>
                     </Col>
                 </Row>
-            ))}
+            )}
             <Row className="justify-content-md-center my-3">
                 <InputGroup className="mb-3" style={{ width: "50%" }}>
                     <FormControl

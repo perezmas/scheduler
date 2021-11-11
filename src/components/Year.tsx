@@ -13,6 +13,7 @@ import {
 import SemesterProps from "../interfaces/Semester";
 import Semester from "./Semester";
 import { Courses } from "../hooks/useCourses";
+import SemesterForm from "./SemesterForm";
 
 interface FullYearProps extends YearProps {
     courses: Courses;
@@ -21,16 +22,53 @@ interface FullYearProps extends YearProps {
     formUuid: string | null;
     setFormUuid: (newId: string | null) => void;
     removeSemester: (semesterUuid: string) => void;
+    canSubmit: boolean;
     clear: () => void;
     clearCourses: (semesterUuid: string) => void;
+    formInit: (uuid: string | null) => void;
 }
 
 function Year(props: FullYearProps): JSX.Element {
     const overlayButton = useRef(null);
     const sortedSemesters = useMemo(() => {
-        return props.semesters.sort((a: SemesterProps, b: SemesterProps) => {
-            return a.start.getTime() - b.start.getTime();
-        });
+        return props.semesters
+            .sort((a: SemesterProps, b: SemesterProps) => {
+                return a.start.getTime() - b.start.getTime();
+            })
+            .map(
+                (
+                    semester: SemesterProps,
+                    index: number,
+                    array: Array<SemesterProps>
+                ) => {
+                    let count = 0;
+                    for (let i = 0; i < index; i++) {
+                        if (semester.name === array[i].name) {
+                            count++;
+                        }
+                    }
+                    const newSemester: SemesterProps = {
+                        name:
+                            count > 0
+                                ? `${semester.name} ${count + 1}`
+                                : semester.name,
+                        end: semester.end,
+
+                        uuid: semester.uuid,
+                        start: semester.start,
+                    };
+                    for (
+                        let i = index + 1;
+                        i < array.length && semester.name === newSemester.name;
+                        i++
+                    ) {
+                        if (array[i].name === semester.name) {
+                            newSemester.name = `${semester.name} 1`;
+                        }
+                    }
+                    return newSemester;
+                }
+            );
     }, [props.semesters]);
     return (
         <Container fluid>
@@ -98,7 +136,7 @@ function Year(props: FullYearProps): JSX.Element {
                                         className="trigger"
                                         ref={overlayButton}
                                         onClick={() => {
-                                            props.setFormUuid(
+                                            props.formInit(
                                                 props.formUuid === props.uuid
                                                     ? null
                                                     : props.uuid
@@ -119,48 +157,21 @@ function Year(props: FullYearProps): JSX.Element {
                                     >
                                         <Popover id="popover-basic">
                                             <PopoverContent>
-                                                <form
+                                                <div
                                                     data-testid={`semester-form ${props.index}`}
-                                                    onSubmit={
-                                                        props.handleSubmit
-                                                    }
                                                 >
-                                                    <label>season:</label>
-                                                    <input
-                                                        data-testid="season-input"
-                                                        type="text"
-                                                        name="season"
-                                                        onChange={
+                                                    <SemesterForm
+                                                        canSubmit={
+                                                            props.canSubmit
+                                                        }
+                                                        handleInput={
                                                             props.handleInput
                                                         }
-                                                    />
-                                                    <br />
-                                                    <label>starts:</label>
-                                                    <input
-                                                        data-testid="starts-input"
-                                                        type="date"
-                                                        name="starts"
-                                                        onChange={
-                                                            props.handleInput
+                                                        handleSubmit={
+                                                            props.handleSubmit
                                                         }
                                                     />
-                                                    <br />
-                                                    <label>ends:</label>
-                                                    <input
-                                                        data-testid="ends-input"
-                                                        type="date"
-                                                        name="ends"
-                                                        onChange={
-                                                            props.handleInput
-                                                        }
-                                                    />
-                                                    <br />
-                                                    <input
-                                                        data-testid="submit-button"
-                                                        type="submit"
-                                                        value="submit"
-                                                    />
-                                                </form>
+                                                </div>
                                             </PopoverContent>
                                         </Popover>
                                     </Overlay>
@@ -183,64 +194,3 @@ function Year(props: FullYearProps): JSX.Element {
 }
 
 export default Year;
-/*
-
-<Container className="container-sm">
-            <Row>
-                <Col>
-                    <Collapsible
-                        trigger={
-                            <button
-                                data-testid={`Year ${props.index} label`}
-                                className="trigger"
-                            >{`Year ${props.index} >`}</button>
-                        }
-                        transitionTime={200}
-                    >
-                        <Row data-testid="collapsible-content">
-                            {sortedSemesters.map(
-                                (
-                                    semesterProps: SemesterProps,
-                                    index: number
-                                ) => {
-                                    return (
-                                        <Col
-                                            data-testid={`Year ${
-                                                props.index
-                                            } semester ${index + 1}`}
-                                            key={semesterProps.uuid}
-                                        >
-                                            <Semester
-                                                courses={
-                                                    props.courses.courseList
-                                                }
-                                                // coursesForThisSemester={Array.from(
-                                                //     props.courses.courseList.values()
-                                                // ).filter(
-                                                //     (course) =>
-                                                //         course.semester ===
-                                                //         semesterProps.uuid
-                                                // )}
-
-                                                {...semesterProps}
-                                                removeSemester={() => {
-                                                    props.removeSemester(
-                                                        semesterProps.uuid
-                                                    );
-                                                }}
-                                                updateCourses={
-                                                    props.courses.updateCourses
-                                                }
-                                                clearCourses={
-                                                    () => {
-                                                        props.clearCourses(semesterProps.uuid);
-                                                    }
-                                                }
-                                            />
-                                        </Col>
-                                    );
-                                }
-                            )}
-
-                            <Col>
-*/
