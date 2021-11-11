@@ -6,6 +6,7 @@ import { YearProps } from "../interfaces/Year";
 import useCourses from "../hooks/useCourses";
 import Year from "./Year";
 import CourseProps from "../interfaces/Course";
+import { Table } from "react-bootstrap";
 
 interface SchedulerProps {
     csv?: string;
@@ -164,6 +165,20 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                         );
                     }
                 )}
+                <Table>
+                    <thead>
+                        <tr>
+                            <th>Degree Requirements</th>
+                            <th>Unmet Requirements</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>School of Engineering</td>
+                            <td>{unmetRequirements.join(", ")}</td>
+                        </tr>
+                    </tbody>
+                </Table>
             </>
         );
     }

@@ -1,7 +1,7 @@
 import React, { FormEvent, useState } from "react";
 import { CourseAction } from "../hooks/useCourses";
 import CourseProps from "../interfaces/Course";
-
+import { ListGroup, ListGroupItem } from "react-bootstrap";
 import SemesterProps from "../interfaces/Semester";
 import AddCourse from "./AddCourse";
 import Course from "./Course";
@@ -99,7 +99,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
         .filter((course) => course.semester === props.uuid)
         .map((course) => {
             return (
-                <div key={course.id}>
+                <ListGroupItem key={course.id}>
                     {
                         <Course
                             {...course}
@@ -107,7 +107,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                             onRemoveCourse={unAttachCourse}
                         />
                     }
-                </div>
+                </ListGroupItem>
             );
         });
 
@@ -145,7 +145,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                 -
             </button>
 
-            <div className="courses">{addedCourses}</div>
+            <ListGroup className="courses">{addedCourses}</ListGroup>
             <button
                 className="trigger"
                 onClick={() => {

@@ -34,12 +34,17 @@ const users = [
 // Master Plan View
 const IndexPage = () => {
     return (
-        <div>
-            <h1 className="center">Master Plan View</h1>
-            <Plan uuid="" id={0} />
-            {console.log("the plan is : ", JSON.stringify(Plan))}
-            {localStorage.getItem(JSON.stringify(Plan))}
-        </div>
+        <>
+            <div>
+                <h1 className="center">Master Plan View</h1>
+                <Plan uuid="" id={0} />
+                {console.log("the plan is : ", JSON.stringify(Plan))}
+                {localStorage.getItem(JSON.stringify(Plan))}
+            </div>
+            <Link to="/Requirements">
+                <Button className="my-2">Modify Requirements</Button>
+            </Link>
+        </>
     );
 };
 
@@ -109,27 +114,27 @@ function App(): JSX.Element {
             <HashRouter>
                 <Switch>
                     <Router>
-                        <Route exact path="/" component={IndexPage}></Route>
                         <Route
                             path="/Plans/:uuid"
-                            render={(props) => 
+                            render={(props) => (
                                 <PlansPage
                                     {...props}
                                     requirements={requirements}
                                 />
-                            }
+                            )}
                         ></Route>
                         <Route
                             path="/Requirements"
-                            render={(props) => 
+                            render={(props) => (
                                 <Requirements
                                     {...props}
                                     requirements={requirements}
                                     onAddRequirement={addRequirement}
                                     onRemoveRequirement={removeRequirement}
                                 />
-                            }
+                            )}
                         ></Route>
+                        <Route exact path="/" component={IndexPage}></Route>
                     </Router>
                 </Switch>
             </HashRouter>
