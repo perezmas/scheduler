@@ -1,70 +1,43 @@
 import React, { useState } from "react";
-import { /*Row, Col, CardGroup, Button,*/ Card } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import "./styles.css";
 import { Link } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import PlanProps from "../interfaces/Plan";
 import { YearProps } from "../interfaces/Year";
-//import { useLocalStorage } from "../hooks/useLocalStorage";
-//import useLocalStorage from "../hooks/useLocalStorage";
-//import { Scheduler } from "./Scheduler";
-//import useLocalStorage from "../hooks/useLocalStorage";
-//import { Scheduler } from "./Scheduler";
 
-/*
+
 export const testList: PlanProps[] = [
     {
         uuid: "1",
+        id: 1,
         name: "max",
-        date: "01/01/2021"
+        date: "01/01/2021",
+        years: Array<YearProps>()
     },
     {
         uuid: "2",
+        id: 2,
         name: "amani",
-        date: "02/02/2021"
+        date: "02/02/2021",
+        years: Array<YearProps>()
     }
-];*/
+];
 
 export function Plan(props: PlanProps): JSX.Element {
 
-    //const [cards, setCards] = useState([]);
-    const planList: typeof props[] = [];
     
-    const [plans, setPlans] = useState(planList);
-    /*
-    const [newId, setNewId] = useState<number | null>(null);
-    const [newName, setNewName] = useState<string | null>(null);
-    const [newDate, setNewDate] = useState<string | null>(null);
-    const [currentYears, setCurrentYears] = useState<Array<YearProps> | null>(null);
-    */
-    //const arr: typeof props[] = [];
-    //const [newName, setNewName] = useState<props.name>(null);
-
-    // if array is empty, initialize basic values
-    /*
-    if (props.id === undefined && props.name === undefined && props.date === undefined && props.years === undefined ) {
-        const [newId, setNewId] = useState<number | null>(null);
-        const [newName, setNewName] = useState<string | null>(null);
-        const [newDate, setNewDate] = useState<string | null>(null);
-        const [currentYears, setCurrentYears] = useState<Array<YearProps> | null>(null);
-        /*
-        setPlans([...plans, {
-            id: plans.length,
-            uuid: uuid(),
-            name: "Enter Plan Name",
-            date: new Date().toLocaleDateString(),
-            years: []
-        }]);
-    }*/
-    /*
-    const modal = () => {
-        <form>
-            ENTER PLAN NAME:
-            <input type="text" onChange={(e) => e.target.value} />
-        </form>;
-
-    };*/
+    //const planList: typeof props[] = [];
     
+    const [plans, setPlans] = useState<Array<PlanProps>>([]);
+    
+    //plans.forEach(val => planList.push(Object.assign({}, val)));
+    
+    //const stringLoad = String(localStorage.getItem("Plans Array"));
+    //const testArray: PlanProps[] = JSON.parse(stringLoad);
+    //console.log("loaded vals" , testArray);
+    
+
     const addPlan = () => {
         // sets array of all cards
         setPlans([...plans, {
@@ -85,27 +58,19 @@ export function Plan(props: PlanProps): JSX.Element {
             //localStorage.setItem(`plan:${0}`, JSON.stringify(arr));
         }
 
+        // if first item in array, set value of index 0
+        if (index === 1){
+            arr.push(plans[0]);
+        }
         // temp array that saves the plan info to new key and values in localStorage
-        if (index > 0){
+        if (index > 1){
             arr.push(plans[index-1]);
             //localStorage.setItem(`plan:${index-1}`, JSON.stringify(arr));
-            console.log("array: ", arr);
         }
         //arr.push({id: plans.length, uuid: uuid(), name: "", date: new Date().toLocaleDateString(), years: Array<YearProps>()});
     };
-    //localStorage.setItem(`plan:${plans.length}`, JSON.stringify(plans[plans.length-1]));
-    //console.log(JSON.stringify(plans));
-    //localStorage.setItem(`plan:${0}`, JSON.stringify(plans));
-    /*const findIndex = (item: PlanProps) => {
-        return (item.uuid === props.uuid);
-    };*/
-    //localStorage.setItem(`plan:${plans.length}`, JSON.stringify(plans));
-    //useLocalStorage(`plan:${props.uuid}`, JSON.stringify(plans));
-    //const json = "{"id": "string", "uuid": "string", "name": "string", "date": "string", "years":}";
-    //const pla: PlanProps = JSON.parse(json);
-    //console.log(pla);
 
-    const deleteCard = (oldArray: typeof planList, planItem: PlanProps) => {
+    const deleteCard = (oldArray: typeof plans, planItem: PlanProps) => {
         if (window.confirm("Are you sure you want to delete this plan?")) {
 
             const newArray = [...plans];
@@ -122,13 +87,27 @@ export function Plan(props: PlanProps): JSX.Element {
                 console.log("new array is", newArray);
                 setPlans(newArray);
             }
-
             //plans.filter((i: any) => i.id !== index );
             //console.log("new array is", plans);
 
         }
     };
 
+    const copy = (planItem: PlanProps) => {
+        // sets array of all cards
+        setPlans([...plans, {
+            id: planItem.id,
+            uuid: uuid(),
+            name: planItem.name,
+            date: planItem.date,
+            years: planItem.years
+        }]);
+        const index = plans.length;
+        console.log("index: ", index);
+    };
+
+    
+    //const testArray: PlanProps[] = [];
     
     const renderCard = (planItem: PlanProps) => {
         /*const onChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -136,12 +115,22 @@ export function Plan(props: PlanProps): JSX.Element {
         };*/
         //const planName = planItem.name;
         //const index = plans.length;
+        //planItem.id = plans.length;
         
+        //const set = JSON.stringify(localStorage.getItem("test"));
+        //console.log(JSON.parse(set));
+        //console.log("PLANS IS " , plans);
+        
+        //console.log("PLANS IS " , plans);
+        localStorage.setItem("Plans Array", JSON.stringify(plans));
+        //const stringLoad = String(localStorage.getItem("Plans Array"));
+        //const testArray: PlanProps[] = JSON.parse(stringLoad);
+        //console.log("loaded vals" , testArray[testArray.length-1]);
         return (
-            <Card style={{ width: "18rem" }} className="box">
+            <Card style={{ width: "18rem" }} className="grid">
                 <Card.Body>
-                    <Card.Title>Plan #{(planItem.id+1)} </Card.Title>
-                    <Card.Text>{planItem.uuid}</Card.Text>
+                    <Card.Title>Plan #{planItem.id} </Card.Title>
+                    
                     <Link to={`Plans/${planItem.uuid}`}>
                         <button>
                             Edit Plan
@@ -152,34 +141,98 @@ export function Plan(props: PlanProps): JSX.Element {
                         console.log("button pressed");
                         deleteCard(plans, planItem);
                     }}>-</button>
+                    <button onClick={() => {
+                        copy(planItem);
+                    }}>Duplicate Plan</button>
                 </Card.Body>
             </Card>
         );
     };
 
+
+    //const arrBackup: PlanProps[] = [];
+    /*
+    const stringLoad = String(localStorage.getItem("Plans Array"));
+    console.log("LOADED IN: ", stringLoad);
+    const testArray: PlanProps[] = JSON.parse(stringLoad);
+    console.log("loaded vals" , testArray);
+    //localStorage.setItem("Plans Array", JSON.stringify(plans));
+    if (plans.length === 1){
+        localStorage.setItem(`plan: ${0}`, JSON.stringify(plans[0]));
+    }
+
+    // temp array that saves the plan info to new key and values in localStorage
+    if (plans.length > 1){
+        localStorage.setItem(`plan: ${plans.length-1}`, JSON.stringify(plans[plans.length-1]));
+    }
+    /*
     const save = (plans: PlanProps[]) => {
-        if (plans.length <= 0){
-            localStorage.setItem(`plan: ${0}`, JSON.stringify(plans[plans.length]));
+        //console.log("this is plans", plans);
+        
+        plans.forEach(val => arrBackup.push(Object.assign({}, val)));
+        //const arr = plans;
+        
+        //localStorage.setItem("arr", JSON.stringify(arr));
+        
+        localStorage.setItem("Plans Array", JSON.stringify(plans));
+        if (plans.length === 1){
+            localStorage.setItem(`plan: ${0}`, JSON.stringify(plans[0]));
         }
 
         // temp array that saves the plan info to new key and values in localStorage
-        if (plans.length > 0){
+        if (plans.length > 1){
             localStorage.setItem(`plan: ${plans.length-1}`, JSON.stringify(plans[plans.length-1]));
         }
-    };
-
-    const load = (planItem: PlanProps, plans: PlanProps[]) => {
+        
+    };*/
+    
+    /*
+    const load = (planItem: PlanProps) => {
+        const index = planItem.id;
         localStorage.getItem(`plan:${planItem.id}`);
-        renderCard(planItem);
-    };
+        const map = plans.map(planItem =>
+            <li key={planItem.uuid}>{renderCard(planItem)}</li>
+        );
+        console.log("map is: ", map);
+        return map;
+    };*/
+    //const [saveTest, useSaveTest] = useState(localStorage.setItem());
+    
+        
+    //renderCard(planItem);
+    /*
+    const test = JSON.stringify(localStorage.getItem("Plans Array"));
+    console.log("test:  ", test);
+    const test2: PlanProps = JSON.parse(test);
+    console.log("test2: ", test2);
+    */
+   
+   
+    //localStorage.getItem("SAVED ARRAY");
     
     //classes = useStyles();
     //const dispatch = useDispatch();
+    /*
+    const renderItems = (testArray: PlanProps[]) =>{
+        if(testArray){
+            return (
+                <div className="grid">
+                    <button onClick={addPlan}>Add a plan +</button>
+                    {JSON.parse(JSON.stringify(localStorage.getItem("Plans Array")))}
+                    {testArray.map(planItem =>
+                        <li key={planItem.uuid}>{renderCard(planItem)}</li>
+                    )}    
+                    
+                </div>
+            ); 
+        }
+    };
+    */
+    
+
     return (
-        <div className="grid">
+        <div className="grid">    
             <button onClick={addPlan}>Add a plan +</button>
-            {localStorage.setItem("Plans Array", JSON.stringify(plans))}
-            {save(plans)}
             {plans.map(planItem =>
                 <li key={planItem.uuid}>{renderCard(planItem)}</li>
             )}
