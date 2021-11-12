@@ -26,11 +26,6 @@ const courseReducer = (
     }
 };
 
-// const onRightClickCourse = (event: React.MouseEvent<HTMLDivElement>) => {
-//     event.preventDefault();
-//     console.log("Right Clicked");
-// };
-
 const courseInit = (
     courses?: Map<string, CourseProps>
 ): Map<string, CourseProps> => {
@@ -61,7 +56,6 @@ function useCourses(initialCourses?: Map<string, CourseProps>): Courses {
                     payload: courseToRemove,
                 };
                 updateCourses(action);
-                console.log("Removed course ID: ", courseID);
             } else {
                 throw new Error("Course not found");
             }

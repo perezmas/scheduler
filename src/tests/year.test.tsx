@@ -192,7 +192,6 @@ describe(Year, () => {
         const formInitWatcher = jest.fn((uuid: string | null) => {
             tst = uuid;
         });
-        console.log(tst);
         render(<button data-testid="form-escape">hi</button>);
         render(
             <Year
@@ -219,8 +218,8 @@ describe(Year, () => {
         expect(formInitWatcher).not.toHaveBeenCalled();
 
         screen.getByTestId("form-escape").click();
-        // expect(formInitWatcher).toHaveBeenCalled();
-        // expect(tst).toBeNull();
+        expect(formInitWatcher).toHaveBeenCalled();
+        expect(tst).toBeNull();
     });
 
     it("Should call the function to remove a semester when the appropriate button is clicked.", async () => {
@@ -314,5 +313,51 @@ describe(Year, () => {
         expect(clearCoursesSpy).not.toHaveBeenCalled();
         getByTestId(screen.getByTestId("Year 1 semester 1"),"clear-courses-button").click();
         expect(clearCoursesSpy).toHaveBeenCalled();
+    });
+    it("Correctly passes the clearCourses prop to all of its Semesters", async () => {
+        const clearCoursesSpy = jest.fn();
+        const springUuid = uuid();
+        const summer2Uuid = uuid();
+        render(
+            <Year
+                uuid={yrUuid}
+                handleSubmit={doNothing}
+                handleInput={doNothing}
+                formUuid={null}
+                setFormUuid={doNothing}
+                index={1}
+                semesters={[
+                    {
+                        name: "summer 2",
+                        start: new Date("2022-07-11"),
+                        end: new Date("2022-08-12"),
+                        uuid: summer2Uuid,
+                    },
+                    {
+                        name: "spring",
+                        start: new Date("2021-07-11"),
+                        end: new Date("2021-08-12"),
+                        uuid: springUuid
+                    }
+                ]}
+                removeSemester={doNothing}
+                clear={doNothing}
+                courses={emptyCourses}
+                clearCourses={clearCoursesSpy}
+                canSubmit={false}
+                formInit={doNothing}
+            />
+        );
+
+
+        const spring = screen.getByTestId("Year 1 semester 1");
+        expect(clearCoursesSpy).not.toHaveBeenCalled();
+        getByTestId(spring,"clear-courses-button").click();
+        expect(clearCoursesSpy).toHaveBeenCalled();
+        
+        const summer2 = screen.getByTestId("Year 1 semester 2");
+        expect(clearCoursesSpy).toHaveBeenCalledTimes(1);
+        getByTestId(summer2,"clear-courses-button").click();
+        expect(clearCoursesSpy).toHaveBeenCalledTimes(2);
     });
 });

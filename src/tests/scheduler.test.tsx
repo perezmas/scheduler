@@ -5,10 +5,41 @@ import {
     render,
     screen,
     waitFor,
+    getByTestId
 } from "@testing-library/react";
 
 import { act } from "react-dom/test-utils";
 import { Scheduler } from "../components/Scheduler";
+
+async function addCourse(year: number, semester: number, name: string, id: string, description?: string){
+    const semesterElement = screen.getByTestId(`Year ${year} semester ${semester}`);
+    getByTestId(semesterElement,"add-course-button").click();
+
+    await screen.findByTestId("course-form");
+
+    const courseName = screen.getByLabelText("Course Name");
+    const courseID = screen.getByLabelText("Course ID");
+    const courseDescription = screen.getByLabelText(
+        "Course Description (Optional)"
+    );
+
+    fireEvent.change(courseName, { target: { value: name } });
+    fireEvent.change(courseID, { target: { value: id } });
+    fireEvent.change(courseDescription, {
+        target: { value: description !== undefined ? description : "" },
+    });
+
+    screen.getByText("Add Course").click();
+
+    screen.getByTestId("close-course-form").click();
+
+
+    await waitFor(() => {
+        expect(
+            screen.queryByTestId("course-form")
+        ).not.toBeInTheDocument();
+    });
+}
 
 async function addSemester(
     name: string,
@@ -309,7 +340,24 @@ describe(Scheduler, () => {
         );
     });
 
-    it("Allows you to clear all of the courses in a semester", async () => {
+    it("Can clear all the courses in a semester", async () => {
+        await addCourse(1, 1,"Irish Dance", "IRSH-201");
+        await addCourse(1, 1,"Intro to Scots", "SCOT-201", "No, we don't sound like scots wikipedia.");
+        await addCourse(1, 2, "Intro to stuff", "STUFF-101", "");
+        await addCourse(2, 1, "Intro to more stuff", "STUFF-102");
+
+        const fall = screen.getByTestId("Year 1 semester 1");
+        
+        expect(screen.getByText("0 Irish Dance")).toBeInTheDocument();
+        expect(screen.getByText("0 Intro to Scots")).toBeInTheDocument();
+
+        getByTestId(fall, "clear-courses-button").click();
+
+        expect(screen.queryByText("0 Irish Dance")).not.toBeInTheDocument();
+        expect(screen.queryByText("0 Intro to Scots")).not.toBeInTheDocument();
+
+        expect(screen.getByText("0 Intro to stuff")).toBeInTheDocument();
+        expect(screen.getByText("0 Intro to more stuff")).toBeInTheDocument();
 
     });
 });

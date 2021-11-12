@@ -25,12 +25,9 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
     const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
 
-    // console.log("Semester render!");
-
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
         const courseToAdd: CourseProps = { ...newCourse };
-        console.log(event.target.name);
         switch (event.target.name) {
         case "courseName":
             courseToAdd.name = event.target.value;
@@ -68,7 +65,6 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
             payload: courseToRemove,
         };
         props.updateCourses(action);
-        console.log("Remove Course", courseToRemove.id);
     };
 
     const onClickEdit = (courseToEdit: CourseProps) => {
