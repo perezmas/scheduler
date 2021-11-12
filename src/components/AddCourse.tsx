@@ -26,7 +26,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
     if (!props.isOpen) return null;
     return ReactDOM.createPortal(
         <div>
-            <div className="modal-add-course">
+            <div className="modal-add-course" data-testid="modal-add-course">
                 <button onClick={props.onClickClose} data-testid="close-course-form">Close Button</button>
 
                 <Form onSubmit={props.onClickSubmit} data-testid="course-form">
@@ -139,7 +139,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                         />
                     </Form.Group>
 
-                    <Button variant="primary" type="submit">
+                    <Button variant="primary" type="submit" data-testid="submit-course-button">
                         {props.isEditing ? "Edit Course" : "Add Course"}
                     </Button>
                 </Form>

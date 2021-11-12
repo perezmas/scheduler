@@ -1,7 +1,6 @@
 import React from "react";
 import ErrorStack from "../components/ErrorStack";
 import {render, screen} from "@testing-library/react";
-import {v4 as uuid} from "uuid";
 import {Problem} from "../hooks/useProblems";
 
 describe(ErrorStack,() => {

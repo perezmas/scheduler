@@ -144,20 +144,38 @@ function clearSemesters(
 }
 
 export interface Years {
+    /**The list of years in the schedule */
     value: Array<YearProps>;
+    /**Adds a new year to a schedule. */
     push: (uuid: string, index: number) => void;
+    /**Puts a semester into a year */
     putSemester: (
+        /**The uuid of the year the semester is being added to. */
         uuid: string,
+        /**The uuid of the new semester */
         semesterUuid: string,
+        /**The start of the new semester */
         start: Date,
+        /**The end of the new semester */
         end: Date,
+        /**The name displayed to the user (likely the season the semester takes place in) */
         name: string
     ) => void;
-    removeSemester: (uuid: string, semesterUuid: string) => void;
+    /**Removes a semester from the year */
+    removeSemester: (
+        /**The uuid of the year the semester is being removed from */
+        uuid: string,
+        /**The uuid of the semester being removed */
+        semesterUuid: string) => void;
     removeYear: (uuid: string) => void;
+    /**Clears all the semesters in a given year. If no year is supplied, deletes all semesters in value. */
     clear: (uuid?: string) => void;
 }
 
+/**Returns a Years interface to keep track of the years in a plan (see above)
+ * @param init A funciton that returns an array of YearProps; this returns the initial value in the output's value field. If empty, the default value will be an empty array.
+ * @returns A Years object (see above for usage.)
+ */
 function useYears(init?: () => Array<YearProps>): Years {
     const [years, updateYears] = useReducer(
         yearReducer,

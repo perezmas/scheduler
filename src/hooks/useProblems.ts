@@ -6,9 +6,9 @@ export interface Problem{
     error: boolean,
     /**The message that is displayed to the user when this problem occurs. Also used internally to determine the cause of problems and find if they need to be removed.*/
     message: string
-
+    /**The object where the error was generated (e.g. a form where the user has entered invalid data) */
     source: string
-
+    /**The nature of the problem; can be used to check if a paricular error is present. */
     problemType: string
 }
 
@@ -79,6 +79,7 @@ function initializer(): Array<Problem>{
     return new Array<Problem>();
 }
 
+/**Returns a ProblemsInterface to track, create, and remove problems caused by the user interacting with the site in an unexpected way (see above for usage). */
 export default function useProblems(): ProblemsInterface{
     const [output, dispatchOutput] = useReducer(problemReducer,undefined,initializer);
 
@@ -98,6 +99,4 @@ export default function useProblems(): ProblemsInterface{
     };
 
     return {add: add, resolve: resolve, clear: clear, value: output};
-
-
 }
