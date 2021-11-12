@@ -142,7 +142,7 @@ function Year(props: FullYearProps): JSX.Element {
                                         placement="right-end"
                                         show={props.formUuid === props.uuid}
                                         onHide={() => {
-                                            props.setFormUuid(null);
+                                            props.formInit(null);
                                         }}
                                         rootClose={true}
                                         transition={false}
