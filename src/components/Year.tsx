@@ -16,18 +16,27 @@ import { Courses } from "../hooks/useCourses";
 import SemesterForm from "./SemesterForm";
 
 interface FullYearProps extends YearProps {
+    /**The global list of courses */
     courses: Courses;
+    /**The function to call when the form that creates semesters is submitted. */
     handleSubmit: (event: FormEvent<HTMLFormElement>) => void;
+    /**The function to call when a field in the semester form is modified. */
     handleInput: (event: ChangeEvent<HTMLInputElement>) => void;
+    /**The uuid of the year that is currently displaying the form to create a new semester. Null indicates no form is open. */
     formUuid: string | null;
-    setFormUuid: (newId: string | null) => void;
+    /**A function that removes a semester from the year. */
     removeSemester: (semesterUuid: string) => void;
+    /**Whether or not the semester form can be submitted. */
     canSubmit: boolean;
+    /**A function that clears out all semesters in this year.*/
     clear: () => void;
+    /**A function that takes in the uuid of a semester and removes all courses from that semester. */
     clearCourses: (semesterUuid: string) => void;
+    /**A function used to modify formUuid, as well as some other state variables used for input validation. */
     formInit: (uuid: string | null) => void;
 }
 
+/**Represents an academic year in a Scheduler containing a variable number of Semesters. */
 function Year(props: FullYearProps): JSX.Element {
     const overlayButton = useRef(null);
     const sortedSemesters = useMemo(() => {
@@ -101,14 +110,6 @@ function Year(props: FullYearProps): JSX.Element {
                                                     courses={
                                                         props.courses.courseList
                                                     }
-                                                    // coursesForThisSemester={Array.from(
-                                                    //     props.courses.courseList.values()
-                                                    // ).filter(
-                                                    //     (course) =>
-                                                    //         course.semester ===
-                                                    //         semesterProps.uuid
-                                                    // )}
-
                                                     {...semesterProps}
                                                     removeSemester={() => {
                                                         props.removeSemester(
@@ -150,7 +151,7 @@ function Year(props: FullYearProps): JSX.Element {
                                         placement="right-end"
                                         show={props.formUuid === props.uuid}
                                         onHide={() => {
-                                            props.setFormUuid(null);
+                                            props.formInit(null);
                                         }}
                                         rootClose={true}
                                         transition={false}

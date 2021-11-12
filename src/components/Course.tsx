@@ -2,10 +2,13 @@ import React from "react";
 import CourseProps from "../interfaces/Course";
 
 interface CurrentCourseProps extends CourseProps {
+    /**A function that deletes this course from the global map containing all courses. */
     onRemoveCourse: (courseToRemove: CourseProps) => void;
+    /**A function that is called when the user clicks the edit button to edit this course. */
     onClickEdit: (courseToEdit: CourseProps) => void;
 }
 
+/**A component that represents a course. */
 const Course = (props: CurrentCourseProps): JSX.Element => {
     return (
         <div draggable={true}>

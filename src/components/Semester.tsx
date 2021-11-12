@@ -7,11 +7,17 @@ import AddCourse from "./AddCourse";
 import Course from "./Course";
 
 interface FullSemesterProps extends SemesterProps {
+    /**The uuid's of all exiting courses */
     courses: Map<string, CourseProps>;
+    /**A function that will delete this semester.*/
     removeSemester: () => void;
+    /**A function that updates the courses object. */
     updateCourses: (action: CourseAction) => void;
+    /**A function that clears all courses from this semester. */
     clearCourses: () => void;
 }
+
+/**Represents a single semester of courses within an academic year. */
 const Semester = (props: FullSemesterProps): JSX.Element => {
     const [newCourse, setNewCourse] = useState<CourseProps>({
         id: "",
@@ -25,12 +31,9 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
     const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
 
-    // console.log("Semester render!");
-
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
         const courseToAdd: CourseProps = { ...newCourse };
-        console.log(event.target.name);
         switch (event.target.name) {
         case "courseName":
             courseToAdd.name = event.target.value;
@@ -68,7 +71,6 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
             payload: courseToRemove,
         };
         props.updateCourses(action);
-        console.log("Remove Course", courseToRemove.id);
     };
 
     const onClickEdit = (courseToEdit: CourseProps) => {

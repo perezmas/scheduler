@@ -1,7 +1,6 @@
 import React from "react";
 import ErrorStack from "../components/ErrorStack";
 import {render, screen} from "@testing-library/react";
-import {v4 as uuid} from "uuid";
 import {Problem} from "../hooks/useProblems";
 
 describe(ErrorStack,() => {
@@ -22,7 +21,7 @@ describe(ErrorStack,() => {
 
     it("Should show an error if a problem with the error field is true is present", async () => {
         render(<ErrorStack
-            problems={[{key: "key", message: "test message", source: "test", uuid: uuid(), error: true}]}
+            problems={[{problemType: "type", message: "test message", source: "test", error: true}]}
         />);
 
         expect(screen.getByText("test message")).toBeInTheDocument();
@@ -32,7 +31,7 @@ describe(ErrorStack,() => {
 
     it("Should show a warning if a problem with the error field is false is present", async () => {
         render(<ErrorStack
-            problems={[{key: "key", message: "test message", source: "test", uuid: uuid(), error: false}]}
+            problems={[{problemType: "type", message: "test message", source: "test", error: false}]}
         />);
 
         expect(screen.getByText("test message")).toBeInTheDocument();
@@ -42,7 +41,7 @@ describe(ErrorStack,() => {
 
     it("Should be able to display multiple errors and warnings", async () => {
         render(<ErrorStack
-            problems={[{key: "key", message: "test message 1", source: "test", uuid: uuid(), error: true},{key: "key", message: "test message 2", source: "test", uuid: uuid(), error: false},{key: "key", message: "test message 3", source: "test", uuid: uuid(), error: true}]}
+            problems={[{problemType: "type", message: "test message 1", source: "test", error: true},{problemType: "type2", message: "test message 2", source: "test", error: false},{problemType: "type3", message: "test message 3", source: "test", error: true}]}
         />);
 
         expect(screen.getByText("test message 1")).toBeInTheDocument();
@@ -54,21 +53,21 @@ describe(ErrorStack,() => {
     });
 
     it("Should update the error counter depending on the number of errors.", async () => {
-        const problems: Array<Problem> = [{key: "key", message: "test message", source: "test", uuid: uuid(), error: false}];
+        const problems: Array<Problem> = [{problemType: "type", message: "test message", source: "test", error: false}];
         const {rerender} = render(<ErrorStack
             problems={problems}  
         />);
 
         expect(screen.getByText("1 error")).toBeInTheDocument();
 
-        problems.push({key: "key", message: "test message 2", source: "test", uuid: uuid(), error: false});
+        problems.push({problemType: "type", message: "test message 2", source: "test", error: false});
         rerender(<ErrorStack
             problems={problems}
         />);
 
         expect(screen.getByText("2 errors")).toBeInTheDocument();
 
-        problems.push({key: "key", message: "test message 3", source: "test", uuid: uuid(), error: true});
+        problems.push({problemType: "type", message: "test message 3", source: "test", error: true});
 
         rerender(<ErrorStack
             problems={problems}

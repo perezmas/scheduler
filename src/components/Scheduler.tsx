@@ -8,13 +8,16 @@ import useProblems, { Problem } from "../hooks/useProblems";
 import ErrorStack from "./ErrorStack";
 import validate from "../util/validation/dates";
 
-import useCourses from "../hooks/useCourses";
+import useCourses, { Courses } from "../hooks/useCourses";
 
 import { Table } from "react-bootstrap";
 
 interface SchedulerProps {
+    /**csv data that can be used to reconstruct a scheduler. */
     csv?: string;
+    /**Json data that can be used to reconstruct a scheduler.  */
     json?: string;
+    /**All the course ID's for the requirements for the degree this scheduler is designed to help acquire. */
     requirements: Array<string>;
 }
 
@@ -56,6 +59,19 @@ function hasError(problems: Array<Problem>): boolean {
     return false;
 }
 
+function clearCourses(semesterUuid: string, courses: Courses){
+    const entries = courses.courseList.entries();
+    for (
+        let entry = entries.next();
+        !entry.done;
+        entry = entries.next()
+    ) {
+        if (entry.value[1].semester === semesterUuid) {
+            courses.removeCourse(entry.value[0]);
+        }
+    }
+}
+
 export function Scheduler(props: SchedulerProps): JSX.Element {
     if (props.csv === undefined && props.json === undefined) {
         const years = useYears(getStartingYears);
@@ -69,20 +85,6 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
         const [newStart, setNewStart] = useState<string | null>(null);
         const [newEnd, setNewEnd] = useState<string | null>(null);
         const [currentForm, setCurrentForm] = useState<string | null>(null);
-
-        const clearCourses = (semesterUuid: string) => {
-            const entries = courses.courseList.entries();
-            for (
-                let entry = entries.next();
-                !entry.done;
-                entry = entries.next()
-            ) {
-                if (entry.value[1].semester === semesterUuid) {
-                    courses.removeCourse(entry.value[0]);
-                }
-            }
-        };
-
         const [submissionAllowed, setSubmissionAllowed] = useState(false);
         const problems = useProblems();
         const semesterFormInit = (uuid: string | null) => {
@@ -161,14 +163,10 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
 
             for (const requirement of requirements) {
                 if (!courses.courseList.has(requirement)) {
-                    // console.log(requirement);
                     newCourses.push(requirement);
                 }
             }
-            // console.log("NewCourses", newCourses);
             setUnmetRequirements(newCourses);
-            // console.log("change!", unmetRequirements);
-            // console.log("I'm here!!!");
         }, [props.requirements, courses.courseList]);
 
         const handleSemesterSubmit = (
@@ -232,7 +230,6 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                                     uuid={props.uuid}
                                     index={i + 1}
                                     formUuid={currentForm}
-                                    setFormUuid={setCurrentForm}
                                     removeSemester={(semesterUuid: string) => {
                                         years.removeSemester(
                                             props.uuid,
@@ -243,7 +240,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                                         years.clear(props.uuid);
                                     }}
                                     clearCourses={(semesterUuid: string) => {
-                                        clearCourses(semesterUuid);
+                                        clearCourses(semesterUuid, courses);
                                     }}
                                     formInit={semesterFormInit}
                                 />
@@ -259,16 +256,6 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                         +
                     </button>
                 </div>
-                {/* Here are courses
-                {Array.from(courses.courseList.values()).map(
-                    (course: CourseProps) => {
-                        return (
-                            <div key={course.id}>
-                                {course.name} {course.id}
-                            </div>
-                        );
-                    }
-                )} */}
                 <Table>
                     <thead>
                         <tr>

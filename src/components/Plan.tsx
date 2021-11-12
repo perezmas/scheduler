@@ -24,10 +24,8 @@ export const testList: PlanProps[] = [
     }
 ];
 
+/**A card on the home screen that lets the user move between schedulers, mainly so that advisors can keep track of their students. */
 export function Plan(props: PlanProps): JSX.Element {
-
-    
-    //const planList: typeof props[] = [];
     
     const [plans, setPlans] = useState<Array<PlanProps>>([]);
     
