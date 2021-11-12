@@ -5,20 +5,27 @@ import ReactDOM from "react-dom";
 import CourseProps from "../interfaces/Course";
 
 interface AddNewCourseProps {
+    /**All of the existing courses. */
     courses: CourseProps[];
+    /**Whether or not to display the form. */
     isOpen: boolean;
+    /**The default values for fields that are left blank. */
     defaultValues: CourseProps;
-    isEditing: boolean; // if true, then we are editing an existing course
+    /**Whether or not this component is currently modifying an existing course. */
+    isEditing: boolean;
+    /**A function that closes this form. */
     onClickClose: () => void;
+    /**A function that is called when the user clicks the button to submit the form. */
     onClickSubmit: (event: FormEvent<HTMLFormElement>) => void;
+    /**A function that is called when a field in the form is modified. */
     onChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
+/**A form that asks the user for the data required to create a new course. The form will be displayed in a modal attached to the document body via a portal. */
 const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
     if (!props.isOpen) return null;
     return ReactDOM.createPortal(
         <div>
-            {/* <div className="non-modal-overlay" /> */}
             <div className="modal-add-course">
                 <button onClick={props.onClickClose} data-testid="close-course-form">Close Button</button>
 

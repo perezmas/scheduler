@@ -25,9 +25,6 @@ export const testList: PlanProps[] = [
 ];
 
 export function Plan(props: PlanProps): JSX.Element {
-
-    
-    //const planList: typeof props[] = [];
     
     const [plans, setPlans] = useState<Array<PlanProps>>([]);
     

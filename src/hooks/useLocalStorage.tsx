@@ -2,7 +2,7 @@
 import {useState, useEffect} from "react";
 
 
-// eslint-disable-next-line
+
 function getStorageValue(key: string, defaultValue: string) {
     // get the stored value
     const saved = String(localStorage.getItem(key));
@@ -12,7 +12,6 @@ function getStorageValue(key: string, defaultValue: string) {
 }
 
 
-// eslint-disable-next-line
 export const useLocalStorage = (key: string, defaultValue: string) => {
     
     const [value, setValue] = useState( ()=> {

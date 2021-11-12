@@ -3,6 +3,7 @@ import { Problem } from "../hooks/useProblems";
 import ReactDOM from "react-dom";
 
 interface ErrorStackProps{
+    /**The problems being displayed (null indicates that there are no problems.) */
     problems: Array<Problem> | null;
 }
 

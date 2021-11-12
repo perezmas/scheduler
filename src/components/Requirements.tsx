@@ -10,11 +10,15 @@ import {
 import { RouteComponentProps, Link } from "react-router-dom";
 
 type RequirementsProps = RouteComponentProps & {
+    /**The current requirements. */
     requirements: string[];
+    /**A function that removes a requirement from the list. */
     onRemoveRequirement: (requirement: string) => void;
+    /**A function that adds requirements to the list. */
     onAddRequirement: (requirement: string) => void;
 };
 
+/**A component that displays the requirements for a specific CIS degree. */
 const Requirements: FC<RequirementsProps> = (props): JSX.Element => {
     const { requirements, onRemoveRequirement, onAddRequirement } = props;
     const [newRequirement, setNewRequirement] = useState("");
@@ -36,7 +40,6 @@ const Requirements: FC<RequirementsProps> = (props): JSX.Element => {
                     </Col>
                     <Col xs lg="2">
                         <Button
-                            // variant=""
                             onClick={() => onRemoveRequirement(requirement)}
                         >
                             Remove
@@ -59,7 +62,6 @@ const Requirements: FC<RequirementsProps> = (props): JSX.Element => {
                         title="Action"
                         id="segmented-button-dropdown-2"
                         onClick={onSubmit}
-                        // alignRight
                     >
                         Add Course
                     </Button>

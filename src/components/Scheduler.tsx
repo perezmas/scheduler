@@ -13,8 +13,11 @@ import useCourses, { Courses } from "../hooks/useCourses";
 import { Table } from "react-bootstrap";
 
 interface SchedulerProps {
+    /**csv data that can be used to reconstruct a scheduler. */
     csv?: string;
+    /**Json data that can be used to reconstruct a scheduler.  */
     json?: string;
+    /**All the course ID's for the requirements for the degree this scheduler is designed to help acquire. */
     requirements: Array<string>;
 }
 
@@ -227,7 +230,6 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                                     uuid={props.uuid}
                                     index={i + 1}
                                     formUuid={currentForm}
-                                    setFormUuid={setCurrentForm}
                                     removeSemester={(semesterUuid: string) => {
                                         years.removeSemester(
                                             props.uuid,

@@ -7,11 +7,17 @@ import AddCourse from "./AddCourse";
 import Course from "./Course";
 
 interface FullSemesterProps extends SemesterProps {
+    /**The uuid's of all exiting courses */
     courses: Map<string, CourseProps>;
+    /**A function that will delete this semester.*/
     removeSemester: () => void;
+    /**A function that updates the courses object. */
     updateCourses: (action: CourseAction) => void;
+    /**A function that clears all courses from this semester. */
     clearCourses: () => void;
 }
+
+/**Represents a single semester of courses within an academic year. */
 const Semester = (props: FullSemesterProps): JSX.Element => {
     const [newCourse, setNewCourse] = useState<CourseProps>({
         id: "",
