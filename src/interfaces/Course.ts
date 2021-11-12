@@ -1,4 +1,4 @@
-interface CourseProps /*extends AbstractProps*/ {
+interface CourseProps {
     /**The course ID */
     id: string;
     /* The name of the course */
