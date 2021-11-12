@@ -143,7 +143,7 @@ function clearSemesters(
     }
 }
 
-interface Years {
+export interface Years {
     value: Array<YearProps>;
     push: (uuid: string, index: number) => void;
     putSemester: (

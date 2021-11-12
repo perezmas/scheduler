@@ -64,7 +64,7 @@ function problemReducer(prev: Array<Problem>, action: AbstractProblemAction): Ar
 }
 
 /**Contains a state object and some convenience functions that interact with it through reduceProblem.*/
-interface ProblemsInterface{
+export interface ProblemsInterface{
     /**Contains the current list of problems*/
     value: Array<Problem>,
     /**Resolves the problem with the desired type. */

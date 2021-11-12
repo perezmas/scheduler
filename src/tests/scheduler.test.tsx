@@ -308,4 +308,8 @@ describe(Scheduler, () => {
             expectNoWarning
         );
     });
+
+    it("Allows you to clear all of the courses in a semester", async () => {
+
+    });
 });

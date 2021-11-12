@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { getByTestId, render, screen } from "@testing-library/react";
 import Year from "../components/Year";
 import { v4 as uuid } from "uuid";
 import CourseProps from "../interfaces/Course";
@@ -282,5 +282,37 @@ describe(Year, () => {
         );
         screen.getByTestId("clear-year 1").click();
         expect(clearSpy).toHaveBeenCalled();
+    });
+
+    it("calls the clear function passed to it when a Semester child's clear-courses-button is clicked", async () => {
+        const clearCoursesSpy = jest.fn();
+        const newSemesterUuid = uuid();
+        render(
+            <Year
+                uuid={yrUuid}
+                handleSubmit={doNothing}
+                handleInput={doNothing}
+                formUuid={null}
+                setFormUuid={doNothing}
+                index={1}
+                semesters={[
+                    {
+                        name: "summer 2",
+                        start: new Date("2022-07-11"),
+                        end: new Date("2022-08-12"),
+                        uuid: newSemesterUuid,
+                    },
+                ]}
+                removeSemester={doNothing}
+                clear={doNothing}
+                courses={emptyCourses}
+                clearCourses={clearCoursesSpy}
+                canSubmit={false}
+                formInit={doNothing}
+            />
+        );
+        expect(clearCoursesSpy).not.toHaveBeenCalled();
+        getByTestId(screen.getByTestId("Year 1 semester 1"),"clear-courses-button").click();
+        expect(clearCoursesSpy).toHaveBeenCalled();
     });
 });

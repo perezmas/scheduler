@@ -101,14 +101,6 @@ function Year(props: FullYearProps): JSX.Element {
                                                     courses={
                                                         props.courses.courseList
                                                     }
-                                                    // coursesForThisSemester={Array.from(
-                                                    //     props.courses.courseList.values()
-                                                    // ).filter(
-                                                    //     (course) =>
-                                                    //         course.semester ===
-                                                    //         semesterProps.uuid
-                                                    // )}
-
                                                     {...semesterProps}
                                                     removeSemester={() => {
                                                         props.removeSemester(

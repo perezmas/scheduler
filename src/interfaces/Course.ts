@@ -1,8 +1,4 @@
 interface CourseProps /*extends AbstractProps*/ {
-    /**The uuid of the semester containing this course.*/
-    // parent: string;
-    /**The department of the course */
-    // department: string | null;
     /**The course ID */
     id: string;
     /* The name of the course */
@@ -11,8 +7,7 @@ interface CourseProps /*extends AbstractProps*/ {
     description: string;
     /**How many credits the course is worth */
     credits: number;
-    /* The uuid of the year the course is being taken */
-    // year: string;
+    /* The uuid of the semester the course is being taken */
     semester: string;
     /**What courses need to be taken with this one.  */
     coreqs: Array<string>;

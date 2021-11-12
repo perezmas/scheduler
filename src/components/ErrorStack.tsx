@@ -6,6 +6,7 @@ interface ErrorStackProps{
     problems: Array<Problem> | null;
 }
 
+//This component is a stack that displays warnings and errors when the user enters inputs that could cause problems or are otherwise strange and likely to be an accident, e.g. a semester that is only a week long.
 export default function ErrorStack(props: ErrorStackProps): JSX.Element{
     if(props.problems !== null){
         const ctr = [<div className="error-counter" key={0}>
