@@ -1,34 +1,41 @@
-import React from "react";
+import React, { FormEvent, ChangeEvent } from "react";
 import { getByTestId, render, screen } from "@testing-library/react";
 import Year from "../components/Year";
 import { v4 as uuid } from "uuid";
 import CourseProps from "../interfaces/Course";
-import { Courses } from "../hooks/useCourses";
+import { CourseAction, Courses } from "../hooks/useCourses";
 
 describe(Year, () => {
-    const doNothing = jest.fn();
+    const doNothing = jest.fn<void, [void]>();
     const yrUuid = uuid();
     const emptyCourses: Courses = {
         courseList: new Map<string, CourseProps>(),
-        removeCourse: doNothing,
-        updateCourses: doNothing,
+        removeCourse: jest.fn<void, [string]>(),
+        updateCourses: jest.fn<void, [CourseAction]>(),
     };
+    const noFormEvent = jest.fn<void, [FormEvent<HTMLFormElement>]>((e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+    });
+    const noChangeEvent = jest.fn<void, [ChangeEvent<HTMLInputElement>]>((e: ChangeEvent) => {
+        e.preventDefault();
+    });
+
+    const doNothingWithString = jest.fn<void, [string | null]>();
     it("Should render the label correctly", async () => {
         const { rerender } = render(
             <Year
                 uuid={yrUuid}
-                handleSubmit={doNothing}
-                handleInput={doNothing}
+                handleSubmit={noFormEvent}
+                handleInput={noChangeEvent}
                 formUuid={null}
-                setFormUuid={doNothing}
                 index={1}
                 semesters={[]}
-                removeSemester={doNothing}
+                removeSemester={doNothingWithString}
                 clear={doNothing}
                 courses={emptyCourses}
-                clearCourses={doNothing}
+                clearCourses={doNothingWithString}
                 canSubmit={false}
-                formInit={doNothing}
+                formInit={doNothingWithString}
             />
         );
         let label = screen.getByTestId("Year 1 label");
@@ -37,18 +44,17 @@ describe(Year, () => {
         rerender(
             <Year
                 uuid={yrUuid}
-                handleSubmit={doNothing}
-                handleInput={doNothing}
+                handleSubmit={noFormEvent}
+                handleInput={noChangeEvent}
                 formUuid={null}
-                setFormUuid={doNothing}
                 index={3}
                 semesters={[]}
-                removeSemester={doNothing}
+                removeSemester={doNothingWithString}
                 clear={doNothing}
                 courses={emptyCourses}
-                clearCourses={doNothing}
+                clearCourses={doNothingWithString}
                 canSubmit={false}
-                formInit={doNothing}
+                formInit={doNothingWithString}
             />
         );
         expect(screen.queryByTestId("Year 1 label")).not.toBeInTheDocument();
@@ -63,10 +69,9 @@ describe(Year, () => {
         render(
             <Year
                 uuid={yrUuid}
-                handleSubmit={doNothing}
-                handleInput={doNothing}
+                handleSubmit={noFormEvent}
+                handleInput={noChangeEvent}
                 formUuid={null}
-                setFormUuid={doNothing}
                 index={1}
                 semesters={[
                     {
@@ -76,12 +81,12 @@ describe(Year, () => {
                         uuid: uuid(),
                     },
                 ]}
-                removeSemester={doNothing}
+                removeSemester={doNothingWithString}
                 clear={doNothing}
-                clearCourses={doNothing}
+                clearCourses={doNothingWithString}
                 courses={emptyCourses}
                 canSubmit={false}
-                formInit={doNothing}
+                formInit={doNothingWithString}
             />
         );
 
@@ -96,10 +101,10 @@ describe(Year, () => {
         render(
             <Year
                 uuid={yrUuid}
-                handleSubmit={doNothing}
-                handleInput={doNothing}
+                handleSubmit={noFormEvent}
+                handleInput={noChangeEvent}
                 formUuid={null}
-                setFormUuid={doNothing}
+                
                 index={1}
                 semesters={[
                     {
@@ -133,12 +138,12 @@ describe(Year, () => {
                         uuid: uuid(),
                     },
                 ]}
-                removeSemester={doNothing}
+                removeSemester={doNothingWithString}
                 clear={doNothing}
                 courses={emptyCourses}
-                clearCourses={doNothing}
+                clearCourses={doNothingWithString}
                 canSubmit={false}
-                formInit={doNothing}
+                formInit={doNothingWithString}
             />
         );
 
@@ -162,20 +167,19 @@ describe(Year, () => {
     });
 
     it("calls formInit when you click the trigger", async () => {
-        const fn = jest.fn();
+        const fn = jest.fn<void, [string | null]>();
         render(
             <Year
                 uuid={yrUuid}
-                handleSubmit={doNothing}
-                handleInput={doNothing}
+                handleSubmit={noFormEvent}
+                handleInput={noChangeEvent}
                 formUuid={null}
-                setFormUuid={doNothing}
                 index={1}
                 semesters={[]}
-                removeSemester={doNothing}
+                removeSemester={doNothingWithString}
                 clear={doNothing}
                 courses={emptyCourses}
-                clearCourses={doNothing}
+                clearCourses={doNothingWithString}
                 canSubmit={false}
                 formInit={fn}
             />
@@ -196,16 +200,15 @@ describe(Year, () => {
         render(
             <Year
                 uuid={yrUuid}
-                handleSubmit={doNothing}
-                handleInput={doNothing}
+                handleSubmit={noFormEvent}
+                handleInput={noChangeEvent}
                 formUuid={yrUuid}
-                setFormUuid={doNothing}
                 index={1}
                 semesters={[]}
-                removeSemester={doNothing}
+                removeSemester={doNothingWithString}
                 clear={doNothing}
                 courses={emptyCourses}
-                clearCourses={doNothing}
+                clearCourses={doNothingWithString}
                 canSubmit={true}
                 formInit={formInitWatcher}
             />
@@ -223,14 +226,13 @@ describe(Year, () => {
     });
 
     it("Should call the function to remove a semester when the appropriate button is clicked.", async () => {
-        const removeSpy = jest.fn();
+        const removeSpy = jest.fn<void, [string]>();
         render(
             <Year
                 uuid={yrUuid}
-                handleSubmit={doNothing}
-                handleInput={doNothing}
+                handleSubmit={noFormEvent}
+                handleInput={noChangeEvent}
                 formUuid={null}
-                setFormUuid={doNothing}
                 index={1}
                 semesters={[
                     {
@@ -243,9 +245,9 @@ describe(Year, () => {
                 removeSemester={removeSpy}
                 clear={doNothing}
                 courses={emptyCourses}
-                clearCourses={doNothing}
+                clearCourses={doNothingWithString}
                 canSubmit={false}
-                formInit={doNothing}
+                formInit={doNothingWithString}
             />
         );
 
@@ -254,14 +256,14 @@ describe(Year, () => {
     });
 
     it("Calls the function passed to the clear prop if the clear button is clicked", async () => {
-        const clearSpy = jest.fn();
+        const clearSpy = jest.fn<void, [void]>();
         render(
             <Year
                 uuid={yrUuid}
-                handleSubmit={doNothing}
-                handleInput={doNothing}
+                handleSubmit={noFormEvent}
+                handleInput={noChangeEvent}
                 formUuid={null}
-                setFormUuid={doNothing}
+                
                 index={1}
                 semesters={[
                     {
@@ -271,12 +273,12 @@ describe(Year, () => {
                         uuid: uuid(),
                     },
                 ]}
-                removeSemester={doNothing}
+                removeSemester={doNothingWithString}
                 clear={clearSpy}
                 courses={emptyCourses}
-                clearCourses={doNothing}
+                clearCourses={doNothingWithString}
                 canSubmit={false}
-                formInit={doNothing}
+                formInit={doNothingWithString}
             />
         );
         screen.getByTestId("clear-year 1").click();
@@ -284,15 +286,15 @@ describe(Year, () => {
     });
 
     it("calls the clear function passed to it when a Semester child's clear-courses-button is clicked", async () => {
-        const clearCoursesSpy = jest.fn();
+        const clearCoursesSpy = jest.fn<void, [string]>();
         const newSemesterUuid = uuid();
         render(
             <Year
                 uuid={yrUuid}
-                handleSubmit={doNothing}
-                handleInput={doNothing}
+                handleSubmit={noFormEvent}
+                handleInput={noChangeEvent}
                 formUuid={null}
-                setFormUuid={doNothing}
+                
                 index={1}
                 semesters={[
                     {
@@ -302,12 +304,12 @@ describe(Year, () => {
                         uuid: newSemesterUuid,
                     },
                 ]}
-                removeSemester={doNothing}
+                removeSemester={doNothingWithString}
                 clear={doNothing}
                 courses={emptyCourses}
                 clearCourses={clearCoursesSpy}
                 canSubmit={false}
-                formInit={doNothing}
+                formInit={doNothingWithString}
             />
         );
         expect(clearCoursesSpy).not.toHaveBeenCalled();
@@ -315,16 +317,16 @@ describe(Year, () => {
         expect(clearCoursesSpy).toHaveBeenCalled();
     });
     it("Correctly passes the clearCourses prop to all of its Semesters", async () => {
-        const clearCoursesSpy = jest.fn();
+        const clearCoursesSpy = jest.fn<void, [string]>();
         const springUuid = uuid();
         const summer2Uuid = uuid();
         render(
             <Year
                 uuid={yrUuid}
-                handleSubmit={doNothing}
-                handleInput={doNothing}
+                handleSubmit={noFormEvent}
+                handleInput={noChangeEvent}
                 formUuid={null}
-                setFormUuid={doNothing}
+                
                 index={1}
                 semesters={[
                     {
@@ -340,12 +342,12 @@ describe(Year, () => {
                         uuid: springUuid
                     }
                 ]}
-                removeSemester={doNothing}
+                removeSemester={doNothingWithString}
                 clear={doNothing}
                 courses={emptyCourses}
                 clearCourses={clearCoursesSpy}
                 canSubmit={false}
-                formInit={doNothing}
+                formInit={doNothingWithString}
             />
         );
 

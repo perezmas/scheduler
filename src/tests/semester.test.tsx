@@ -3,9 +3,11 @@ import { fireEvent, render, screen, waitFor, getByText } from "@testing-library/
 import Semester from "../components/Semester";
 import CourseProps from "../interfaces/Course";
 import {v4 as uuid} from "uuid";
+import { CourseAction } from "../hooks/useCourses";
 
 describe(Semester, () => {
-    const doNothing = jest.fn();
+    const doNothing = jest.fn<void, [void]>();
+    const noAction = jest.fn<void, [CourseAction]>();
     const emptyCourses = new Map<string, CourseProps>();
     const semesterUuid = uuid();
 
@@ -14,7 +16,7 @@ describe(Semester, () => {
             uuid={semesterUuid}
             courses={emptyCourses}
             removeSemester={doNothing}
-            updateCourses={doNothing}
+            updateCourses={noAction}
             clearCourses={doNothing}
             name="fall"
             start={new Date("08-31-2021")}
@@ -27,7 +29,7 @@ describe(Semester, () => {
             uuid={semesterUuid}
             courses={emptyCourses}
             removeSemester={doNothing}
-            updateCourses={doNothing}
+            updateCourses={noAction}
             clearCourses={doNothing}
             name="fall"
             start={new Date("08-31-2021")}
@@ -39,13 +41,13 @@ describe(Semester, () => {
         const courses = new Map<string, CourseProps>();
         courses.set(uuid(), {id: "CISC123", name: "test", prereqs: [], coreqs: [], description: "testing", semester: semesterUuid, credits: 1});
         courses.set(uuid(),{id: "CISC124", name: "test2", prereqs: [], coreqs: [], description: "testing", semester: semesterUuid, credits: 4 });
-        courses.set(uuid(), {id: "CISC125", name: "test3", prereqs: [], coreqs: [], description: "testing", semester: semesterUuid, credits: 0 })
+        courses.set(uuid(), {id: "CISC125", name: "test3", prereqs: [], coreqs: [], description: "testing", semester: semesterUuid, credits: 0 });
 
         rerender(<Semester 
             uuid={semesterUuid}
             courses={courses}
             removeSemester={doNothing}
-            updateCourses={doNothing}
+            updateCourses={noAction}
             clearCourses={doNothing}
             name="fall"
             start={new Date("08-31-2021")}
@@ -60,7 +62,7 @@ describe(Semester, () => {
             uuid={semesterUuid}
             courses={emptyCourses}
             removeSemester={doNothing}
-            updateCourses={doNothing}
+            updateCourses={noAction}
             clearCourses={doNothing}
             name="fall"
             start={new Date("08-31-2021")}
@@ -75,7 +77,7 @@ describe(Semester, () => {
             uuid={semesterUuid}
             courses={emptyCourses}
             removeSemester={doNothing}
-            updateCourses={doNothing}
+            updateCourses={noAction}
             clearCourses={doNothing}
             name="fall"
             start={new Date("08-31-2021")}
@@ -98,7 +100,7 @@ describe(Semester, () => {
             uuid={semesterUuid}
             courses={testCourses}
             removeSemester={doNothing}
-            updateCourses={doNothing}
+            updateCourses={noAction}
             clearCourses={doNothing}
             name="fall"
             start={new Date("08-31-2021")}
@@ -109,7 +111,7 @@ describe(Semester, () => {
         await screen.findByTestId("modal-add-course");
     });
     it("Calls updateCourses when you submit a form", async () => {
-        const updateCoursesSpy = jest.fn();
+        const updateCoursesSpy = jest.fn<void, [CourseAction]>();
         render(<Semester 
             uuid={semesterUuid}
             courses={emptyCourses}
@@ -131,14 +133,14 @@ describe(Semester, () => {
         expect(updateCoursesSpy).toHaveBeenCalled();
     });
     it("Calls the function to clear all courses when the clear button is clicked.", async () => {
-        const clearSpy = jest.fn();
+        const clearSpy = jest.fn<void, [void]>();
         render(<Semester
             removeSemester={doNothing}
             clearCourses={clearSpy}
             name={"fall"}
             courses={emptyCourses}
             uuid={semesterUuid}
-            updateCourses={doNothing}
+            updateCourses={noAction}
             start={new Date("2021-08-31")}
             end={new Date("2021-12-15")}
         />);
