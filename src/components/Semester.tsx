@@ -116,9 +116,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
             ></AddCourse>
 
             <span
-                data-testid={`Semester ${
-                    props.name
-                } ${props.start.getUTCFullYear()}`}
+                data-testid={`semester-name`}
             >
                 {`${props.name} `}
             </span>
@@ -126,9 +124,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                 {totalCredits}
             </span>
             <button
-                data-testid={`Remove Semester ${
-                    props.name
-                } ${props.start.getUTCFullYear()}`}
+                data-testid={`remove-semester`}
                 className="trigger"
                 onClick={props.removeSemester}
             >
