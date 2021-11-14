@@ -2,18 +2,18 @@ import React from "react";
 import {screen, render} from "@testing-library/react";
 import FormTrigger from "../components/Year/FormTrigger";
 import {v4 as uuid} from "uuid";
-import renderer from "react-test-renderer";
 
 describe(FormTrigger,() => {
     const doNothingWithString = jest.fn<void, [string | null]>();
-    it("Should only render a button if currentForm is null", async () => {
-        const tree = renderer.create(<FormTrigger
+    it("Should render the button to open the popup, but not the popup itself if the currentForm is null.", async () => {
+        render(<FormTrigger
             currentForm={null}
             setForm={doNothingWithString}
             YearUuid={uuid()}
         ><div>I should be hidden</div>
-        </FormTrigger>).toJSON();
-        expect(tree).toMatchSnapshot();
+        </FormTrigger>);
+        expect(screen.getByTestId("open-semester-form")).toBeInTheDocument();
+        expect(screen.queryByText("I should be hidden")).not.toBeInTheDocument();
     });
     it("Should be the same no matter what currentForm is as long as it is not YearUuid", async () => {
         const {rerender} = render(<FormTrigger
