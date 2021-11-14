@@ -1,5 +1,5 @@
 import React from "react";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, getByText } from "@testing-library/react";
 import Semester from "../components/Semester";
 import CourseProps from "../interfaces/Course";
 import {v4 as uuid} from "uuid";
@@ -21,6 +21,39 @@ describe(Semester, () => {
             end={new Date("12-15-2021")}
         />);
         expect(screen.getByText("fall")).toBeInTheDocument();
+    });
+    it("Displays the total number of credits between all courses in the semester", async () => {
+        const {rerender} = render(<Semester
+            uuid={semesterUuid}
+            courses={emptyCourses}
+            removeSemester={doNothing}
+            updateCourses={doNothing}
+            clearCourses={doNothing}
+            name="fall"
+            start={new Date("08-31-2021")}
+            end={new Date("12-15-2021")}
+        />);
+        let creditsCounter = screen.getByTestId("credits-count");
+        expect(getByText(creditsCounter,0)).toBeInTheDocument();
+
+        const courses = new Map<string, CourseProps>();
+        courses.set(uuid(), {id: "CISC123", name: "test", prereqs: [], coreqs: [], description: "testing", semester: semesterUuid, credits: 1});
+        courses.set(uuid(),{id: "CISC124", name: "test2", prereqs: [], coreqs: [], description: "testing", semester: semesterUuid, credits: 4 });
+        courses.set(uuid(), {id: "CISC125", name: "test3", prereqs: [], coreqs: [], description: "testing", semester: semesterUuid, credits: 0 })
+
+        rerender(<Semester 
+            uuid={semesterUuid}
+            courses={courses}
+            removeSemester={doNothing}
+            updateCourses={doNothing}
+            clearCourses={doNothing}
+            name="fall"
+            start={new Date("08-31-2021")}
+            end={new Date("12-15-2021")}
+        />);
+
+        creditsCounter = screen.getByTestId("credits-count");
+        expect(getByText(creditsCounter,5)).toBeInTheDocument();
     });
     it("it opens a course modal when you click add course button", async () => {
         render(<Semester 
@@ -98,14 +131,12 @@ describe(Semester, () => {
         expect(updateCoursesSpy).toHaveBeenCalled();
     });
     it("Calls the function to clear all courses when the clear button is clicked.", async () => {
-        const courses = new Map<string, CourseProps>();
-        const semesterUuid = uuid();
         const clearSpy = jest.fn();
         render(<Semester
             removeSemester={doNothing}
             clearCourses={clearSpy}
             name={"fall"}
-            courses={courses}
+            courses={emptyCourses}
             uuid={semesterUuid}
             updateCourses={doNothing}
             start={new Date("2021-08-31")}

@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useState, useMemo } from "react";
 import { CourseAction } from "../hooks/useCourses";
 import CourseProps from "../interfaces/Course";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
@@ -98,21 +98,17 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
         });
         if (isEditing) setIsEditing(false);
     };
-    const addedCourses = Array.from(props.courses.values())
-        .filter((course) => course.semester === props.uuid)
-        .map((course) => {
-            return (
-                <ListGroupItem key={course.id}>
-                    {
-                        <Course
-                            {...course}
-                            onClickEdit={onClickEdit}
-                            onRemoveCourse={unAttachCourse}
-                        />
-                    }
-                </ListGroupItem>
-            );
+    const semesterCourses = useMemo(() => {
+        return Array.from(props.courses.values()).filter((course: CourseProps) => {
+            return course.semester === props.uuid;
         });
+    },[Array.from(props.courses.values())]);
+
+    const totalCredits = useMemo(() => {
+        return semesterCourses.reduce((previousValue: CourseProps, currentValue: CourseProps) => {
+            return {id: "", description: "", name: "", credits: previousValue.credits+currentValue.credits, semester: "", coreqs: [], prereqs: []};
+        },{id: "", description: "", name: "", credits: 0, coreqs: [], prereqs: [], semester: ""}).credits;
+    },[semesterCourses]);
 
     return (
         <>
@@ -136,7 +132,10 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                     props.name
                 } ${props.start.getUTCFullYear()}`}
             >
-                {props.name}
+                {`${props.name} `}
+            </span>
+            <span data-testid="credits-count">
+                {totalCredits}
             </span>
             <button
                 data-testid={`Remove Semester ${
@@ -148,7 +147,20 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                 -
             </button>
 
-            <ListGroup className="courses">{addedCourses}</ListGroup>
+            <ListGroup className="courses">{semesterCourses.map((course: CourseProps) => {
+                return (
+                    <ListGroupItem key={course.id}>
+                        {
+                            <Course
+                                {...course}
+                                onClickEdit={onClickEdit}
+                                onRemoveCourse={unAttachCourse}
+                            />
+                        }
+                    </ListGroupItem>
+                );
+            })}
+            </ListGroup>
             <button
                 className="trigger"
                 onClick={() => {
