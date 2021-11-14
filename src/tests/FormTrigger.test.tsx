@@ -76,7 +76,7 @@ describe(FormTrigger, async () => {
         expect(setFormSpy).not.toHaveBeenCalled();
         screen.getByTestId("open-semester-form").click();
         expect(setFormSpy).toHaveBeenCalled();
-        expect(setFormSpy).toHaveBeenLastCalledWith(null); 
+        expect(setFormSpy).toHaveBeenLastCalledWith(null);
     });
 
 });

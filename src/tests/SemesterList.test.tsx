@@ -99,7 +99,7 @@ describe(SemesterList, () => {
         expect(removeSemesterSpy).not.toHaveBeenCalled();
         screen.getByTestId("remove-semester").click();
         expect(removeSemesterSpy).toHaveBeenCalled();
-        expect(removeSemesterSpy).toHaveBeenLastCalledWith([semesterUuid]);
+        expect(removeSemesterSpy).toHaveBeenLastCalledWith(semesterUuid);
     });
     it("Should call clearCourses if the clear courses button in one of its Semester children is clicked", async () => {
         const clearCoursesSpy = jest.fn<void,[string]>();
@@ -120,6 +120,6 @@ describe(SemesterList, () => {
         expect(clearCoursesSpy).not.toHaveBeenCalled();
         screen.getByTestId("clear-courses-button").click();
         expect(clearCoursesSpy).toHaveBeenCalled();
-        expect(clearCoursesSpy).toHaveBeenLastCalledWith([semesterUuid]);
+        expect(clearCoursesSpy).toHaveBeenLastCalledWith(semesterUuid);
     });
 });
