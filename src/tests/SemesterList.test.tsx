@@ -81,9 +81,45 @@ describe(SemesterList, () => {
         expect(summer2Col).toContainElement(summer2);
     });
     it("Should call removeSemester if the remove-semester button in one of its child Semesters is clicked.", async () => {
-        const removeSemesterSpy = jest.fn<void, [void]>();
+        const removeSemesterSpy = jest.fn<void, [string]>();
+        const semesterUuid = uuid();
 
         render(<SemesterList
+            removeSemester={removeSemesterSpy}
+            clearCourses={doNothingWithString}
+            courses={emptyCourses}
+            semesters={[{
+                name: "summer",
+                start: new Date("2022-07-11"),
+                end: new Date("2022-08-12"),
+                uuid: semesterUuid,
+            }]}
         />);
-    })
-})
+
+        expect(removeSemesterSpy).not.toHaveBeenCalled();
+        screen.getByTestId("remove-semester").click();
+        expect(removeSemesterSpy).toHaveBeenCalled();
+        expect(removeSemesterSpy).toHaveBeenLastCalledWith([semesterUuid]);
+    });
+    it("Should call clearCourses if the clear courses button in one of its Semester children is clicked", async () => {
+        const clearCoursesSpy = jest.fn<void,[string]>();
+        const semesterUuid = uuid();
+
+        render(<SemesterList
+            removeSemester={doNothingWithString}
+            clearCourses={clearCoursesSpy}
+            courses={emptyCourses}
+            semesters={[{
+                name: "summer",
+                start: new Date("2022-07-11"),
+                end: new Date("2022-08-12"),
+                uuid: semesterUuid,
+            }]}
+        />);
+
+        expect(clearCoursesSpy).not.toHaveBeenCalled();
+        screen.getByTestId("clear-courses-button").click();
+        expect(clearCoursesSpy).toHaveBeenCalled();
+        expect(clearCoursesSpy).toHaveBeenLastCalledWith([semesterUuid]);
+    });
+});
