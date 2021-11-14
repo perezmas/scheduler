@@ -1,32 +1,42 @@
 import React, { FormEvent, useState, useMemo } from "react";
-import { CourseAction } from "../hooks/useCourses";
 import CourseProps from "../interfaces/Course";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import SemesterProps from "../interfaces/Semester";
 import AddCourse from "./AddCourse";
 import Course from "./Course";
+import {v4 as uuid} from "uuid";
+import {getByUUID} from "../hooks/useYears";
 
 interface FullSemesterProps extends SemesterProps {
     /**The uuid's of all exiting courses */
-    courses: Map<string, CourseProps>;
+    courses: Array<CourseProps>;
     /**A function that will delete this semester.*/
     removeSemester: () => void;
-    /**A function that updates the courses object. */
-    updateCourses: (action: CourseAction) => void;
+    /**A function that removes a course from the global list. */
+    removeCourse: (uuid: string) => void,
+    /**A function that pushes courses into the global list. */
+    push: (course: CourseProps) => void,
     /**A function that clears all courses from this semester. */
     clearCourses: () => void;
 }
 
-/**Represents a single semester of courses within an academic year. */
-const Semester = (props: FullSemesterProps): JSX.Element => {
-    const [newCourse, setNewCourse] = useState<CourseProps>({
+function getEmptyCourse(semester: string): CourseProps{
+    return {
         id: "",
         name: "",
         description: "",
         credits: 0,
-        semester: props.uuid,
+        semester: semester,
         coreqs: [],
         prereqs: [],
+        uuid: uuid()
+    };
+}
+
+/**Represents a single semester of courses within an academic year. */
+const Semester = (props: FullSemesterProps): JSX.Element => {
+    const [newCourse, setNewCourse] = useState<CourseProps>(() => {
+        return getEmptyCourse(props.uuid);
     });
     const [isOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -37,7 +47,6 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
         switch (event.target.name) {
         case "courseName":
             courseToAdd.name = event.target.value;
-
             break;
         case "courseID":
             courseToAdd.id = event.target.value;
@@ -65,49 +74,28 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
         }
         setNewCourse(courseToAdd);
     };
-    const unAttachCourse = (courseToRemove: CourseProps) => {
-        const action: CourseAction = {
-            type: "REMOVE COURSE",
-            payload: courseToRemove,
-        };
-        props.updateCourses(action);
-    };
 
-    const onClickEdit = (courseToEdit: CourseProps) => {
-        setNewCourse(courseToEdit);
+    const onClickEdit = (uuid: string) => {
+        setNewCourse(props.courses[getByUUID(props.courses, uuid)]);
         setIsOpen(true);
         setIsEditing(true);
     };
     const handleCourseSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-
-        const action: CourseAction = {
-            type: "ADD COURSE",
-            payload: newCourse,
-        };
-
-        props.updateCourses(action);
-        setNewCourse({
-            id: "",
-            name: "",
-            description: "",
-            credits: 0,
-            semester: props.uuid,
-            coreqs: [],
-            prereqs: [],
-        });
+        props.push(newCourse);
+        setNewCourse(getEmptyCourse(props.uuid));
         if (isEditing) setIsEditing(false);
     };
     const semesterCourses = useMemo(() => {
-        return Array.from(props.courses.values()).filter((course: CourseProps) => {
+        return props.courses.filter((course: CourseProps) => {
             return course.semester === props.uuid;
         });
-    },[Array.from(props.courses.values())]);
+    },[props.courses]);
 
     const totalCredits = useMemo(() => {
         return semesterCourses.reduce((previousValue: CourseProps, currentValue: CourseProps) => {
-            return {id: "", description: "", name: "", credits: previousValue.credits+currentValue.credits, semester: "", coreqs: [], prereqs: []};
-        },{id: "", description: "", name: "", credits: 0, coreqs: [], prereqs: [], semester: ""}).credits;
+            return {id: "", description: "", name: "", credits: previousValue.credits+currentValue.credits, semester: "", coreqs: [], prereqs: [], uuid: ""};
+        },{id: "", description: "", name: "", credits: 0, coreqs: [], prereqs: [], semester: "", uuid: ""}).credits;
     },[semesterCourses]);
 
     return (
@@ -154,7 +142,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                             <Course
                                 {...course}
                                 onClickEdit={onClickEdit}
-                                onRemoveCourse={unAttachCourse}
+                                removeCourse={props.removeCourse}
                             />
                         }
                     </ListGroupItem>

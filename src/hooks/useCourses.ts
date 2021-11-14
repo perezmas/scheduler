@@ -1,72 +1,74 @@
 import { useReducer } from "react";
 import CourseProps from "../interfaces/Course";
+import { getByUUID } from "./useYears";
 
-export interface CourseAction {
+export interface AbstractCourseAction {
     type: "ADD COURSE" | "REMOVE COURSE";
-    payload: CourseProps;
+}
+
+export interface AddCourseAction {
+    type: "ADD COURSE",
+    newCourse: CourseProps
+}
+
+export interface RemoveCourseAction {
+    type: "REMOVE COURSE",
+    uuid: string
 }
 
 // easy access to the courses
 
-const courseReducer = (
-    state: Map<string, CourseProps>,
-    action: CourseAction
-): Map<string, CourseProps> => {
+const courseReducer = (state: Array<CourseProps>,action: AbstractCourseAction): Array<CourseProps> => {
+    const newState = state.map((course: CourseProps) => {
+        return course;
+    });
     switch (action.type) {
     case "ADD COURSE": {
-        const newState = new Map<string, CourseProps>(state);
-        newState.set(action.payload.id, action.payload);
+        const realAction = action as AddCourseAction;
+        newState.push(realAction.newCourse);
         return newState;
     }
     case "REMOVE COURSE": {
-        const newState = new Map<string, CourseProps>(state);
-        newState.delete(action.payload.id);
+        const realAction = action as RemoveCourseAction;
+        const target = getByUUID(newState, realAction.uuid);
+        if(target !== -1){
+            newState.splice(target, 1);
+        }
         return newState;
     }
     }
 };
 
-const courseInit = (
-    courses?: Map<string, CourseProps>
-): Map<string, CourseProps> => {
-    if (courses) return courses;
-    else return new Map<string, CourseProps>();
+const courseInit = (courses?: Array<CourseProps>): Array<CourseProps> => {
+    return courses === undefined ? [] : courses;
 };
+
 export interface Courses {
-    courseList: Map<string, CourseProps>;
+    courseList: Array<CourseProps>;
     removeCourse: (courseID: string) => void;
-
-    updateCourses: (action: CourseAction) => void;
+    push: (course: CourseProps) => void;
 }
-function useCourses(initialCourses?: Map<string, CourseProps>): Courses {
-    {
-        const [courses, updateCourses] = useReducer(
-            courseReducer,
-            initialCourses,
-            courseInit
-        );
+function useCourses(initialCourses?: Array<CourseProps>): Courses {
+    const [courses, updateCourses] = useReducer(
+        courseReducer,
+        initialCourses,
+        courseInit
+    );
 
-        const onRemoveCourse = (courseID: string) => {
-            //get the course to remove
+    const push = (course: CourseProps) => {
+        const action: AddCourseAction = {type: "ADD COURSE", newCourse: course};
+        updateCourses(action);
+    };
 
-            const courseToRemove = courses.get(courseID);
-            if (courseToRemove) {
-                const action: CourseAction = {
-                    type: "REMOVE COURSE",
-                    payload: courseToRemove,
-                };
-                updateCourses(action);
-            } else {
-                throw new Error("Course not found");
-            }
-        };
+    const remove = (uuid: string) => {
+        const action: RemoveCourseAction = {type: "REMOVE COURSE", uuid: uuid};
+        updateCourses(action);
+    };
 
-        return {
-            courseList: courses,
-            removeCourse: onRemoveCourse,
-
-            updateCourses: updateCourses,
-        };
-    }
+    return {
+        courseList: courses,
+        removeCourse: remove,
+        push: push,
+    };
 }
 export default useCourses;

@@ -1,5 +1,7 @@
-interface CourseProps {
-    /**The course ID */
+import AbstractProps from "./Props";
+
+interface CourseProps extends AbstractProps {
+    /**The course ID (e.g. CISC275) */
     id: string;
     /* The name of the course */
     name: string;
