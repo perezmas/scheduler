@@ -44,7 +44,7 @@ describe(FormTrigger,() => {
         );
 
         const popover = await screen.findByTestId("popover");
-        expect(popover).toContainElement(screen.getByText("I shouldn't be hidden"));
+        expect(popover).toContainElement(screen.getByText("I should not be hidden"));
     });
 
     it("Should call setForm with YearUuid as the argument if the open-semester-form button is clicked", async () => {
