@@ -4,7 +4,7 @@ import FormTrigger from "../components/Year/FormTrigger";
 import {v4 as uuid} from "uuid";
 import renderer from "react-test-renderer"
 
-describe(FormTrigger, async () => {
+describe(FormTrigger,() => {
     const doNothingWithString = jest.fn<void, [string | null]>();
     it("Should only render a button if currentForm is null", async () => {
         const tree = renderer.create(<FormTrigger

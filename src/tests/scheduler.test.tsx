@@ -111,6 +111,20 @@ describe(Scheduler, () => {
         render(<Scheduler requirements={[]} />);
     });
 
+    it("Should start with 2 years and 3 semesters.", async () => {
+        const year1 = screen.getByTestId("Year 1");
+        const fall1 = getByTestId(year1,"semester 1");
+        expect(getByText(fall1,"fall")).toBeInTheDocument();
+        const spring = getByTestId(year1,"semester 2");
+        expect(getByText(spring,"spring")).toBeInTheDocument();
+        expect(queryByTestId(year1,"semester 3")).not.toBeInTheDocument();
+
+        const year2 = screen.getByTestId("Year 2");
+        const fall2 = getByTestId(year2, "semester 1");
+        expect(getByText(fall2, "fall")).toBeInTheDocument();
+        expect(queryByTestId(year2, "semester 2")).not.toBeInTheDocument();
+    });
+
     it("Can add another year by pressing the button", async () => {
         let btn = screen.getByTestId("add-year-button");
         btn.click();
