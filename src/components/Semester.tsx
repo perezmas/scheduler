@@ -116,7 +116,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
             ></AddCourse>
 
             <span
-                data-testid={`semester-name`}
+                data-testid={"semester-name"}
             >
                 {`${props.name} `}
             </span>
@@ -124,7 +124,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                 {totalCredits}
             </span>
             <button
-                data-testid={`remove-semester`}
+                data-testid={"remove-semester"}
                 className="trigger"
                 onClick={props.removeSemester}
             >

@@ -202,9 +202,9 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                     Clear
                 </button>
                 <div>
-                    {years.value.map((props: YearProps, i: number) => {
+                    {years.value.map((props: YearProps) => {
                         return (
-                            <div data-testid={`Year ${i}`} key={props.uuid}>
+                            <div data-testid={`Year ${props.index}`} key={props.uuid}>
                                 <YearHeader index={props.index} clearSemesters={() => {
                                     years.clear(props.uuid);
                                 }}
@@ -236,7 +236,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                     <button
                         data-testid="add-year-button"
                         onClick={() => {
-                            years.push(uuid(), years.value.length);
+                            years.push(uuid(), years.value.length+1);
                         }}
                     >
                         +
