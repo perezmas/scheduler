@@ -12,7 +12,6 @@ import {
 
 import { act } from "react-dom/test-utils";
 import { Scheduler } from "../components/Scheduler";
-import renderer from "react-test-renderer";
 
 async function addCourse(year: number, semester: number, name: string, id: string, description?: string){
     const yearElement = screen.getByTestId(`Year ${year}`);

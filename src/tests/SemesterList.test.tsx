@@ -11,7 +11,7 @@ describe(SemesterList, () => {
         courseList: [],
         push: jest.fn<void, [CourseProps]>(),
         removeCourse: doNothingWithString,
-    }
+    };
     it("Should be able to render a Semester if a SemesterProps object is passed to its Semesters prop.", async () => {
         render(<SemesterList
             semesters={[{uuid: uuid(), name: "fall", start: new Date("08-31-2021"), end: new Date("12-15-2021")}]}

@@ -1,17 +1,17 @@
 import React from "react";
-import {screen, render, waitFor} from "@testing-library/react";
+import {screen, render} from "@testing-library/react";
 import FormTrigger from "../components/Year/FormTrigger";
 import {v4 as uuid} from "uuid";
-import renderer from "react-test-renderer"
+import renderer from "react-test-renderer";
 
 describe(FormTrigger,() => {
     const doNothingWithString = jest.fn<void, [string | null]>();
     it("Should only render a button if currentForm is null", async () => {
         const tree = renderer.create(<FormTrigger
-        currentForm={null}
-        setForm={doNothingWithString}
-        YearUuid={uuid()}
-            ><div>I should be hidden</div>
+            currentForm={null}
+            setForm={doNothingWithString}
+            YearUuid={uuid()}
+        ><div>I should be hidden</div>
         </FormTrigger>).toJSON();
         expect(tree).toMatchSnapshot();
     });
@@ -20,16 +20,16 @@ describe(FormTrigger,() => {
             currentForm={null}
             setForm={doNothingWithString}
             YearUuid={uuid()}
-                ><div>I should be hidden</div>
-            </FormTrigger>);
+        ><div>I should be hidden</div>
+        </FormTrigger>);
 
         const html = screen.getByTestId("form-trigger").innerHTML;
         rerender(<FormTrigger
             currentForm={"x"}
             setForm={doNothingWithString}
             YearUuid={uuid()}
-                ><div>I should be hidden</div>
-            </FormTrigger>
+        ><div>I should be hidden</div>
+        </FormTrigger>
         );
         expect(screen.getByTestId("form-trigger")).toContainHTML(html);
     });
@@ -39,8 +39,8 @@ describe(FormTrigger,() => {
             currentForm={YearUuid}
             setForm={doNothingWithString}
             YearUuid={YearUuid}
-                ><div>I shouldn't be hidden</div>
-            </FormTrigger>
+        ><div>I should not be hidden</div>
+        </FormTrigger>
         );
 
         const popover = await screen.findByTestId("popover");
@@ -54,8 +54,8 @@ describe(FormTrigger,() => {
             currentForm={null}
             setForm={setFormSpy}
             YearUuid={YearUuid}
-                ><div>I should be hidden</div>
-            </FormTrigger>
+        ><div>I should be hidden</div>
+        </FormTrigger>
         );
         expect(setFormSpy).not.toHaveBeenCalled();
         screen.getByTestId("open-semester-form").click();
@@ -69,8 +69,8 @@ describe(FormTrigger,() => {
             currentForm={YearUuid}
             setForm={setFormSpy}
             YearUuid={YearUuid}
-                ><div>I should be hidden</div>
-            </FormTrigger>
+        ><div>I should be hidden</div>
+        </FormTrigger>
         );
         await screen.findByTestId("popover");
         expect(setFormSpy).not.toHaveBeenCalled();
