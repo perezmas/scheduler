@@ -1,18 +1,21 @@
 import React from "react";
 import {
     fireEvent,
-    // getByTestId,
+    queryByText,
     render,
     screen,
     waitFor,
-    getByTestId
+    getByTestId,
+    queryByTestId,
+    getByText
 } from "@testing-library/react";
 
 import { act } from "react-dom/test-utils";
 import { Scheduler } from "../components/Scheduler";
 
 async function addCourse(year: number, semester: number, name: string, id: string, description?: string){
-    const semesterElement = screen.getByTestId(`Year ${year} semester ${semester}`);
+    const yearElement = screen.getByTestId(`Year ${year}`);
+    const semesterElement = getByTestId(yearElement,`semester ${semester}`);
     getByTestId(semesterElement,"add-course-button").click();
 
     await screen.findByTestId("course-form");
@@ -64,14 +67,15 @@ async function addSemester(
 
     await waitFor(() => {
         expect(
-            screen.queryByTestId(`semester-form ${year}`)
+            screen.queryByTestId("popover")
         ).not.toBeInTheDocument();
     });
 }
 
 async function openForm(year: number): Promise<void> {
-    screen.getByTestId(`trigger ${year}`).click();
-    await screen.findByTestId(`semester-form ${year}`);
+    const yearElement = screen.getByTestId(`Year ${year}`);
+    getByTestId(yearElement,"open-semester-form").click();
+    await screen.findByTestId("popover");
 }
 
 async function testForError(
@@ -102,38 +106,33 @@ async function testForError(
 }
 
 describe(Scheduler, () => {
-    const currentYear = new Date().getUTCFullYear();
     beforeEach(() => {
         render(<Scheduler requirements={[]} />);
     });
 
-    it("Starts with a default page with the first 3 semesters in a standard plan", async () => {
-        const yrs = screen.getAllByTestId("Year");
-        expect(yrs).toHaveLength(2);
-        expect(screen.getAllByText("fall")).toHaveLength(2);
-        expect(screen.getAllByText("spring")).toHaveLength(1);
+    it("Should start with 2 years and 3 semesters.", async () => {
+        const year1 = screen.getByTestId("Year 1");
+        const fall1 = getByTestId(year1,"semester 1");
+        expect(getByText(fall1,"fall")).toBeInTheDocument();
+        const spring = getByTestId(year1,"semester 2");
+        expect(getByText(spring,"spring")).toBeInTheDocument();
+        expect(queryByTestId(year1,"semester 3")).not.toBeInTheDocument();
 
-        expect(screen.getByTestId("clear-button")).toBeInTheDocument();
-        expect(
-            screen.getByTestId(`Semester fall ${currentYear}`)
-        ).toBeInTheDocument();
-        expect(
-            screen.getByTestId(`Semester spring ${currentYear + 1}`)
-        ).toBeInTheDocument();
-        expect(
-            screen.getByTestId(`Semester spring ${currentYear + 1}`)
-        ).toBeInTheDocument();
+        const year2 = screen.getByTestId("Year 2");
+        const fall2 = getByTestId(year2, "semester 1");
+        expect(getByText(fall2, "fall")).toBeInTheDocument();
+        expect(queryByTestId(year2, "semester 2")).not.toBeInTheDocument();
     });
 
     it("Can add another year by pressing the button", async () => {
         let btn = screen.getByTestId("add-year-button");
         btn.click();
-        expect(screen.getByTestId("Year 3 label")).toBeInTheDocument();
+        expect(screen.getByTestId("Year 3")).toBeInTheDocument();
         for (let i = 0; i < 5; i++) {
             btn = screen.getByTestId("add-year-button");
             btn.click();
             expect(
-                screen.getByTestId(`Year ${4 + i} label`)
+                screen.getByTestId(`Year ${4 + i}`)
             ).toBeInTheDocument();
         }
     });
@@ -150,12 +149,13 @@ describe(Scheduler, () => {
         expect(endBox).toBeInTheDocument();
 
         act(() => {
-            screen.getByTestId("trigger 1").click();
+            const yearElement = screen.getByTestId("Year 1");
+            getByTestId(yearElement,"open-semester-form").click();
         });
 
         await waitFor(() => {
             expect(
-                screen.queryByTestId("semester-form 1")
+                screen.queryByTestId("popover")
             ).not.toBeInTheDocument();
         });
     });
@@ -166,7 +166,7 @@ describe(Scheduler, () => {
         const expectNoSubmission = () => {
             submit.click();
             expect(screen.queryByText("winter")).not.toBeInTheDocument();
-            expect(screen.getByTestId("semester-form 1")).toBeInTheDocument();
+            expect(screen.getByTestId("popover")).toBeInTheDocument();
         };
 
         const seasonBox = screen.getByTestId("season-input");
@@ -190,26 +190,30 @@ describe(Scheduler, () => {
         fireEvent.change(endsBox, { target: { value: "2022-02-05" } });
         submit.click();
 
+        await waitFor(() => {
+            expect(screen.queryByTestId("popover")).not.toBeInTheDocument();
+        });
         expect(screen.getByText("winter")).toBeInTheDocument();
-        expect(screen.queryByTestId("semester-form 1")).not.toBeInTheDocument();
     });
 
     it("Allows you to add semesters to a year.", async () => {
+        const year = screen.getByTestId("Year 1");
         expect(
-            screen.queryByTestId("Semester summer 2019")
+            queryByTestId(year,"semester 3")
         ).not.toBeInTheDocument();
 
-        await addSemester("summer", "2019-09-01", "2019-12-15");
+        await addSemester("summer", "2024-09-01", "2024-12-15");
 
-        expect(
-            screen.queryByTestId("Semester summer 2019")
-        ).toBeInTheDocument();
+        const newSemester = getByTestId(year, "semester 3");
+        expect(getByText(newSemester,"summer")).toBeInTheDocument();
     });
 
     it("Should be able to remove a semester on clicking the '-' button next to the label", async () => {
-        screen.getByTestId(`Remove Semester fall ${currentYear}`).click();
+        const year = screen.getByTestId("Year 1");
+        const semester = getByTestId(year,"semester 1");
+        getByTestId(semester,"remove-semester").click();
         expect(
-            screen.queryByTestId(`Semester fall ${currentYear}`)
+            queryByText(getByTestId(year,"semester 1"),"fall")
         ).not.toBeInTheDocument();
     });
 
@@ -346,7 +350,9 @@ describe(Scheduler, () => {
         await addCourse(1, 2, "Intro to stuff", "STUFF-101", "");
         await addCourse(2, 1, "Intro to more stuff", "STUFF-102");
 
-        const fall = screen.getByTestId("Year 1 semester 1");
+        const yr1 = screen.getByTestId("Year 1");
+
+        const fall = getByTestId(yr1,"semester 1");
         
         expect(screen.getByText("0 Irish Dance")).toBeInTheDocument();
         expect(screen.getByText("0 Intro to Scots")).toBeInTheDocument();

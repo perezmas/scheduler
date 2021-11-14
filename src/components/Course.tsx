@@ -3,9 +3,9 @@ import CourseProps from "../interfaces/Course";
 
 interface CurrentCourseProps extends CourseProps {
     /**A function that deletes this course from the global map containing all courses. */
-    onRemoveCourse: (courseToRemove: CourseProps) => void;
+    removeCourse: (uuid: string) => void;
     /**A function that is called when the user clicks the edit button to edit this course. */
-    onClickEdit: (courseToEdit: CourseProps) => void;
+    onClickEdit: (uuid: string) => void;
 }
 
 /**A component that represents a course. */
@@ -15,7 +15,7 @@ const Course = (props: CurrentCourseProps): JSX.Element => {
             <div
                 style={{ display: "inline-block" }}
                 onClick={() => {
-                    props.onRemoveCourse(props);
+                    props.removeCourse(props.uuid);
                 }}
             >
                 {`${props.credits} ${props.name}`}
@@ -25,7 +25,7 @@ const Course = (props: CurrentCourseProps): JSX.Element => {
                 className="trigger"
                 data-testid="edit-course-button"
                 onClick={() => {
-                    props.onClickEdit(props);
+                    props.onClickEdit(props.uuid);
                 }}
             >
                 Edit

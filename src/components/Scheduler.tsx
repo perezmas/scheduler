@@ -2,15 +2,16 @@ import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import useYears, { getByUUID } from "../hooks/useYears";
 import { v4 as uuid } from "uuid";
 import { YearProps } from "../interfaces/Year";
-
-import Year from "./Year";
+import SemesterList from "./Year/SemesterList";
 import useProblems, { Problem } from "../hooks/useProblems";
 import ErrorStack from "./ErrorStack";
 import validate from "../util/validation/dates";
-
-import useCourses, { Courses } from "../hooks/useCourses";
-
+import useCourses from "../hooks/useCourses";
 import { Table } from "react-bootstrap";
+import YearHeader from "./Year/YearHeader";
+import FormTrigger from "./Year/FormTrigger";
+import SemesterForm from "./Year/SemesterForm";
+import CourseProps from "../interfaces/Course";
 
 interface SchedulerProps {
     /**csv data that can be used to reconstruct a scheduler. */
@@ -57,19 +58,6 @@ function hasError(problems: Array<Problem>): boolean {
         }
     }
     return false;
-}
-
-function clearCourses(semesterUuid: string, courses: Courses){
-    const entries = courses.courseList.entries();
-    for (
-        let entry = entries.next();
-        !entry.done;
-        entry = entries.next()
-    ) {
-        if (entry.value[1].semester === semesterUuid) {
-            courses.removeCourse(entry.value[0]);
-        }
-    }
 }
 
 export function Scheduler(props: SchedulerProps): JSX.Element {
@@ -162,7 +150,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
             const newCourses = Array<string>();
 
             for (const requirement of requirements) {
-                if (!courses.courseList.has(requirement)) {
+                if (getByUUID(courses.courseList, requirement) === -1) {
                     newCourses.push(requirement);
                 }
             }
@@ -214,43 +202,41 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                     Clear
                 </button>
                 <div>
-                    {years.value.map((props: YearProps, i: number) => {
+                    {years.value.map((props: YearProps) => {
                         return (
-                            <div data-testid={"Year"} key={props.uuid}>
-                                <Year
-                                    courses={courses}
-                                    canSubmit={submissionAllowed}
-                                    handleInput={handleSemesterInput}
-                                    handleSubmit={(
-                                        event: FormEvent<HTMLFormElement>
-                                    ) => {
-                                        handleSemesterSubmit(event, props.uuid);
-                                    }}
-                                    semesters={props.semesters}
-                                    uuid={props.uuid}
-                                    index={i + 1}
-                                    formUuid={currentForm}
-                                    removeSemester={(semesterUuid: string) => {
-                                        years.removeSemester(
-                                            props.uuid,
-                                            semesterUuid
-                                        );
-                                    }}
-                                    clear={() => {
-                                        years.clear(props.uuid);
+                            <div data-testid={`Year ${props.index}`} key={props.uuid}>
+                                <YearHeader index={props.index} clearSemesters={() => {
+                                    years.clear(props.uuid);
+                                }}
+                                >
+                                    <SemesterList semesters={props.semesters} courses={courses} removeSemester={(semesterUuid: string) => {
+                                        years.removeSemester(props.uuid, semesterUuid);
                                     }}
                                     clearCourses={(semesterUuid: string) => {
-                                        clearCourses(semesterUuid, courses);
+                                        for(const course of courses.courseList.filter((course: CourseProps) => {
+                                            return course.semester === semesterUuid;
+                                        })){
+                                            courses.removeCourse(course.uuid); 
+                                        }
                                     }}
-                                    formInit={semesterFormInit}
-                                />
+                                    />
+                                    <FormTrigger currentForm={currentForm} setForm={semesterFormInit} YearUuid={props.uuid}>
+                                        <SemesterForm
+                                            canSubmit={submissionAllowed}
+                                            handleInput={handleSemesterInput}
+                                            handleSubmit={(event: FormEvent<HTMLFormElement>) => {
+                                                handleSemesterSubmit(event, props.uuid);
+                                            }}
+                                        />
+                                    </FormTrigger>
+                                </YearHeader>
                             </div>
                         );
                     })}
                     <button
                         data-testid="add-year-button"
                         onClick={() => {
-                            years.push(uuid(), years.value.length);
+                            years.push(uuid(), years.value.length+1);
                         }}
                     >
                         +

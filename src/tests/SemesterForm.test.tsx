@@ -1,6 +1,6 @@
 import React from "react";
 import {render, screen, fireEvent} from "@testing-library/react";
-import SemesterForm from "../components/SemesterForm";
+import SemesterForm from "../components/Year/SemesterForm";
 import { ChangeEvent, FormEvent } from "react";
 
 
