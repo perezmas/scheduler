@@ -1,5 +1,4 @@
 import React, {useMemo} from "react";
-import CourseProps from "../../interfaces/Course";
 import SemesterProps from "../../interfaces/Semester";
 import Col from "react-bootstrap/Col";
 import Semester from "../Semester";
