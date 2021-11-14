@@ -4,6 +4,7 @@ import Popover from "react-bootstrap/Popover";
 import PopoverContent from "react-bootstrap/PopoverContent";
 import Overlay from "react-bootstrap/Overlay";
 
+
 interface FormTriggerProps{
     currentForm: string | null,
     setForm: (newForm: string | null) => void,
@@ -14,7 +15,7 @@ interface FormTriggerProps{
 export default function FormTrigger(props: FormTriggerProps): JSX.Element{
     const overlayButton = useRef(null);
     return (
-        <Col>
+        <Col data-testid="form-trigger">
             <button
                 data-testid="open-semester-form"
                 className="trigger"
@@ -39,7 +40,7 @@ export default function FormTrigger(props: FormTriggerProps): JSX.Element{
                 rootClose={true}
                 transition={false}
             >
-                <Popover id="popover-basic">
+                <Popover id="popover-basic" data-testid="popover">
                     <PopoverContent>
                         <div
                             data-testid={"semester-form"}

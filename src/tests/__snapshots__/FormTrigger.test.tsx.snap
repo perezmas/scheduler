@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FormTrigger Should only render a button if currentForm is null 1`] = `
+<div
+  className="col"
+  data-testid="form-trigger"
+>
+  <button
+    className="trigger"
+    data-testid="open-semester-form"
+    onClick={[Function]}
+  >
+    +
+  </button>
+</div>
+`;
