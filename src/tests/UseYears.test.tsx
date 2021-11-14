@@ -224,7 +224,7 @@ describe(useYears, () => {
     });
 
     it("Calls the initialization function lazily", async () => {
-        const spy = jest.fn(() => {
+        const spy = jest.fn<YearProps[], [void]>(() => {
             return [{ uuid: uuid(), index: 1, semesters: [] }];
         });
 

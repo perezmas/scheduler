@@ -5,13 +5,18 @@ import { ChangeEvent, FormEvent } from "react";
 
 
 describe(SemesterForm,() => {
-    const doNothing = jest.fn();
+    const noFormEvent = jest.fn<void, [FormEvent<HTMLFormElement>]>((e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+    });
+    const noChangeEvent = jest.fn<void, [ChangeEvent<HTMLInputElement>]>((e: ChangeEvent) => {
+        e.preventDefault();
+    });
     it("Should render a form with the starts, ends, and season input boxes.", async () => {
         render(
             <SemesterForm
                 canSubmit={false}
-                handleInput={doNothing}
-                handleSubmit={doNothing}
+                handleInput={noChangeEvent}
+                handleSubmit={noFormEvent}
             />);
         const seasonBox = screen.getByTestId("season-input");
         const startBox = screen.getByTestId("starts-input");
@@ -47,7 +52,7 @@ describe(SemesterForm,() => {
 
         render(<SemesterForm
             handleInput={handleInputSpy}
-            handleSubmit={doNothing}
+            handleSubmit={noFormEvent}
             canSubmit={false}
         />);
 
@@ -77,7 +82,7 @@ describe(SemesterForm,() => {
 
         const {rerender} = render(<SemesterForm
             canSubmit={false}
-            handleInput={doNothing}
+            handleInput={noChangeEvent}
             handleSubmit={handleSubmitSpy}
         />);
         screen.getByTestId("submit-button").click();
@@ -85,7 +90,7 @@ describe(SemesterForm,() => {
 
         rerender(<SemesterForm
             canSubmit={true}
-            handleInput={doNothing}
+            handleInput={noChangeEvent}
             handleSubmit={handleSubmitSpy}
         />);
         
