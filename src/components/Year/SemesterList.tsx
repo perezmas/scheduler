@@ -55,7 +55,7 @@ export default function SemesterList(props: SemesterListProps): JSX.Element{
     }, [props.semesters]);
 
     return (
-        <React.Fragment>
+        <>
             {sortedSemesters.map((semesterProps: SemesterProps,index: number) => {
                 return (
                     <Col
@@ -88,7 +88,7 @@ export default function SemesterList(props: SemesterListProps): JSX.Element{
                 );
             }
             )}
-        </React.Fragment> 
+        </> 
     );
 }
 
