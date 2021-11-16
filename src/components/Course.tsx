@@ -11,12 +11,13 @@ interface CurrentCourseProps extends CourseProps {
 /**A component that represents a course. */
 const Course = (props: CurrentCourseProps): JSX.Element => {
     return (
-        <div draggable={true}>
+        <div draggable={true} data-testid={`Course ${props.uuid}`}>
             <div
                 style={{ display: "inline-block" }}
                 onClick={() => {
                     props.removeCourse(props.uuid);
                 }}
+                data-testid="remove-course"
             >
                 {`${props.credits} ${props.name}`}
             </div>

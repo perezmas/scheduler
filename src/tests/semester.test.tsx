@@ -1,5 +1,5 @@
 import React from "react";
-import { fireEvent, render, screen, waitFor, getByText } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, getByText, getByTestId } from "@testing-library/react";
 import Semester from "../components/Semester";
 import CourseProps from "../interfaces/Course";
 import {v4 as uuid} from "uuid";
@@ -154,5 +154,34 @@ describe(Semester, () => {
         expect(clearSpy).not.toHaveBeenCalled();
         screen.getByTestId("clear-courses-button").click();
         expect(clearSpy).toHaveBeenCalled();
+    });
+    it("Calls the function to remove a course when the user clicks on the label", async () => {
+        const removeCourseSpy = jest.fn<void, [string]>();
+        const courseUuid1 = uuid();
+        const courseUuid2 = uuid();
+        const testCourses = [
+            {uuid: courseUuid1, semester: semesterUuid, id: "CISC111", name: "Intro to testing", description: "We really need this", credits: 3, coreqs: [], prereqs: []},
+            {uuid: courseUuid2, semester: semesterUuid, id: "CISC121", name: "Intro to testing2", description: "We really need this", credits: 3, coreqs: [], prereqs: []}
+        ];
+        render(<Semester
+            uuid={semesterUuid}
+            courses={testCourses}
+            removeSemester={doNothing}
+            removeCourse={removeCourseSpy}
+            push={doNothingWithCourseProps}
+            clearCourses={doNothing}
+            name="fall"
+            start={new Date("08-31-2021")}
+            end={new Date("12-15-2021")}
+        />);
+        expect(removeCourseSpy).not.toHaveBeenCalled();
+        let course = screen.getByTestId(`Course ${courseUuid1}`);
+        getByTestId(course,"remove-course").click();
+        expect(removeCourseSpy).toHaveBeenCalledTimes(1);
+        expect(removeCourseSpy).toHaveBeenLastCalledWith(courseUuid1);
+        course = screen.getByTestId(`Course ${courseUuid2}`);
+        getByTestId(course,"remove-course").click();
+        expect(removeCourseSpy).toHaveBeenCalledTimes(2);
+        expect(removeCourseSpy).toHaveBeenLastCalledWith(courseUuid2);
     });
 });
