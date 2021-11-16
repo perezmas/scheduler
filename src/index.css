@@ -25,6 +25,23 @@ code {
     transform: translate(-50%, -50%);
 }
 
+.error-modal {
+    position: fixed;
+    bottom: 0%;
+    right: 0%;
+
+    z-index: 1000;
+
+    /*makes the content be the center*/
+    /* transform: translate(-50%, -50%); */
+}
+.error-stack {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: flex-start;
+}
+
 .non-modal-overlay {
     position: fixed;
     top: 0;
