@@ -188,6 +188,11 @@ describe(Scheduler, () => {
         expectNoSubmission();
 
         fireEvent.change(endsBox, { target: { value: "2022-02-05" } });
+
+        fireEvent.change(endsBox, {target: {value: ""}}); //Check if submission is prevented if the box is emptied again after information has been put in it
+        expectNoSubmission();
+
+        fireEvent.change(endsBox, { target: { value: "2022-02-05" } });
         submit.click();
 
         await waitFor(() => {
