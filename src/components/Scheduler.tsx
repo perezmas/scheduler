@@ -71,7 +71,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
         const [currentForm, setCurrentForm] = useState<string | null>(null);
         const [submissionAllowed, setSubmissionAllowed] = useState(false);
         const problems = useProblems();
-        const semesterFormInit = (uuid: string | null) => {
+        const setForm = (uuid: string | null) => {
             setCurrentForm(uuid);
             setSubmissionAllowed(false);
             setNewName(null);
@@ -85,7 +85,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
 
         const handleSemesterSubmit = (event: FormEvent<HTMLFormElement>, id: string) => {
             handleSemesterFormSubmit(event,id,newName,newStart,newEnd,() => {
-                semesterFormInit(null);
+                setForm(null);
             },years.putSemester);
         };
 
@@ -142,7 +142,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                                 handleSemesterInput={handleSemesterInput}
                                 semesters={props.semesters}
                                 currentForm={currentForm}
-                                setForm={semesterFormInit}
+                                setForm={setForm}
                                 submissionAllowed={submissionAllowed}
                             />);
                     })}
