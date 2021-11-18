@@ -168,9 +168,9 @@ export function Plan(props: PlanProps): JSX.Element {
     return (
         <Container>
             <Row xs={1} md={3} className="g-4">
-                {plans.map((planItem) => (
+                {plans.map((planItem) => 
                     <Col key={planItem.uuid}>{renderCard(planItem)}</Col>
-                ))}
+                )}
                 <Col>
                     <Card bg="light" className="add-plan-card">
                         <Button id="add-plan-button" onClick={addPlan}>

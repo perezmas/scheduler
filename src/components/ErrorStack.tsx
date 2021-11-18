@@ -43,7 +43,7 @@ export default function ErrorStack(props: ErrorStackProps): JSX.Element {
                 </div>
             </div>,
 
-            (document.getElementById("modal-view") as Element) || document.body
+            document.getElementById("modal-view") as Element || document.body
         );
     } else {
         return <span data-testid="no-errors" />;

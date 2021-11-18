@@ -29,6 +29,16 @@ code {
         monospace;
 }
 
+.year-collapsible-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    margin: 0.5rem 0 0 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #6a6d70;
+    background-color: #ebebeb;
+}
 #add-plan-button {
     background-color: transparent;
     border: none;
@@ -73,4 +83,61 @@ code {
 }
 .requirements-list.met-requirement {
     background-color: rgba(0, 255, 0, 0.7);
+}
+
+.lbl-toggle::after {
+    content: " ";
+    display: inline-block;
+    margin-left: 2%;
+
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 5px solid currentColor;
+
+    vertical-align: middle;
+    margin-right: 0.7rem;
+    transform: translateY(-2px);
+
+    transition: transform 0.2s ease-out;
+}
+
+.toggle:checked + .lbl-toggle::after {
+    transform: rotate(90deg) translateX(-3px);
+}
+
+.toggle:checked + .lbl-toggle {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+table {
+    text-align: center;
+}
+
+thead {
+    background-color: #ebebeb;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+.degree-requirements-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.degree-requirements {
+    width: 35%;
+    background-color: #fff;
+}
+
+/* .Collapsible__trigger.is-closed + .Collapsible__contentOuter {
+    margin: 100rem;
+} */
+
+.clickable {
+    cursor: pointer;
 }

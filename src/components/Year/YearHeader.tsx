@@ -13,30 +13,29 @@ export default function YearHeader(props: YearHeaderProps): JSX.Element {
         <Container fluid>
             <Collapsible
                 trigger={
-                    <div>
+                    <div
+                        data-testid={`Year ${props.index} label`}
+                        className="year-collapsible-header"
+                    >
                         {`Year ${props.index}`}
+
                         <Button
                             variant="success"
-                            data-testid={`Year ${props.index} label`}
+                            onClick={props.clearSemesters}
+                            data-testid={`clear-year ${props.index}`}
                             className="trigger"
-                        >{`Year ${props.index} >`}</Button>
+                        >
+                            {" "}
+                            Clear Year
+                        </Button>
                     </div>
                 }
                 transitionTime={200}
             >
                 <Card className=" p-2">
-                    <Row>
-                        <Col style={{ textAlign: "right" }}>
-                            <button
-                                onClick={props.clearSemesters}
-                                data-testid={`clear-year ${props.index}`}
-                            >
-                                Clear
-                            </button>
-                        </Col>
-                    </Row>
                     <Row
-                        style={{ overflow: "auto" }}
+                        md={4}
+                        style={{ overflow: "auto", padding: "1.25rem 1.35rem" }}
                         data-testid="collapsible-content"
                     >
                         {props.children}

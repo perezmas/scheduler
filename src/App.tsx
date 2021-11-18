@@ -74,23 +74,23 @@ function App(): JSX.Element {
                     <Router>
                         <Route
                             path="/Plans/:uuid"
-                            render={(props) => (
+                            render={(props) => 
                                 <PlansPage
                                     {...props}
                                     requirements={requirements}
                                 />
-                            )}
+                            }
                         ></Route>
                         <Route
                             path="/Requirements"
-                            render={(props) => (
+                            render={(props) => 
                                 <Requirements
                                     {...props}
                                     requirements={requirements}
                                     onAddRequirement={addRequirement}
                                     onRemoveRequirement={removeRequirement}
                                 />
-                            )}
+                            }
                         ></Route>
                         <Route exact path="/" component={IndexPage}></Route>
                     </Router>
