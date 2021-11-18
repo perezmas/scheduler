@@ -87,7 +87,7 @@ export function Plan(props: PlanProps): JSX.Element {
         return (
             <Card style={{ width: "18rem" }} className="grid">
                 <Card.Body>
-                    <Card.Title>Plan #{planItem.id} </Card.Title>
+                    <Card.Title>Plan {planItem.id} </Card.Title>
                     
                     <Link to={`Plans/${planItem.uuid}`}>
                         <button>
@@ -107,8 +107,8 @@ export function Plan(props: PlanProps): JSX.Element {
         );
     };
     return (
-        <div className="grid">    
-            <button onClick={addPlan}>Add a plan +</button>
+        <div className="grid" style={{ marginLeft: "2%", marginRight: "auto" }}>    
+            <button className="btn btn-primary" onClick={addPlan} style={{ backgroundColor: "#ff0044", color: "white", border: "none", fontSize: "20px", padding: "15px 32px", cursor: "pointer", borderRadius: "50px" }}>Add a plan +</button>
             {plans.map(planItem =>
                 <li key={planItem.uuid}>{renderCard(planItem)}</li>
             )}

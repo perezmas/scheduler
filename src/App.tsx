@@ -15,23 +15,29 @@ import Plan from "./components/Plan";
 import { Button } from "react-bootstrap";
 import { Scheduler } from "./components/Scheduler";
 import Requirements from "./components/Requirements";
+import OnboardingSteps from "./components/OnboardingSteps";
+import SchedulerWalkthrough from "./components/SchedulerWalkthrough";
 //import ReactDOM from "react-dom";
 
 // Master Plan View
 const IndexPage = () => {
     return (
         <>
-            <div>
+            <div className="App">
                 <h1 className="center">UD CIS Scheduler</h1>
                 <h3 className="center">Designed By: Lucas, Max, and Amani</h3>
                 <div role="alert" className="welcome">
                     <p>Welcome to the UD Degree Planner!</p>
+                    <OnboardingSteps />
+                    <p></p>
                     <b>Click Add/Edit Plan below to Get Started</b>
+                    <p></p>
                 </div>
                 <Plan uuid="" id={0} />
             </div>
+            <p></p>
             <Link to="/Requirements">
-                <Button className="my-2">Modify Requirements</Button>
+                <Button className="my-2" style={{ marginLeft: "2%", marginRight: "auto", backgroundColor: "grey", color: "white", border: "none", fontSize: "15px", padding: "15px 32px", cursor: "pointer", borderRadius: "50px" }}>Modify Requirements</Button>
             </Link>
         </>
     );
@@ -52,6 +58,8 @@ const PlansPage: FC<PlansPageProps> = (props) => {
 
             ))}
             */}
+            <SchedulerWalkthrough />
+            <p></p>
             <Scheduler requirements={props.requirements} />
             <Link to="/">
                 <Button>Back</Button>
