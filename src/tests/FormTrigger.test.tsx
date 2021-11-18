@@ -78,5 +78,4 @@ describe(FormTrigger,() => {
         expect(setFormSpy).toHaveBeenCalled();
         expect(setFormSpy).toHaveBeenLastCalledWith(null);
     });
-
 });
