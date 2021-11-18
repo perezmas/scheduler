@@ -18,7 +18,7 @@ import Requirements from "./components/Requirements";
 //import ReactDOM from "react-dom";
 
 // Master Plan View
-const IndexPage = () => {
+export const IndexPage = () => {
     return (
         <>
             <div>
@@ -41,12 +41,12 @@ type PlansPageProps = RouteComponentProps & {
     requirements: string[];
 };
 
-const PlansPage: FC<PlansPageProps> = (props) => {
+export const PlansPage: FC<PlansPageProps> = (props) => {
     return (
         <>
             <Scheduler requirements={props.requirements} />
             <Link to="/">
-                <Button>Back</Button>
+                <Button data-testid="back-button">Back</Button>
             </Link>
         </>
     );
@@ -63,6 +63,7 @@ function App(): JSX.Element {
         setRequirements(requirements.filter((r) => r !== requirement));
     };
     return (
+        
         <div className="container">
             <HashRouter>
                 <Switch>

@@ -41,14 +41,10 @@ export function Plan(): JSX.Element {
 
     const deleteCard = (planItem: PlanProps) => {
         if (window.confirm("Are you sure you want to delete this plan?")) {
-
             const newArray = [...plans];
             const index = newArray.indexOf(planItem);
-
-            if (index !== -1) {
-                newArray.splice(index, 1);
-                setPlans(newArray);
-            }
+            newArray.splice(index, 1);
+            setPlans(newArray);
         }
     };
 

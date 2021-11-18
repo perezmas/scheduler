@@ -10,10 +10,6 @@ import {handleSemesterFormInput, handleSemesterFormSubmit} from "../util/events/
 import Year from "./Year/Year";
 
 interface SchedulerProps {
-    /**csv data that can be used to reconstruct a scheduler. */
-    csv?: string;
-    /**Json data that can be used to reconstruct a scheduler.  */
-    json?: string;
     /**All the course ID's for the requirements for the degree this scheduler is designed to help acquire. */
     requirements: Array<string>;
 }
@@ -59,7 +55,6 @@ function hasError(problems: Array<Problem>): boolean {
 
 
 export function Scheduler(props: SchedulerProps): JSX.Element {
-    if (props.csv === undefined && props.json === undefined) {
         const years = useYears(getStartingYears);
 
         const courses = useCourses();
@@ -180,6 +175,4 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                 <ErrorStack problems={problems.value} />
             </>
         );
-    }
-    return <></>;
 }
