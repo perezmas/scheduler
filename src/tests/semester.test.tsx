@@ -175,11 +175,11 @@ describe(Semester, () => {
             end={new Date("12-15-2021")}
         />);
         expect(removeCourseSpy).not.toHaveBeenCalled();
-        let course = screen.getByTestId(`Course ${courseUuid1}`);
+        let course = screen.getByTestId(`Course CISC111: Intro to testing`);
         getByTestId(course,"remove-course").click();
         expect(removeCourseSpy).toHaveBeenCalledTimes(1);
         expect(removeCourseSpy).toHaveBeenLastCalledWith(courseUuid1);
-        course = screen.getByTestId(`Course ${courseUuid2}`);
+        course = screen.getByTestId(`Course CISC121: Intro to testing2`);
         getByTestId(course,"remove-course").click();
         expect(removeCourseSpy).toHaveBeenCalledTimes(2);
         expect(removeCourseSpy).toHaveBeenLastCalledWith(courseUuid2);

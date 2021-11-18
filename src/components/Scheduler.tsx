@@ -63,13 +63,19 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
         const years = useYears(getStartingYears);
 
         const courses = useCourses();
-
+        //The requirements for the degree that are not present in the plan
         const [unmetRequirements, setUnmetRequirements] = useState<Array<string>>([]);
+        //The name of the new semester (null if the form is closed or nothing has been entered)
         const [newName, setNewName] = useState<string | null>(null);
+        //The starting date of the new semester as a string (null if the form is closed or nothing has been entered)
         const [newStart, setNewStart] = useState<string | null>(null);
+        //The ending date of the new semester as a string (null if the form is closed or nothing has been entered)
         const [newEnd, setNewEnd] = useState<string | null>(null);
+        //The semester form that is currently open; kept track of here to ensure no more than 1 of these forms can be active at once
         const [currentForm, setCurrentForm] = useState<string | null>(null);
+        //Whether or not the form to create a new semester can be submitted
         const [submissionAllowed, setSubmissionAllowed] = useState(false);
+        //The problems with the user's current inputs
         const problems = useProblems();
         const setForm = (uuid: string | null) => {
             setCurrentForm(uuid);

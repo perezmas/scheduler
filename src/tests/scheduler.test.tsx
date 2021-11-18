@@ -348,6 +348,20 @@ describe(Scheduler, () => {
             expectNoWarning
         );
     });
+    
+    it("Can remove a course from a semester", async () => {
+        await addCourse(1,1, "Irish Dance", "IRSH-201");
+        await addCourse(1,1, "Intro to Scots", "SCOT-201", "No, we don't sound like scots wikipedia");
+        await addCourse(1, 2, "Intro to stuff", "STUFF-101", "");
+        await addCourse(2, 1, "Intro to more stuff", "STUFF-102");
+
+        getByTestId(screen.getByTestId("Course IRSH-201: Irish Dance"),"remove-course").click();
+
+        expect(screen.queryByTestId("Course IRSH-201: Irish Dance")).not.toBeInTheDocument();
+        expect(screen.getByTestId("Course SCOT-201: Intro to Scots")).toBeInTheDocument();
+        expect(screen.getByTestId("Course STUFF-101: Intro to stuff")).toBeInTheDocument();
+        expect(screen.getByTestId("Course STUFF-102: Intro to more stuff")).toBeInTheDocument();
+    })
 
     it("Can clear all the courses in a semester", async () => {
         await addCourse(1, 1,"Irish Dance", "IRSH-201");
