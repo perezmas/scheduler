@@ -26,7 +26,7 @@ const IndexPage = () => {
                 <NavigationBar />
             </div>
             <div className="home-content">
-                <h1 className="center">UD CIS Scheduler</h1>
+                <h1 className="center mb-5">UD CIS Scheduler</h1>
                 <Plan uuid="" id={0} />
             </div>
         </div>

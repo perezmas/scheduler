@@ -13,7 +13,9 @@ body {
     background-color: #f8f9fa !important;
     -moz-osx-font-smoothing: grayscale;
 }
-
+.card {
+    height: 100%;
+}
 .home {
     height: 100vh;
     display: flex;
@@ -25,6 +27,22 @@ body {
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
         monospace;
+}
+
+#add-plan-button {
+    background-color: transparent;
+    border: none;
+    /* padding: 4.61rem 0.75rem; */
+    color: #919191;
+    font-weight: bold;
+    cursor: pointer;
+}
+/* .plan-card {
+    flex-direction: row;
+} */
+#add-plan-icon {
+    font-size: 1.9rem;
+    font-weight: normal;
 }
 .modal-add-course {
     position: fixed;

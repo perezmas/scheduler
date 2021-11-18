@@ -53,6 +53,23 @@
     background-color: white;
 }
 
+.error-modal {
+    position: fixed;
+    bottom: 0%;
+    right: 0%;
+
+    z-index: 1000;
+
+    /*makes the content be the center*/
+    /* transform: translate(-50%, -50%); */
+}
+.error-stack {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: flex-start;
+}
+
 .error-stack .error {
     border-radius: 1.5vh;
     border-style: solid;
@@ -77,20 +94,6 @@
     margin-top: 0.05em;
     margin-bottom: 0.05em;
 }
-
-/* .error-stack{
-  position: absolute;
-  height: 100%;
-  width: 33%;
-  display: flex;
-  top: 0;
-  right: 0;
-  flex: 1 0 auto;
-  flex-direction: column-reverse;
-  flex-wrap: wrap;
-  overflow-x: hidden;
-
-} */
 
 .error-stack-container .error-counter {
     min-width: 10.9vw;
