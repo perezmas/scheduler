@@ -18,7 +18,7 @@ import Requirements from "./components/Requirements";
 //import ReactDOM from "react-dom";
 
 // Master Plan View
-export const IndexPage = () => {
+export const IndexPage: React.FC = () => {
     return (
         <>
             <div>
