@@ -51,7 +51,7 @@ describe(Year, () => {
     const fallUuid = uuid();
     const springUuid = uuid();
     const fall: SemesterProps = {name: "fall", start: new Date("08-31-21"), end: new Date("12-15-21"), uuid: fallUuid};
-    const spring: SemesterProps = {name: "spring", start: new Date("02-07-2022"), end: new Date("06-08-2022"), uuid: springUuid}
+    const spring: SemesterProps = {name: "spring", start: new Date("02-07-2022"), end: new Date("06-08-2022"), uuid: springUuid};
     it("Displays the correct index", async () => {
         const {rerender} = render(<Year {...defaultProps}/>);
         expect(screen.getByText("Year 1 >")).toBeInTheDocument();
@@ -62,7 +62,7 @@ describe(Year, () => {
         expect(screen.queryByTestId("Year 1 >")).not.toBeInTheDocument();
     });
     it("Can display one or more semesters", async () => {
-        const newProps = {...defaultProps}
+        const newProps = {...defaultProps};
         newProps.semesters = [fall];
         const {rerender} = render(<Year {...newProps}/>);
         expect(screen.getByTestId("semester 1")).toBeInTheDocument();
@@ -94,18 +94,18 @@ describe(Year, () => {
         expect(clearYearSpy).toHaveBeenCalled();
     });
     it("Displays the form to add a new semester to the year iff the currentForm is set to uuid of a semester in the year", async () => {
-       const newProps = {...defaultProps};
-       newProps.currentForm = yearUuid;
-       const {rerender} = render(<Year {...newProps}/>);
-       await screen.findByTestId("popover");
-       newProps.currentForm = null;
-       rerender(<Year {...newProps}/>);
-       await waitFor(() => {
-           expect(screen.queryByTestId("popover")).not.toBeInTheDocument();
-       });
-       newProps.currentForm = "x";
-       rerender(<Year {...newProps}/>);
-       expect(screen.queryByTestId("popover")).not.toBeInTheDocument();
+        const newProps = {...defaultProps};
+        newProps.currentForm = yearUuid;
+        const {rerender} = render(<Year {...newProps}/>);
+        await screen.findByTestId("popover");
+        newProps.currentForm = null;
+        rerender(<Year {...newProps}/>);
+        await waitFor(() => {
+            expect(screen.queryByTestId("popover")).not.toBeInTheDocument();
+        });
+        newProps.currentForm = "x";
+        rerender(<Year {...newProps}/>);
+        expect(screen.queryByTestId("popover")).not.toBeInTheDocument();
     });
     it("Calls setForm with the year's uuid if the open-semester-form is clicked while the form is closed", async () => {
         const setFormSpy = jest.fn<void, [string | null]>();

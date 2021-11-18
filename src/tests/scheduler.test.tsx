@@ -361,7 +361,7 @@ describe(Scheduler, () => {
         expect(screen.getByTestId("Course SCOT-201: Intro to Scots")).toBeInTheDocument();
         expect(screen.getByTestId("Course STUFF-101: Intro to stuff")).toBeInTheDocument();
         expect(screen.getByTestId("Course STUFF-102: Intro to more stuff")).toBeInTheDocument();
-    })
+    });
 
     it("Can clear all the courses in a semester", async () => {
         await addCourse(1, 1,"Irish Dance", "IRSH-201");
