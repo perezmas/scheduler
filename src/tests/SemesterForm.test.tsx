@@ -28,26 +28,8 @@ describe(SemesterForm,() => {
     });
 
     it("Should call handleInput when any input box is changed.", async () => {
-        let newName: string | null = null;
-        let newStart: string | null = null;
-        let newEnd: string | null = null;
-
         const handleInputSpy = jest.fn((e: ChangeEvent<HTMLInputElement>) => {
             e.preventDefault();
-            switch (e.target.name) {
-            case "season": {
-                newName = e.target.value;
-                break;
-            }
-            case "starts": {
-                newStart = e.target.value;
-                break;
-            }
-            case "ends": {
-                newEnd = e.target.value;
-                break;
-            }
-            }
         });
 
         render(<SemesterForm
@@ -64,15 +46,13 @@ describe(SemesterForm,() => {
 
         fireEvent.change(seasonBox, { target: { value: "fall" } });
         expect(handleInputSpy).toHaveBeenCalledTimes(1);
+        expect(handleInputSpy).toHaveBeenLastCalledWith(expect.objectContaining({target: expect.objectContaining({value: "fall"})}));
         fireEvent.change(startBox, { target: { value: "2021-09-01" } });
         expect(handleInputSpy).toHaveBeenCalledTimes(2);
+        expect(handleInputSpy).toHaveBeenLastCalledWith(expect.objectContaining({target: expect.objectContaining({value: "2021-09-01"})}));
         fireEvent.change(endBox, { target: { value: "2021-12-15" } });
         expect(handleInputSpy).toHaveBeenCalledTimes(3);
-
-        expect(newName).toBe("fall");
-        expect(newStart).toBe("2021-09-01");
-        expect(newEnd).toBe("2021-12-15");
-
+        expect(handleInputSpy).toHaveBeenLastCalledWith(expect.objectContaining({target: expect.objectContaining({value: "2021-12-15"})}));
     });
 
     it("Should allow the user to submit the form iff the canSubmit prop is true.", async () => {

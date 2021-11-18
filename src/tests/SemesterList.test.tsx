@@ -1,5 +1,5 @@
 import React from "react";
-import {screen, render} from "@testing-library/react";
+import {screen, render, getByTestId} from "@testing-library/react";
 import SemesterList from "../components/Year/SemesterList";
 import {v4 as uuid} from "uuid";
 import { Courses } from "../hooks/useCourses";
@@ -121,5 +121,33 @@ describe(SemesterList, () => {
         screen.getByTestId("clear-courses-button").click();
         expect(clearCoursesSpy).toHaveBeenCalled();
         expect(clearCoursesSpy).toHaveBeenLastCalledWith(semesterUuid);
+    });
+    it("Should call courses.removeCourse if a course in one of the semesters is clicked", async () => {
+        const semesterUuid1 = uuid();
+        const courseUuid1 = uuid();
+        const testCourses = {...emptyCourses};
+        testCourses.removeCourse = jest.fn<void, [string]>();
+        testCourses.courseList = [
+            {uuid: courseUuid1, semester: semesterUuid1, id: "CISC111", name: "Intro to testing", description: "We really need this", credits: 3, coreqs: [], prereqs: []}
+        ];
+
+        render(<SemesterList
+            removeSemester={doNothingWithString}
+            clearCourses={doNothingWithString}
+            courses={testCourses}
+            semesters={[
+                {
+                    name: "fall",
+                    start: new Date("2021-08-31"),
+                    end: new Date("2021-12-15"),
+                    uuid: semesterUuid1,
+                },
+            ]}
+        />);
+        expect(testCourses.removeCourse).not.toHaveBeenCalled();
+        const semester = screen.getByTestId("semester 1");
+        getByTestId(semester,"remove-course").click();
+        expect(testCourses.removeCourse).toHaveBeenCalledTimes(1);
+        expect(testCourses.removeCourse).toHaveBeenLastCalledWith(courseUuid1);
     });
 });
