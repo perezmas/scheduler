@@ -1,6 +1,6 @@
 import { getByTestId, getByText, render, screen} from "@testing-library/react";
 import React, {useState} from "react";
-import useCourses,{Courses} from "../hooks/useCourses";
+import useCourses from "../hooks/useCourses";
 import CourseProps from "../interfaces/Course";
 import {v4 as uuid} from "uuid";
 
