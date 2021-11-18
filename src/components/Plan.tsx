@@ -28,6 +28,7 @@ export const testList: PlanProps[] = [
 export function Plan(): JSX.Element {
     
     const [plans, setPlans] = useState<Array<PlanProps>>([]);
+    
     const addPlan = () => {
         // sets array of all cards
         setPlans([...plans, {
@@ -58,35 +59,28 @@ export function Plan(): JSX.Element {
             years: planItem.years
         }]);
     };
-    
-    const renderCard = (planItem: PlanProps) => {
-        localStorage.setItem("Plans Array", JSON.stringify(plans));
-        return (
-            <Card data-testid={`Plan ${planItem.id}`} style={{ width: "18rem" }} className="grid">
-                <Card.Body>
-                    <Card.Title>Plan #{planItem.id} </Card.Title>
-                    
-                    <Link to={`Plans/${planItem.uuid}`}>
-                        <button data-testid="edit-plan">
-                            Edit Plan
-                        </button>
-                    </Link>
-                    <Card.Text>{planItem.date}</Card.Text>
-                    <button data-testid="delete-plan" onClick={() => {
-                        deleteCard(planItem);
-                    }}>-</button>
-                    <button data-testid="copy-plan" onClick={() => {
-                        copy(planItem);
-                    }}>Duplicate Plan</button>
-                </Card.Body>
-            </Card>
-        );
-    };
     return (
         <div className="grid">    
             <button onClick={addPlan} data-testid="add-plan">Add a plan +</button>
             {plans.map(planItem =>
-                <li key={planItem.uuid}>{renderCard(planItem)}</li>
+                <Card key={planItem.uuid} data-testid={`Plan ${planItem.id}`} style={{ width: "18rem" }} className="grid">
+                    <Card.Body>
+                        <Card.Title>Plan #{planItem.id} </Card.Title>
+                        
+                        <Link to={`Plans/${planItem.uuid}`}>
+                            <button data-testid="edit-plan">
+                                Edit Plan
+                            </button>
+                        </Link>
+                        <Card.Text>{planItem.date}</Card.Text>
+                        <button data-testid="delete-plan" onClick={() => {
+                            deleteCard(planItem);
+                        }}>-</button>
+                        <button data-testid="copy-plan" onClick={() => {
+                            copy(planItem);
+                        }}>Duplicate Plan</button>
+                    </Card.Body>
+                </Card>
             )}
         </div>
     );
