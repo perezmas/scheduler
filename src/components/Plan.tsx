@@ -25,7 +25,7 @@ export const testList: PlanProps[] = [
 ];
 
 /**A card on the home screen that lets the user move between schedulers, mainly so that advisors can keep track of their students. */
-export function Plan(props: PlanProps): JSX.Element {
+export function Plan(): JSX.Element {
     
     const [plans, setPlans] = useState<Array<PlanProps>>([]);
     const addPlan = () => {
@@ -35,28 +35,11 @@ export function Plan(props: PlanProps): JSX.Element {
             uuid: uuid(),
             name: "",
             date: new Date().toLocaleDateString(),
-            years: Array<YearProps>()
+            years: new Array<YearProps>()
         }]);
-        const index = plans.length;
-        console.log("index: ", index);
-        const arr: typeof props[] = [];
-        
-        // if empty array of plans
-        
-        if (index <= 0){
-            arr.push(plans[0]);
-        }
-
-        // if first item in array, set value of index 0
-        if (index === 1){
-            arr.push(plans[0]);
-        }
-        if (index > 1){
-            arr.push(plans[index-1]);
-        }
     };
 
-    const deleteCard = (oldArray: typeof plans, planItem: PlanProps) => {
+    const deleteCard = (planItem: PlanProps) => {
         if (window.confirm("Are you sure you want to delete this plan?")) {
 
             const newArray = [...plans];
@@ -78,28 +61,25 @@ export function Plan(props: PlanProps): JSX.Element {
             date: planItem.date,
             years: planItem.years
         }]);
-        const index = plans.length;
-        console.log("index: ", index);
     };
     
     const renderCard = (planItem: PlanProps) => {
         localStorage.setItem("Plans Array", JSON.stringify(plans));
         return (
-            <Card style={{ width: "18rem" }} className="grid">
+            <Card data-testid={`Plan ${planItem.id}`} style={{ width: "18rem" }} className="grid">
                 <Card.Body>
                     <Card.Title>Plan #{planItem.id} </Card.Title>
                     
                     <Link to={`Plans/${planItem.uuid}`}>
-                        <button>
+                        <button data-testid="edit-plan">
                             Edit Plan
                         </button>
                     </Link>
                     <Card.Text>{planItem.date}</Card.Text>
-                    <button onClick={() => {
-                        console.log("button pressed");
-                        deleteCard(plans, planItem);
+                    <button data-testid="delete-plan" onClick={() => {
+                        deleteCard(planItem);
                     }}>-</button>
-                    <button onClick={() => {
+                    <button data-testid="copy-plan" onClick={() => {
                         copy(planItem);
                     }}>Duplicate Plan</button>
                 </Card.Body>
@@ -108,7 +88,7 @@ export function Plan(props: PlanProps): JSX.Element {
     };
     return (
         <div className="grid">    
-            <button onClick={addPlan}>Add a plan +</button>
+            <button onClick={addPlan} data-testid="add-plan">Add a plan +</button>
             {plans.map(planItem =>
                 <li key={planItem.uuid}>{renderCard(planItem)}</li>
             )}

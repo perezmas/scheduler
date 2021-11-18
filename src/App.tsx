@@ -28,7 +28,7 @@ const IndexPage = () => {
                     <p>Welcome to the UD Degree Planner!</p>
                     <b>Click Add/Edit Plan below to Get Started</b>
                 </div>
-                <Plan uuid="" id={0} />
+                <Plan/>
             </div>
             <Link to="/Requirements">
                 <Button className="my-2">Modify Requirements</Button>
@@ -44,19 +44,10 @@ type PlansPageProps = RouteComponentProps & {
 const PlansPage: FC<PlansPageProps> = (props) => {
     return (
         <>
-            {/*
-            {users.map((user, index) => (
-                <h5 key={index}>
-                    <Link to={`/user/${index + 1}`}>{user.name}s Page</Link>
-                </h5>
-
-            ))}
-            */}
             <Scheduler requirements={props.requirements} />
             <Link to="/">
                 <Button>Back</Button>
             </Link>
-            {console.log("the uuid is : ", localStorage.getItem("plan: 0"))}
         </>
     );
 };
