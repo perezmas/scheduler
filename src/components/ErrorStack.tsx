@@ -16,8 +16,9 @@ export default function ErrorStack(props: ErrorStackProps): JSX.Element {
                 {props.problems.length === 1 ? "error" : "errors"}
             </div>,
         ];
+
         return ReactDOM.createPortal(
-            // <div className="error-stack-container">
+            
             <div className="error-modal">
                 <div className="error-stack">
                     {ctr.concat(
