@@ -58,8 +58,6 @@ function problemReducer(prev: Array<Problem>, action: AbstractProblemAction): Ar
         }
         return output;
     }
-    default:
-        throw Error(`${action.type} not implemented!`);
     }
 }
 

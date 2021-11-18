@@ -348,7 +348,20 @@ describe(Scheduler, () => {
             expectNoWarning
         );
     });
-    
+    it("Prevents submission after emptying a field or an error is introduced", async () => {
+        await openForm(1);
+
+        act(() => {
+            fireEvent.change(screen.getByTestId("season-input"), {target: {value: "fall"}});
+            fireEvent.change(screen.getByTestId("starts-input"), {target: {value: "2021-08-31"}});
+            fireEvent.change(screen.getByTestId("ends-input"), {target: {value: "2021-12-15"}});
+        });
+        expect(screen.getByTestId("submit-button")).not.toBeDisabled();
+        act(() => {
+            fireEvent.change(screen.getByTestId("starts-input"), {target: {value: "2021-12-30"}});
+        });
+        expect(screen.getByTestId("submit-button")).toBeDisabled();
+    });
     it("Can remove a course from a semester", async () => {
         await addCourse(1,1, "Irish Dance", "IRSH-201");
         await addCourse(1,1, "Intro to Scots", "SCOT-201", "No, we don't sound like scots wikipedia");
@@ -383,6 +396,5 @@ describe(Scheduler, () => {
 
         expect(screen.getByText("0 Intro to stuff")).toBeInTheDocument();
         expect(screen.getByText("0 Intro to more stuff")).toBeInTheDocument();
-
     });
 });
