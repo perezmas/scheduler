@@ -53,9 +53,6 @@ describe(SemesterForm,() => {
         fireEvent.change(endBox, { target: { value: "2021-12-15" } });
         expect(handleInputSpy).toHaveBeenCalledTimes(3);
         expect(handleInputSpy).toHaveBeenLastCalledWith(expect.objectContaining({target: expect.objectContaining({value: "2021-12-15"})}));
-
-        
-
     });
 
     it("Should allow the user to submit the form iff the canSubmit prop is true.", async () => {

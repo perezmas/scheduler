@@ -4,11 +4,11 @@ import {Courses} from "../hooks/useCourses";
 import SemesterProps from "../interfaces/Semester";
 import CourseProps from "../interfaces/Course";
 import {v4 as uuid} from "uuid";
-import {screen, render, getByTestId, waitFor} from "@testing-library/react";
+import {screen, render, getByTestId, waitFor, fireEvent} from "@testing-library/react";
 
 //Copied from Year.tsx so I don't have to export it just for a test.
 interface YearProps{
-    clearYears: (uuid?: string) => void
+    clearYear: () => void
     removeSemester: (uuid: string) => void,
     courses: Courses,
     index: number,
@@ -23,7 +23,7 @@ interface YearProps{
 
 describe(Year, () => {
     const doNothingWithString = jest.fn<void, [string]>();
-    const doNothingWithOptionalString = jest.fn<void, [string | undefined]>();
+    const doNothing = jest.fn<void, [void]>();
     const emptySubmitHandler = jest.fn<void, [FormEvent, string]>();
     const emptyInputHandler = jest.fn<void, [ChangeEvent]>();
     const doNothingWithCourseProps = jest.fn<void, [CourseProps]>();
@@ -36,7 +36,7 @@ describe(Year, () => {
     };
     
     const defaultProps: YearProps = {
-        clearYears: doNothingWithOptionalString,
+        clearYear: doNothing,
         removeSemester: doNothingWithString,
         courses: emptyCourses,
         index: 1,
@@ -84,6 +84,15 @@ describe(Year, () => {
         expect(removeSemesterSpy).toHaveBeenCalled();
         expect(removeSemesterSpy).toHaveBeenLastCalledWith(fallUuid); //semester 1 is fall because they are ordered by start dates.
     });
+    it("Calls the clearYear function if the clear button is clicked", async () => {
+        const clearYearSpy = jest.fn<void, [void]>();
+        const newProps = {...defaultProps};
+        newProps.clearYear= clearYearSpy;
+        render(<Year {...newProps}/>);
+        expect(clearYearSpy).not.toHaveBeenCalled();
+        screen.getByTestId("clear-year 1").click();
+        expect(clearYearSpy).toHaveBeenCalled();
+    });
     it("Displays the form to add a new semester to the year iff the currentForm is set to uuid of a semester in the year", async () => {
        const newProps = {...defaultProps};
        newProps.currentForm = yearUuid;
@@ -98,4 +107,68 @@ describe(Year, () => {
        rerender(<Year {...newProps}/>);
        expect(screen.queryByTestId("popover")).not.toBeInTheDocument();
     });
+    it("Calls setForm with the year's uuid if the open-semester-form is clicked while the form is closed", async () => {
+        const setFormSpy = jest.fn<void, [string | null]>();
+        const newProps = {...defaultProps};
+        newProps.setForm = setFormSpy;
+        render(<Year {...newProps}/>);
+        expect(setFormSpy).not.toHaveBeenCalled();
+        screen.getByTestId("open-semester-form").click();
+        expect(setFormSpy).toHaveBeenCalled();
+        expect(setFormSpy).toHaveBeenLastCalledWith(yearUuid);
+    });
+    it("Calls setForm with null if the open-semester-form is clicked while the form is closed", async () => {
+        const setFormSpy = jest.fn<void, [string | null]>();
+        const newProps = {...defaultProps};
+        newProps.setForm = setFormSpy;
+        newProps.currentForm = yearUuid;
+        render(<Year {...newProps}/>);
+        await screen.findByTestId("popover");
+        expect(setFormSpy).not.toHaveBeenCalled();
+        screen.getByTestId("open-semester-form").click();
+        expect(setFormSpy).toHaveBeenCalled();
+        expect(setFormSpy).toHaveBeenLastCalledWith(null);
+    });
+    it("Calls the form submission handler iff the button to submit the form is clicked while submission is allowed", async () => {
+        const handleSemesterSubmitSpy = jest.fn<void, [FormEvent]>((e: FormEvent) => {
+            e.preventDefault();
+        });
+        const newProps = {...defaultProps};
+        newProps.handleSemesterSubmit = handleSemesterSubmitSpy;
+        newProps.currentForm = yearUuid;
+        const {rerender} = render(<Year {...newProps}/>);
+        await screen.findByTestId("popover");
+        screen.getByTestId("submit-button").click();
+        expect(handleSemesterSubmitSpy).not.toHaveBeenCalled();
+        newProps.submissionAllowed = true;
+        rerender(<Year {...newProps}/>);
+        screen.getByTestId("submit-button").click();
+        expect(handleSemesterSubmitSpy).toHaveBeenCalled();
+    });
+    it("Correctly recieves input from the semester form", async () => {
+        const handleSemesterInputSpy = jest.fn<void, [ChangeEvent]>((e: ChangeEvent) => {
+            e.preventDefault();
+        });
+        const newProps = {...defaultProps};
+        newProps.handleSemesterInput = handleSemesterInputSpy;
+        newProps.currentForm = yearUuid;
+        render(<Year {...newProps}/>);
+        await screen.findByTestId("popover");
+        const seasonBox = screen.getByTestId("season-input");
+        const startBox = screen.getByTestId("starts-input");
+        const endBox = screen.getByTestId("ends-input");
+
+        expect(handleSemesterInputSpy).not.toHaveBeenCalled();
+
+        fireEvent.change(seasonBox, { target: { value: "fall" } });
+        expect(handleSemesterInputSpy).toHaveBeenCalledTimes(1);
+        expect(handleSemesterInputSpy).toHaveBeenLastCalledWith(expect.objectContaining({target: expect.objectContaining({value: "fall"})}));
+        fireEvent.change(startBox, { target: { value: "2021-09-01" } });
+        expect(handleSemesterInputSpy).toHaveBeenCalledTimes(2);
+        expect(handleSemesterInputSpy).toHaveBeenLastCalledWith(expect.objectContaining({target: expect.objectContaining({value: "2021-09-01"})}));
+        fireEvent.change(endBox, { target: { value: "2021-12-15" } });
+        expect(handleSemesterInputSpy).toHaveBeenCalledTimes(3);
+        expect(handleSemesterInputSpy).toHaveBeenLastCalledWith(expect.objectContaining({target: expect.objectContaining({value: "2021-12-15"})}));
+    });
+
 });

@@ -137,7 +137,9 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                         return (
                             <Year
                                 key={props.uuid}
-                                clearYears = {years.clear}
+                                clearYear = {() => {
+                                    years.clear(props.uuid);
+                                }}
                                 removeSemester={(semesterUuid: string) => {
                                     years.removeSemester(props.uuid,semesterUuid);
                                 }}

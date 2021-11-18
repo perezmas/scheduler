@@ -9,7 +9,7 @@ import { Courses } from "../../hooks/useCourses";
 import SemesterProps from "../../interfaces/Semester";
 
 interface YearProps{
-    clearYears: (uuid?: string) => void
+    clearYear: () => void
     removeSemester: (uuid: string) => void,
     courses: Courses,
     index: number,
@@ -26,7 +26,7 @@ export default function Year(props: YearProps): JSX.Element{
     return (
         <div data-testid={`Year ${props.index}`} key={props.uuid}>
             <YearHeader index={props.index} clearSemesters={() => {
-                props.clearYears(props.uuid);
+                props.clearYear();
             }}
             >
                 <SemesterList semesters={props.semesters} courses={props.courses} removeSemester={(semesterUuid: string) => {
