@@ -141,3 +141,7 @@ thead {
 .clickable {
     cursor: pointer;
 }
+
+.dropdown-toggle.dropdown-toggle-split {
+    background-color: #239b63;
+}

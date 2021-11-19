@@ -6,7 +6,9 @@ const NavigationBar = (): JSX.Element => {
     return (
         <Navbar bg="light" expand="lg">
             <Container>
-                <Navbar.Brand href="#home">Fancy Scheduler</Navbar.Brand>
+                <Navbar.Brand as={Link} to="/">
+                    Fancy Scheduler
+                </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">

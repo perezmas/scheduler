@@ -1,10 +1,19 @@
 import React from "react";
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import {
+    Container,
+    Row,
+    Col,
+    Card,
+    Button,
+    ButtonGroup,
+    Dropdown,
+} from "react-bootstrap";
 import Collapsible from "react-collapsible";
 
 interface YearHeaderProps {
     index: number;
-    clearSemesters: () => void;
+    clearYear: () => void;
+    removeYear: () => void;
     children: JSX.Element | JSX.Element[];
 }
 
@@ -18,16 +27,31 @@ export default function YearHeader(props: YearHeaderProps): JSX.Element {
                         className="year-collapsible-header"
                     >
                         {`Year ${props.index}`}
+                        <Dropdown as={ButtonGroup}>
+                            <Button
+                                onClick={props.clearYear}
+                                data-testid={`clear-year ${props.index}`}
+                                variant="success"
+                            >
+                                Clear Year
+                            </Button>
 
-                        <Button
-                            variant="success"
-                            onClick={props.clearSemesters}
-                            data-testid={`clear-year ${props.index}`}
-                            className="trigger"
-                        >
-                            {" "}
-                            Clear Year
-                        </Button>
+                            <Dropdown.Toggle
+                                split
+                                variant="success"
+                                id="dropdown-split-basic"
+                            />
+
+                            <Dropdown.Menu>
+                                <Dropdown.Item
+                                    style={{ color: "#DC3E45" }}
+                                    onClick={props.removeYear}
+                                    data-testid={`remove-year ${props.index}`}
+                                >
+                                    Remove Year
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </div>
                 }
                 transitionTime={200}

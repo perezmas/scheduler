@@ -22,9 +22,6 @@ import NavigationBar from "./components/NavigationBar";
 const IndexPage = () => {
     return (
         <div className="home">
-            <div>
-                <NavigationBar />
-            </div>
             <div className="home-content">
                 <h1 className="center mb-5">UD CIS Scheduler</h1>
                 <Plan uuid="" id={0} />
@@ -49,9 +46,7 @@ const PlansPage: FC<PlansPageProps> = (props) => {
             ))}
             */}
             <Scheduler requirements={props.requirements} />
-            <Link to="/">
-                <Button>Back</Button>
-            </Link>
+
             {console.log("the uuid is : ", localStorage.getItem("plan: 0"))}
         </>
     );
@@ -70,27 +65,30 @@ function App(): JSX.Element {
     return (
         <>
             <HashRouter>
+                <div>
+                    <NavigationBar />
+                </div>
                 <Switch>
                     <Router>
                         <Route
                             path="/Plans/:uuid"
-                            render={(props) => 
+                            render={(props) => (
                                 <PlansPage
                                     {...props}
                                     requirements={requirements}
                                 />
-                            }
+                            )}
                         ></Route>
                         <Route
                             path="/Requirements"
-                            render={(props) => 
+                            render={(props) => (
                                 <Requirements
                                     {...props}
                                     requirements={requirements}
                                     onAddRequirement={addRequirement}
                                     onRemoveRequirement={removeRequirement}
                                 />
-                            }
+                            )}
                         ></Route>
                         <Route exact path="/" component={IndexPage}></Route>
                     </Router>

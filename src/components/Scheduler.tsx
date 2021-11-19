@@ -5,12 +5,13 @@ import { YearProps } from "../interfaces/Year";
 import useProblems, { Problem } from "../hooks/useProblems";
 import ErrorStack from "./ErrorStack";
 import useCourses from "../hooks/useCourses";
-import { Table } from "react-bootstrap";
+import { Table, Button, Dropdown, ButtonGroup } from "react-bootstrap";
 import {
     handleSemesterFormInput,
     handleSemesterFormSubmit,
 } from "../util/events/SemesterFormEvents";
 import Year from "./Year/Year";
+import { Link } from "react-router-dom";
 
 interface SchedulerProps {
     /**csv data that can be used to reconstruct a scheduler. */
@@ -148,14 +149,8 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
         }
         return (
             <>
-                <button
-                    onClick={() => {
-                        years.clear();
-                    }}
-                    data-testid="clear-button"
-                >
-                    Clear
-                </button>
+                <h1 className="center ">Course Schedule</h1>
+
                 <div className="degree-requirements-wrapper">
                     <div className="degree-requirements">
                         <Table>
@@ -180,7 +175,10 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                             <Year
                                 key={props.uuid}
                                 clearYear={() => {
-                                    years.clear(props.uuid);
+                                    years.clearYears(props.uuid);
+                                }}
+                                removeYear={() => {
+                                    years.removeYears(props.uuid);
                                 }}
                                 removeSemester={(semesterUuid: string) => {
                                     years.removeSemester(
@@ -200,14 +198,47 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                             />
                         );
                     })}
-                    <button
-                        data-testid="add-year-button"
-                        onClick={() => {
-                            years.push(uuid(), years.value.length + 1);
-                        }}
-                    >
-                        +
-                    </button>
+
+                    <div className="center">
+                        <Dropdown as={ButtonGroup}>
+                            <Button
+                                onClick={() => {
+                                    years.push(uuid(), years.value.length + 1);
+                                }}
+                                data-testid="add-year-button"
+                                variant="success"
+                            >
+                                Add Year +
+                            </Button>
+
+                            <Dropdown.Toggle
+                                split
+                                variant="success"
+                                id="dropdown-split-basic"
+                            />
+
+                            <Dropdown.Menu>
+                                <Dropdown.Item
+                                    style={{ color: "#DC3E45" }}
+                                    onClick={() => {
+                                        years.clearYears();
+                                    }}
+                                    data-testid="clear-years-button"
+                                >
+                                    Clear Years
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    style={{ color: "#DC3E45" }}
+                                    onClick={() => {
+                                        years.removeYears();
+                                    }}
+                                    data-testid="remove-years-button"
+                                >
+                                    Remove All Years
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </div>
                 </div>
 
                 <ErrorStack problems={problems.value} />
