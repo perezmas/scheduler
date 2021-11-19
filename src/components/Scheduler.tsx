@@ -222,6 +222,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                                 split
                                 variant="success"
                                 id="dropdown-split-basic"
+                                data-testid="clear-remove-years-toggle"
                             />
 
                             <Dropdown.Menu>

@@ -228,7 +228,9 @@ describe(Scheduler, () => {
     });
 
     it("Removes all the semesters in the plan when the clear button is clicked", async () => {
-        screen.getByTestId("clear-button").click();
+        screen.getByTestId("clear-remove-years-toggle").click();
+        await screen.findByTestId("clear-years-button");
+        screen.getByTestId("clear-years-button").click();
 
         expect(screen.queryByText("fall")).not.toBeInTheDocument();
         expect(screen.queryByText("spring")).not.toBeInTheDocument();
