@@ -5,6 +5,11 @@ import {v4 as uuid} from "uuid";
 import { Courses } from "../hooks/useCourses";
 import CourseProps from "../interfaces/Course";
 
+async function openCourseDropdown(semester: number): Promise<void>{
+    getByTestId(screen.getByTestId(`semester ${semester}`),"dropdown-toggle").click();
+    await screen.findByTestId("clear-courses-button");
+}
+
 describe(SemesterList, () => {
     const doNothingWithString = jest.fn<void, [string]>();
     const emptyCourses: Courses = {
@@ -95,6 +100,7 @@ describe(SemesterList, () => {
                 uuid: semesterUuid,
             }]}
         />);
+        await openCourseDropdown(1);
 
         expect(removeSemesterSpy).not.toHaveBeenCalled();
         screen.getByTestId("remove-semester").click();
@@ -116,6 +122,7 @@ describe(SemesterList, () => {
                 uuid: semesterUuid,
             }]}
         />);
+        await openCourseDropdown(1);
 
         expect(clearCoursesSpy).not.toHaveBeenCalled();
         screen.getByTestId("clear-courses-button").click();

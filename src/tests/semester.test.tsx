@@ -1,8 +1,13 @@
 import React from "react";
-import { fireEvent, render, screen, waitFor, getByText, getByTestId } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, getByText, getByTestId, findByTestId } from "@testing-library/react";
 import Semester from "../components/Semester";
 import CourseProps from "../interfaces/Course";
 import {v4 as uuid} from "uuid";
+
+async function openCourseDropdown(): Promise<void>{
+    screen.getByTestId("dropdown-toggle").click();
+    await screen.findByTestId("clear-courses-button");   
+}
 
 describe(Semester, () => {
     const doNothing = jest.fn<void, [void]>();
@@ -37,7 +42,7 @@ describe(Semester, () => {
             end={new Date("12-15-2021")}
         />);
         let creditsCounter = screen.getByTestId("credits-count");
-        expect(getByText(creditsCounter,0)).toBeInTheDocument();
+        expect(getByText(creditsCounter,"Credits: 0")).toBeInTheDocument();
 
         const courses = new Array<CourseProps>();
         courses.push({uuid: uuid(), id: "CISC123", name: "test", prereqs: [], coreqs: [], description: "testing", semester: semesterUuid, credits: 1});
@@ -57,7 +62,7 @@ describe(Semester, () => {
         />);
 
         creditsCounter = screen.getByTestId("credits-count");
-        expect(getByText(creditsCounter,5)).toBeInTheDocument();
+        expect(getByText(creditsCounter,"Credits: 5")).toBeInTheDocument();
     });
     it("it opens a course modal when you click add course button", async () => {
         render(<Semester
@@ -139,7 +144,7 @@ describe(Semester, () => {
     });
     it("Calls the function to clear all courses when the clear button is clicked.", async () => {
         const clearSpy = jest.fn<void, [void]>();
-        render(<Semester
+        const {rerender} = render(<Semester
             uuid={semesterUuid}
             courses={[]}
             removeSemester={doNothing}
@@ -150,7 +155,7 @@ describe(Semester, () => {
             start={new Date("08-31-2021")}
             end={new Date("12-15-2021")}
         />);
-
+        await openCourseDropdown();
         expect(clearSpy).not.toHaveBeenCalled();
         screen.getByTestId("clear-courses-button").click();
         expect(clearSpy).toHaveBeenCalled();

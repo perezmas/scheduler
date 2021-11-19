@@ -166,6 +166,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                                 split
                                 variant="success"
                                 id="dropdown-split-basic"
+                                data-testid="dropdown-toggle"
                             />
 
                             <Dropdown.Menu>
@@ -228,7 +229,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                     clear
                 </button> */}
 
-                <Card.Footer className="text-muted">{`Credits: ${totalCredits}`}</Card.Footer>
+                <Card.Footer data-testid="credits-count" className="text-muted">{`Credits: ${totalCredits}`}</Card.Footer>
             </Card>
         </>
     );

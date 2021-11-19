@@ -13,6 +13,12 @@ import {
 import { act } from "react-dom/test-utils";
 import { Scheduler } from "../components/Scheduler";
 
+
+async function openCourseDropdown(year: number, semester: number): Promise<void>{
+    getByTestId(getByTestId(screen.getByTestId(`Year ${year}`),`semester ${semester}`),"dropdown-toggle").click();
+    await screen.findByTestId("clear-courses-button");   
+}
+
 async function addCourse(year: number, semester: number, name: string, id: string, description?: string){
     const yearElement = screen.getByTestId(`Year ${year}`);
     const semesterElement = getByTestId(yearElement,`semester ${semester}`);
@@ -32,7 +38,7 @@ async function addCourse(year: number, semester: number, name: string, id: strin
         target: { value: description !== undefined ? description : "" },
     });
 
-    screen.getByText("Add Course").click();
+    screen.getByTestId("submit-course-button").click();
 
     screen.getByTestId("close-course-form").click();
 
@@ -213,12 +219,11 @@ describe(Scheduler, () => {
         expect(getByText(newSemester,"summer")).toBeInTheDocument();
     });
 
-    it("Should be able to remove a semester on clicking the '-' button next to the label", async () => {
-        const year = screen.getByTestId("Year 1");
-        const semester = getByTestId(year,"semester 1");
-        getByTestId(semester,"remove-semester").click();
+    it("Should be able to remove a semester through the dropdown menu inside it", async () => {
+        await openCourseDropdown(1,1);
+        screen.getByTestId("remove-semester").click();
         expect(
-            queryByText(getByTestId(year,"semester 1"),"fall")
+            queryByText(getByTestId(screen.getByTestId("Year 1"),"semester 1"),"fall")
         ).not.toBeInTheDocument();
     });
 
@@ -375,6 +380,8 @@ describe(Scheduler, () => {
         
         expect(screen.getByText("0 Irish Dance")).toBeInTheDocument();
         expect(screen.getByText("0 Intro to Scots")).toBeInTheDocument();
+
+        await openCourseDropdown(1,1);
 
         getByTestId(fall, "clear-courses-button").click();
 
