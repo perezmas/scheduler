@@ -11,20 +11,26 @@ import {
     RouteComponentProps,
 } from "react-router-dom";
 import { Switch } from "react-router-dom";
-import Plan from "./components/Plan";
+import PlanPage from "./components/PlanPage";
 import { Button } from "react-bootstrap";
 import { Scheduler } from "./components/Scheduler";
 import Requirements from "./components/Requirements";
 import NavigationBar from "./components/NavigationBar";
+import PlanProps from "./interfaces/Plan";
 //import ReactDOM from "react-dom";
 
 // Master Plan View
-const IndexPage = () => {
+type IndexPageProps = RouteComponentProps & {
+    plans: PlanProps[];
+    setPlans: (plans: PlanProps[]) => void;
+};
+const IndexPage: FC<IndexPageProps> = (props) => {
+    const { plans, setPlans } = props;
     return (
         <div className="home">
             <div className="home-content">
                 <h1 className="center mb-5">UD CIS Scheduler</h1>
-                <Plan uuid="" id={0} />
+                <PlanPage plans={plans} setPlans={setPlans} />
             </div>
         </div>
     );
@@ -34,7 +40,7 @@ type PlansPageProps = RouteComponentProps & {
     requirements: string[];
 };
 
-const PlansPage: FC<PlansPageProps> = (props) => {
+const Plan: FC<PlansPageProps> = (props) => {
     return (
         <>
             {/*
@@ -53,6 +59,7 @@ const PlansPage: FC<PlansPageProps> = (props) => {
 };
 
 function App(): JSX.Element {
+    const [plans, setPlans] = useState<Array<PlanProps>>([]);
     const [requirements, setRequirements] = useState<string[]>(
         Array<string>("CISC220", "CISC275", "MATH243")
     );
@@ -73,10 +80,7 @@ function App(): JSX.Element {
                         <Route
                             path="/Plans/:uuid"
                             render={(props) => (
-                                <PlansPage
-                                    {...props}
-                                    requirements={requirements}
-                                />
+                                <Plan {...props} requirements={requirements} />
                             )}
                         ></Route>
                         <Route
@@ -90,7 +94,16 @@ function App(): JSX.Element {
                                 />
                             )}
                         ></Route>
-                        <Route exact path="/" component={IndexPage}></Route>
+                        <Route
+                            path="/"
+                            render={(props) => (
+                                <IndexPage
+                                    {...props}
+                                    plans={plans}
+                                    setPlans={setPlans}
+                                />
+                            )}
+                        ></Route>
                     </Router>
                 </Switch>
             </HashRouter>
