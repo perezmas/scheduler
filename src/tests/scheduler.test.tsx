@@ -410,6 +410,7 @@ describe(Scheduler, () => {
         screen.getByTestId("co-Intro to stuff").click();
         screen.getByTestId("co-Intro to more stuff").click();
         screen.getByTestId("co-Intro to more stuff").click();
+        //currently the checkboxes need to be double clicked to disable them for unknown reasons.
         screen.getByTestId("co-Intro to more stuff").click();
         screen.getByTestId("pre-Irish Dance").click();
         screen.getByTestId("pre-Intro to Scots").click();
