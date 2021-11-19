@@ -41,6 +41,7 @@ const Requirements: FC<RequirementsProps> = (props): JSX.Element => {
                     <Col xs lg="2">
                         <Button
                             onClick={() => onRemoveRequirement(requirement)}
+                            data-testid="remove-requirement"
                         >
                             Remove
                         </Button>
@@ -56,12 +57,14 @@ const Requirements: FC<RequirementsProps> = (props): JSX.Element => {
                             setNewRequirement(el.target.value);
                         }}
                         aria-label="Text input with button"
+                        title="requirement-input"
                     />
                     <Button
                         variant="outline-secondary"
                         title="Action"
                         id="segmented-button-dropdown-2"
                         onClick={onSubmit}
+                        data-testid="submit-requirement"
                     >
                         Add Course
                     </Button>
