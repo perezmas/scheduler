@@ -13,9 +13,7 @@ body {
     background-color: #f8f9fa !important;
     -moz-osx-font-smoothing: grayscale;
 }
-.card {
-    height: 100%;
-}
+
 .home {
     height: 100vh;
     display: flex;
@@ -39,7 +37,8 @@ code {
     color: #6a6d70;
     background-color: #ebebeb;
 }
-#add-plan-button {
+#add-plan-button,
+#add-semester-button {
     background-color: transparent;
     border: none;
     /* padding: 4.61rem 0.75rem; */
@@ -50,9 +49,13 @@ code {
 /* .plan-card {
     flex-direction: row;
 } */
-#add-plan-icon {
+#add-plan-icon,
+#add-semester-icon {
     font-size: 1.9rem;
     font-weight: normal;
+}
+#add-semester-button {
+    padding: 0.94rem 0;
 }
 .modal-add-course {
     position: fixed;

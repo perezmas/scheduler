@@ -98,7 +98,11 @@ export function Plan(props: PlanProps): JSX.Element {
         return (
             <Card
                 className="plan-card flex-row"
-                style={{ alignItems: "center", justifyContent: "space-evenly" }}
+                style={{
+                    alignItems: "center",
+                    justifyContent: "space-evenly",
+                    height: "100%",
+                }}
             >
                 <Card.Body style={{ flex: "0 1 auto" }}>
                     <Card.Title>Plan #{planItem.id} </Card.Title>
@@ -168,11 +172,15 @@ export function Plan(props: PlanProps): JSX.Element {
     return (
         <Container>
             <Row xs={1} md={3} className="g-4">
-                {plans.map((planItem) => 
+                {plans.map((planItem) => (
                     <Col key={planItem.uuid}>{renderCard(planItem)}</Col>
-                )}
+                ))}
                 <Col>
-                    <Card bg="light" className="add-plan-card">
+                    <Card
+                        bg="light"
+                        className="add-plan-card"
+                        style={{ height: "100%" }}
+                    >
                         <Button id="add-plan-button" onClick={addPlan}>
                             Add a plan <br />{" "}
                             <span id="add-plan-icon"> + </span>
