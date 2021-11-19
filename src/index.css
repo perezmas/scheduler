@@ -57,6 +57,10 @@ code {
 #add-semester-button {
     padding: 0.94rem 0;
 }
+
+#add-year-dropdown {
+    margin-bottom: 10vh;
+}
 .modal-add-course {
     position: fixed;
     top: 50%;

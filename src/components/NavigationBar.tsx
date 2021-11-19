@@ -29,8 +29,8 @@ const NavigationBar = (): JSX.Element => {
                                 CISC Department Page
                             </NavDropdown.Item>
                             <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action/3.4">
-                                Separated link
+                            <NavDropdown.Item href="https://www.reddit.com/r/catpictures/">
+                                Cat Pictures
                             </NavDropdown.Item>
                         </NavDropdown>
                     </Nav>

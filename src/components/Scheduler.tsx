@@ -207,7 +207,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                     })}
 
                     <div className="center">
-                        <Dropdown as={ButtonGroup}>
+                        <Dropdown id="add-year-dropdown" as={ButtonGroup}>
                             <Button
                                 onClick={() => {
                                     years.push(uuid(), years.value.length + 1);
