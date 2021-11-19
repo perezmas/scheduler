@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import PlanProps from "../interfaces/Plan";
 import { YearProps } from "../interfaces/Year";
+import AddPlanName from "./AddPlanName";
 
 
 export const testList: PlanProps[] = [

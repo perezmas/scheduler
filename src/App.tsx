@@ -15,7 +15,7 @@ import Plan from "./components/Plan";
 import { Button } from "react-bootstrap";
 import { Scheduler } from "./components/Scheduler";
 import Requirements from "./components/Requirements";
-import OnboardingSteps from "./components/OnboardingSteps";
+import MainPageWalkthrough from "./components/MainPageWalkthrough";
 import SchedulerWalkthrough from "./components/SchedulerWalkthrough";
 //import ReactDOM from "react-dom";
 
@@ -28,7 +28,7 @@ const IndexPage = () => {
                 <h3 className="center">Designed By: Lucas, Max, and Amani</h3>
                 <div role="alert" className="welcome">
                     <p>Welcome to the UD Degree Planner!</p>
-                    <OnboardingSteps />
+                    <MainPageWalkthrough />
                     <p></p>
                     <b>Click Add/Edit Plan below to Get Started</b>
                     <p></p>

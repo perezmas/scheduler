@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ReactJoyride from "react-joyride";
 
-const OnboardingSteps: React.FunctionComponent = () => {
+const MainPageWalkthrough: React.FunctionComponent = () => {
     const [joyride, setJoyride] = useState({
         run: false,
         steps: [
@@ -26,11 +26,14 @@ const OnboardingSteps: React.FunctionComponent = () => {
 
     return (
         <>
-            <div style={{ marginLeft: "2%", marginRight: "auto" }}>
-                <button className="btn btn-primary" onClick={() => {
-                    setJoyride({ ...joyride, run: !joyride.run }); 
-                }}
-                style={{ backgroundColor: "#ff0044", color: "white", border: "none", fontSize: "20px", padding: "15px 32px", cursor: "pointer", borderRadius: "50px" }}>Take the tour</button>
+            <div data-testid={"main-page-walkthrough-modal"} style={{ marginLeft: "2%", marginRight: "auto" }}>
+                <button
+                    data-testid={"take-tour-button"}
+                    className="btn btn-primary"
+                    onClick={() => {
+                        setJoyride({ ...joyride, run: !joyride.run });
+                    }}
+                    style={{ backgroundColor: "#ff0044", color: "white", border: "none", fontSize: "20px", padding: "15px 32px", cursor: "pointer", borderRadius: "50px" }}>Take the tour</button>
             </div>
             <ReactJoyride
                 steps={joyride.steps}
@@ -57,4 +60,4 @@ const OnboardingSteps: React.FunctionComponent = () => {
     );
 };
 
-export default OnboardingSteps;
+export default MainPageWalkthrough;

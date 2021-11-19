@@ -20,12 +20,12 @@ interface AddPlanNameProps {
 }
 
 
-const addPlanNameModal = (props: AddPlanNameProps) => {
+export function AddPlanName(props: AddPlanNameProps) {
     //if (!props.isOpen) return null;
     return (
         <div>
             {/* <div className="non-modal-overlay" /> */}
-            <div className="modal-add-course">
+            <div className="modal-add-plan-name">
                 <button onClick={props.onClickClose}>Close Button</button>
 
                 <Form onSubmit={props.onClickSubmit}>
@@ -35,22 +35,15 @@ const addPlanNameModal = (props: AddPlanNameProps) => {
                             as={Col}
                             controlId="courseName"
                         >
-                            <Form.Label>Course Name</Form.Label>
+                            <Form.Label>Plan Name</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder="Enter Course Name"
-                                data-testid="courseNameField"
-                                name="courseName"
+                                placeholder="Enter Plan Name"
+                                data-testid="planNameField"
+                                name="planName"
                                 defaultValue={props.defaultName.planName}
                                 onChange={props.onChange}
                             />
-                            <Form.Text className="text-muted">
-                                You can find this from{" "}
-                                <a href="https://my.udel.edu/task/all/courses">
-                                    this
-                                </a>{" "}
-                                course search.
-                            </Form.Text>
                         </Form.Group>
                     </Row>
                     <Button variant="primary" type="submit">
@@ -60,6 +53,6 @@ const addPlanNameModal = (props: AddPlanNameProps) => {
             </div>
         </div>
     );
-};
+}
 
-export default addPlanNameModal;
+export default AddPlanName;
