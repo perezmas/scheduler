@@ -11,19 +11,36 @@ interface HookTesterProps {
     initSpy?: () => Array<YearProps>;
 }
 
-interface Years {
+export interface Years {
+    /**The list of years in the schedule */
     value: Array<YearProps>;
+    /**Adds a new year to a schedule. */
     push: (uuid: string, index: number) => void;
+    /**Puts a semester into a year */
     putSemester: (
+        /**The uuid of the year the semester is being added to. */
         uuid: string,
+        /**The uuid of the new semester */
         semesterUuid: string,
+        /**The start of the new semester */
         start: Date,
+        /**The end of the new semester */
         end: Date,
+        /**The name displayed to the user (likely the season the semester takes place in) */
         name: string
     ) => void;
-    removeSemester: (uuid: string, semesterUuid: string) => void;
-    removeYear: (uuid: string) => void;
-    clear: (uuid?: string) => void;
+    /**Removes a semester from the year */
+    removeSemester: (
+        /**The uuid of the year the semester is being removed from */
+        uuid: string,
+        /**The uuid of the semester being removed */
+        semesterUuid: string
+    ) => void;
+
+    /**Clears all the semesters in a given year. If no year is supplied, deletes all semesters in value. */
+    clearYears: (uuid?: string) => void;
+    /**removes a given year. If no year is supplied, deletes all years. */
+    removeYears: (uuid?: string) => void;
 }
 
 function UseYearsTest(props: HookTesterProps): JSX.Element {
@@ -63,7 +80,7 @@ function UseYearsTest(props: HookTesterProps): JSX.Element {
         });
         const [remove, setRemove] = useState(true);
         if (remove && years.value.length > 0) {
-            years.removeYear(targetUuid);
+            years.removeYears(targetUuid);
             setRemove(false);
         }
         break;
