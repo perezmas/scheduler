@@ -11,7 +11,6 @@ import {
     handleSemesterFormSubmit,
 } from "../util/events/SemesterFormEvents";
 import Year from "./Year/Year";
-import { Link } from "react-router-dom";
 import CourseProps from "../interfaces/Course";
 
 interface SchedulerProps {
