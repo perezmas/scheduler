@@ -129,7 +129,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
     return (
         <>
             <AddCourse
-                courses={Array.from(props.courses.values())}
+                courses={props.courses}
                 defaultValues={newCourse}
                 isEditing={isEditing}
                 isOpen={isOpen}

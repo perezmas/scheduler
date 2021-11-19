@@ -113,7 +113,7 @@ async function testForError(
 
 describe(Scheduler, () => {
     beforeEach(() => {
-        render(<Scheduler requirements={[]} />);
+        render(<Scheduler requirements={["MATH243"]} />);
     });
 
     it("Should start with 2 years and 3 semesters.", async () => {
@@ -390,6 +390,48 @@ describe(Scheduler, () => {
 
         expect(screen.getByText("0 Intro to stuff")).toBeInTheDocument();
         expect(screen.getByText("0 Intro to more stuff")).toBeInTheDocument();
+    });
+    it("Can add a course to a semester with prerequsites, corequisites, credits, a name, an id, and a description.", async () => {
+        //coreqs
+        await addCourse(1, 1,"Irish Dance", "IRSH-201");
+        await addCourse(1, 1,"Intro to Scots", "SCOT-201", "No, we don't sound like scots wikipedia.");
+        
+        //prereqs
+        await addCourse(1, 1, "Intro to stuff", "STUFF-101", "");
+        await addCourse(1, 1, "Intro to more stuff", "STUFF-102");
 
+        getByText(getByTestId(screen.getByTestId("Year 1"), "semester 1"), "Add Course").click();
+        await screen.findByTestId("course-form");
+
+        fireEvent.change(screen.getByLabelText("Course Name"),{target: {value: "Intro to testing"}});
+        fireEvent.change(screen.getByLabelText("Course Description (Optional)"),{target: {value: "Tedious but necessary"}});
+        fireEvent.change(screen.getByLabelText("Number of credits"), {target: {value: "3"}});
+        fireEvent.change(screen.getByLabelText("Course ID"),{target: {value: "CISC201"}});
+        screen.getByTestId("co-Intro to stuff").click();
+        screen.getByTestId("co-Intro to more stuff").click();
+        screen.getByTestId("co-Intro to more stuff").click();
+        screen.getByTestId("co-Intro to more stuff").click();
+        screen.getByTestId("pre-Irish Dance").click();
+        screen.getByTestId("pre-Intro to Scots").click();
+        screen.getByTestId("pre-Intro to Scots").click();
+        screen.getByTestId("pre-Intro to Scots").click();
+        screen.getByTestId("submit-course-button").click();
+        expect(screen.getAllByTestId("edit-course-button")).toHaveLength(5)
+
+    });
+});
+
+describe(Scheduler, () => {
+    it("Should display the requirements given to it as props", async () => {
+        render(<Scheduler requirements={["CISC123", "MATH243"]}/>);
+        const requirements = screen.getByTestId("degree-requirements");
+        expect(getByText(requirements,"CISC123, MATH243")).toBeInTheDocument();
+    });
+    it("Should remove requirements from the requirents list if the course is in the semester", async () => {
+        render(<Scheduler requirements={["CISC123", "MATH243"]}/>)
+        const requirements = screen.getByTestId("degree-requirements");
+        expect(getByText(requirements, "CISC123, MATH243")).toBeInTheDocument();
+        await addCourse(1,1,"calculus I think", "MATH243", "");
+        
     });
 });
