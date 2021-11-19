@@ -2,8 +2,6 @@ import Requirements from "../components/Requirements";
 import React from "react";
 import {screen, render, fireEvent} from "@testing-library/react";
 import {
-    Link,
-    HashRouter as Router,
     Route,
     HashRouter,
     RouteComponentProps
