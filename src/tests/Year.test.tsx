@@ -6,6 +6,11 @@ import CourseProps from "../interfaces/Course";
 import {v4 as uuid} from "uuid";
 import {screen, render, getByTestId, waitFor, fireEvent} from "@testing-library/react";
 
+async function openCourseDropdown(semester: number): Promise<void>{
+    getByTestId(screen.getByTestId(`semester ${semester}`),"dropdown-toggle").click();
+    await screen.findByTestId("clear-courses-button");
+}
+
 //Copied from Year.tsx so I don't have to export it just for a test.
 interface YearProps{
     clearYear: () => void
@@ -54,12 +59,12 @@ describe(Year, () => {
     const spring: SemesterProps = {name: "spring", start: new Date("02-07-2022"), end: new Date("06-08-2022"), uuid: springUuid};
     it("Displays the correct index", async () => {
         const {rerender} = render(<Year {...defaultProps}/>);
-        expect(screen.getByText("Year 1 >")).toBeInTheDocument();
+        expect(screen.getByText("Year 1")).toBeInTheDocument();
         const newProps = {...defaultProps};
         newProps.index = 3;
         rerender(<Year {...newProps}/>);
-        expect(screen.getByText("Year 3 >")).toBeInTheDocument();
-        expect(screen.queryByTestId("Year 1 >")).not.toBeInTheDocument();
+        expect(screen.getByText("Year 3")).toBeInTheDocument();
+        expect(screen.queryByTestId("Year 1")).not.toBeInTheDocument();
     });
     it("Can display one or more semesters", async () => {
         const newProps = {...defaultProps};
@@ -79,6 +84,7 @@ describe(Year, () => {
         newProps.semesters = [fall, spring];
         newProps.removeSemester = removeSemesterSpy;
         render(<Year {...newProps}/>);
+        await openCourseDropdown(1);
         expect(removeSemesterSpy).not.toHaveBeenCalled();
         getByTestId(screen.getByTestId("semester 1"),"remove-semester").click();
         expect(removeSemesterSpy).toHaveBeenCalled();

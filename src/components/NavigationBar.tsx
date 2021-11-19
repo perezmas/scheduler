@@ -10,7 +10,7 @@ const NavigationBar = (): JSX.Element => {
                     Fancy Scheduler
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
+                <Navbar.Collapse id="basic-navbar-nav" data-testid="open-bar">
                     <Nav className="me-auto">
                         <Nav.Link as={Link} to="/">
                             Home

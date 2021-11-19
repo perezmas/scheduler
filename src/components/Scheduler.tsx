@@ -12,6 +12,7 @@ import {
 } from "../util/events/SemesterFormEvents";
 import Year from "./Year/Year";
 import { Link } from "react-router-dom";
+import CourseProps from "../interfaces/Course";
 
 interface SchedulerProps {
     /**csv data that can be used to reconstruct a scheduler. */
@@ -126,7 +127,11 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
             const newCourses = Array<string>();
 
             for (const requirement of requirements) {
-                if (getByUUID(courses.courseList, requirement) === -1) {
+                if (
+                    courses.courseList.filter((course: CourseProps) => {
+                        return course.id === requirement;
+                    }).length === 0
+                ) {
                     newCourses.push(requirement);
                 }
             }
@@ -152,7 +157,10 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                 <h1 className="center ">Course Schedule</h1>
 
                 <div className="degree-requirements-wrapper">
-                    <div className="degree-requirements">
+                    <div
+                        className="degree-requirements"
+                        data-testid="degree-requirements"
+                    >
                         <Table>
                             <thead>
                                 <tr>

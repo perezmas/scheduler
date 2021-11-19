@@ -12,7 +12,7 @@ describe(YearHeader, () => {
             <></>
         </YearHeader>);
         let label = screen.getByTestId("Year 1 label");
-        expect(getByText(label, "Year 1 >")).toBeInTheDocument();
+        expect(getByText(label, "Year 1")).toBeInTheDocument();
         rerender(<YearHeader
             clearSemesters={doNothing}
             index={3}
@@ -20,7 +20,7 @@ describe(YearHeader, () => {
             <></>
         </YearHeader>);
         label = screen.getByTestId("Year 3 label");
-        expect(getByText(label, "Year 3 >")).toBeInTheDocument();
+        expect(getByText(label, "Year 3")).toBeInTheDocument();
     });
 
     it("Should call its clearSemesters prop when the clear button is clicked.", async () => {
