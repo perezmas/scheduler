@@ -8,13 +8,13 @@ const SchedulerWalkthrough: React.FunctionComponent = () => {
             {
                 title: "Welcome to the Scheduler Page!",
                 disableBeacon: true,
-                target: "body",
-                content: <div><h4>This is the page where you can edit the details of your degree plan.</h4></div>,
+                target: ".degree-requirements-wrapper",
+                content: "This is the page where you can edit the details of your degree plan.",
             },
             {
                 title: "Start here with your first year.",
                 target: ".container-fluid",
-                content: "This is where you can begin to add the courses for your degree plan.",
+                content: "This is where you can begin to add the courses for your degree plan. Enter course name, course ID, description, whether it is a pre/corequisite and a number of credits. Or hit the dropdown to reset/remove the current semester.",
             },
             {
                 title: "Check which degree requirements are unmet here!",
@@ -22,9 +22,9 @@ const SchedulerWalkthrough: React.FunctionComponent = () => {
                 content: "Here, you can find the requirements that you listed on the Modify Requirements page in order to complete your custom degree plan.",
             },
             {
-                title: "Click on the 'Year 1' arrow to get started.",
+                title: "Click on 'Year 1' to get started!",
                 target: ".container-fluid",
-                content: "Click the plus button under each semester to add courses to it. Good luck!",
+                content: "Click the button by each semester to add courses to it. Good luck!",
             },
         ]
     });
@@ -32,10 +32,10 @@ const SchedulerWalkthrough: React.FunctionComponent = () => {
     return (
         <>
             <div style={{ marginLeft: "2%", marginRight: "auto" }}>
-                <button className="btn btn-primary" onClick={() => {
+                <button className="btn btn-primary" data-testid="scheduler-walkthrough-button" onClick={() => {
                     setJoyride({ ...joyride, run: !joyride.run }); 
                 }}
-                style={{ backgroundColor: "#ff0044", color: "white", border: "none", fontSize: "20px", padding: "15px 32px", cursor: "pointer", borderRadius: "50px" }}>Click Here for Tutorial</button>
+                style={{ backgroundColor: "#ff0044", color: "white", border: "none", fontSize: "16px", padding: "15px 32px", cursor: "pointer", borderRadius: "5px" }}>Click Here for Help</button>
             </div>
             <ReactJoyride
                 steps={joyride.steps}

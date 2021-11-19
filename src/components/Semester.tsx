@@ -1,11 +1,18 @@
 import React, { FormEvent, useState, useMemo } from "react";
 import CourseProps from "../interfaces/Course";
-import { ListGroup, ListGroupItem } from "react-bootstrap";
+import {
+    ListGroup,
+    ListGroupItem,
+    Card,
+    Dropdown,
+    ButtonGroup,
+    Button,
+} from "react-bootstrap";
 import SemesterProps from "../interfaces/Semester";
 import AddCourse from "./AddCourse";
 import Course from "./Course";
-import {v4 as uuid} from "uuid";
-import {getByUUID} from "../hooks/useYears";
+import { v4 as uuid } from "uuid";
+import { getByUUID } from "../hooks/useYears";
 
 interface FullSemesterProps extends SemesterProps {
     /**The uuid's of all exiting courses */
@@ -13,14 +20,14 @@ interface FullSemesterProps extends SemesterProps {
     /**A function that will delete this semester.*/
     removeSemester: () => void;
     /**A function that removes a course from the global list. */
-    removeCourse: (uuid: string) => void,
+    removeCourse: (uuid: string) => void;
     /**A function that pushes courses into the global list. */
-    push: (course: CourseProps) => void,
+    push: (course: CourseProps) => void;
     /**A function that clears all courses from this semester. */
     clearCourses: () => void;
 }
 
-function getEmptyCourse(semester: string): CourseProps{
+function getEmptyCourse(semester: string): CourseProps {
     return {
         id: "",
         name: "",
@@ -29,7 +36,7 @@ function getEmptyCourse(semester: string): CourseProps{
         semester: semester,
         coreqs: [],
         prereqs: [],
-        uuid: uuid()
+        uuid: uuid(),
     };
 }
 
@@ -90,18 +97,39 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
         return props.courses.filter((course: CourseProps) => {
             return course.semester === props.uuid;
         });
-    },[props.courses]);
+    }, [props.courses]);
 
     const totalCredits = useMemo(() => {
-        return semesterCourses.reduce((previousValue: CourseProps, currentValue: CourseProps) => {
-            return {id: "", description: "", name: "", credits: previousValue.credits+currentValue.credits, semester: "", coreqs: [], prereqs: [], uuid: ""};
-        },{id: "", description: "", name: "", credits: 0, coreqs: [], prereqs: [], semester: "", uuid: ""}).credits;
-    },[semesterCourses]);
+        return semesterCourses.reduce(
+            (previousValue: CourseProps, currentValue: CourseProps) => {
+                return {
+                    id: "",
+                    description: "",
+                    name: "",
+                    credits: previousValue.credits + currentValue.credits,
+                    semester: "",
+                    coreqs: [],
+                    prereqs: [],
+                    uuid: "",
+                };
+            },
+            {
+                id: "",
+                description: "",
+                name: "",
+                credits: 0,
+                coreqs: [],
+                prereqs: [],
+                semester: "",
+                uuid: "",
+            }
+        ).credits;
+    }, [semesterCourses]);
 
     return (
         <>
             <AddCourse
-                courses={Array.from(props.courses.values())}
+                courses={props.courses}
                 defaultValues={newCourse}
                 isEditing={isEditing}
                 isOpen={isOpen}
@@ -114,53 +142,95 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                 }}
                 onChange={handleOnChange}
             ></AddCourse>
+            <Card>
+                <Card.Header data-testid={"semester-name"}>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        {`${props.name} `}
+                        <Dropdown as={ButtonGroup}>
+                            <Button
+                                onClick={() => {
+                                    setIsOpen(true);
+                                }}
+                                data-testid="add-course-button"
+                                variant="success"
+                            >
+                                Add Course
+                            </Button>
 
-            <span
-                data-testid={"semester-name"}
-            >
-                {`${props.name} `}
-            </span>
-            <span data-testid="credits-count">
-                {totalCredits}
-            </span>
-            <button
-                data-testid={"remove-semester"}
-                className="trigger"
-                onClick={props.removeSemester}
-            >
-                -
-            </button>
-
-            <ListGroup className="courses">{semesterCourses.map((course: CourseProps) => {
-                return (
-                    <ListGroupItem key={course.id}>
-                        {
-                            <Course
-                                {...course}
-                                onClickEdit={onClickEdit}
-                                removeCourse={props.removeCourse}
+                            <Dropdown.Toggle
+                                split
+                                variant="success"
+                                id="dropdown-split-basic"
+                                data-testid="dropdown-toggle"
                             />
-                        }
-                    </ListGroupItem>
-                );
-            })}
-            </ListGroup>
-            <button
-                className="trigger"
-                onClick={() => {
-                    setIsOpen(true);
-                }}
-                data-testid="add-course-button"
-            >
-                +
-            </button>
-            <br />
-            <button
-                onClick={props.clearCourses}
-                data-testid="clear-courses-button"
-            >
-                clear
-            </button>
+
+                            <Dropdown.Menu>
+                                <Dropdown.Item
+                                    onClick={props.clearCourses}
+                                    data-testid="clear-courses-button"
+                                >
+                                    Clear Semester
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    style={{ color: "#DC3E45" }}
+                                    data-testid={"remove-semester"}
+                                    onClick={props.removeSemester}
+                                >
+                                    Remove Semester
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </div>
+                </Card.Header>
+                {/* 
+                <button
+                    
+                    className="trigger"
+                    
+                >
+                    -
+                </button> */}
+
+                <ListGroup className="courses">
+                    {semesterCourses.map((course: CourseProps) => {
+                        return (
+                            <ListGroupItem
+                                className="course-item"
+                                key={course.id}
+                            >
+                                {
+                                    <Course
+                                        {...course}
+                                        onClickEdit={onClickEdit}
+                                        removeCourse={props.removeCourse}
+                                    />
+                                }
+                            </ListGroupItem>
+                        );
+                    })}
+                </ListGroup>
+                {/* <button
+                    className="trigger"
+                    
+                    
+                >
+                    +
+                </button>
+                <br />
+                <button
+                    
+                    
+                >
+                    clear
+                </button> */}
+
+                <Card.Footer data-testid="credits-count" className="text-muted">{`Credits: ${totalCredits}`}</Card.Footer>
+            </Card>
         </>
     );
 };

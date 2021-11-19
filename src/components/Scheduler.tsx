@@ -5,9 +5,13 @@ import { YearProps } from "../interfaces/Year";
 import useProblems, { Problem } from "../hooks/useProblems";
 import ErrorStack from "./ErrorStack";
 import useCourses from "../hooks/useCourses";
-import { Table } from "react-bootstrap";
-import {handleSemesterFormInput, handleSemesterFormSubmit} from "../util/events/SemesterFormEvents";
+import { Table, Button, Dropdown, ButtonGroup } from "react-bootstrap";
+import {
+    handleSemesterFormInput,
+    handleSemesterFormSubmit,
+} from "../util/events/SemesterFormEvents";
 import Year from "./Year/Year";
+import CourseProps from "../interfaces/Course";
 
 interface SchedulerProps {
     /**csv data that can be used to reconstruct a scheduler. */
@@ -56,15 +60,15 @@ function hasError(problems: Array<Problem>): boolean {
     return false;
 }
 
-
-
 export function Scheduler(props: SchedulerProps): JSX.Element {
     if (props.csv === undefined && props.json === undefined) {
         const years = useYears(getStartingYears);
 
         const courses = useCourses();
         //The requirements for the degree that are not present in the plan
-        const [unmetRequirements, setUnmetRequirements] = useState<Array<string>>([]);
+        const [unmetRequirements, setUnmetRequirements] = useState<
+            Array<string>
+        >([]);
         //The name of the new semester (null if the form is closed or nothing has been entered)
         const [newName, setNewName] = useState<string | null>(null);
         //The starting date of the new semester as a string (null if the form is closed or nothing has been entered)
@@ -86,13 +90,34 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
             problems.clear("semester-form");
         };
         const handleSemesterInput = (event: ChangeEvent<HTMLInputElement>) => {
-            handleSemesterFormInput(event,newStart,newEnd,setNewName,setNewStart,setNewEnd,years,currentForm,problems);
+            handleSemesterFormInput(
+                event,
+                newStart,
+                newEnd,
+                setNewName,
+                setNewStart,
+                setNewEnd,
+                years,
+                currentForm,
+                problems
+            );
         };
 
-        const handleSemesterSubmit = (event: FormEvent<HTMLFormElement>, id: string) => {
-            handleSemesterFormSubmit(event,id,newName,newStart,newEnd,() => {
-                setForm(null);
-            },years.putSemester);
+        const handleSemesterSubmit = (
+            event: FormEvent<HTMLFormElement>,
+            id: string
+        ) => {
+            handleSemesterFormSubmit(
+                event,
+                id,
+                newName,
+                newStart,
+                newEnd,
+                () => {
+                    setForm(null);
+                },
+                years.putSemester
+            );
         };
 
         //set if courses match requirements using props.requirements
@@ -101,7 +126,11 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
             const newCourses = Array<string>();
 
             for (const requirement of requirements) {
-                if (getByUUID(courses.courseList, requirement) === -1) {
+                if (
+                    courses.courseList.filter((course: CourseProps) => {
+                        return course.id === requirement;
+                    }).length === 0
+                ) {
                     newCourses.push(requirement);
                 }
             }
@@ -124,24 +153,45 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
         }
         return (
             <>
-                <button
-                    onClick={() => {
-                        years.clear();
-                    }}
-                    data-testid="clear-button"
-                >
-                    Clear
-                </button>
+                <h1 className="center ">Course Schedule</h1>
+
+                <div className="degree-requirements-wrapper">
+                    <div
+                        className="degree-requirements"
+                        data-testid="degree-requirements"
+                    >
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <th>Degree Requirements</th>
+                                    <th>Unmet Requirements</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>School of Engineering</td>
+                                    <td>{unmetRequirements.join(", ")}</td>
+                                </tr>
+                            </tbody>
+                        </Table>
+                    </div>
+                </div>
                 <div>
                     {years.value.map((props: YearProps) => {
                         return (
                             <Year
                                 key={props.uuid}
-                                clearYear = {() => {
-                                    years.clear(props.uuid);
+                                clearYear={() => {
+                                    years.clearYears(props.uuid);
+                                }}
+                                removeYear={() => {
+                                    years.removeYears(props.uuid);
                                 }}
                                 removeSemester={(semesterUuid: string) => {
-                                    years.removeSemester(props.uuid,semesterUuid);
+                                    years.removeSemester(
+                                        props.uuid,
+                                        semesterUuid
+                                    );
                                 }}
                                 courses={courses}
                                 index={props.index}
@@ -152,31 +202,53 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                                 currentForm={currentForm}
                                 setForm={setForm}
                                 submissionAllowed={submissionAllowed}
-                            />);
+                            />
+                        );
                     })}
-                    <button
-                        data-testid="add-year-button"
-                        onClick={() => {
-                            years.push(uuid(), years.value.length+1);
-                        }}
-                    >
-                        +
-                    </button>
+
+                    <div className="center">
+                        <Dropdown id="add-year-dropdown" as={ButtonGroup}>
+                            <Button
+                                onClick={() => {
+                                    years.push(uuid(), years.value.length + 1);
+                                }}
+                                data-testid="add-year-button"
+                                variant="success"
+                            >
+                                Add Year +
+                            </Button>
+
+                            <Dropdown.Toggle
+                                split
+                                variant="success"
+                                id="dropdown-split-basic"
+                                data-testid="clear-remove-years-toggle"
+                            />
+
+                            <Dropdown.Menu>
+                                <Dropdown.Item
+                                    style={{ color: "#DC3E45" }}
+                                    onClick={() => {
+                                        years.clearYears();
+                                    }}
+                                    data-testid="clear-years-button"
+                                >
+                                    Clear Years
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                    style={{ color: "#DC3E45" }}
+                                    onClick={() => {
+                                        years.removeYears();
+                                    }}
+                                    data-testid="remove-years-button"
+                                >
+                                    Remove All Years
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </div>
                 </div>
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>Degree Requirements</th>
-                            <th>Unmet Requirements</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>School of Engineering</td>
-                            <td>{unmetRequirements.join(", ")}</td>
-                        </tr>
-                    </tbody>
-                </Table>
+
                 <ErrorStack problems={problems.value} />
             </>
         );

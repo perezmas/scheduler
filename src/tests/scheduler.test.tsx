@@ -13,6 +13,12 @@ import {
 import { act } from "react-dom/test-utils";
 import { Scheduler } from "../components/Scheduler";
 
+
+async function openCourseDropdown(year: number, semester: number): Promise<void>{
+    getByTestId(getByTestId(screen.getByTestId(`Year ${year}`),`semester ${semester}`),"dropdown-toggle").click();
+    await screen.findByTestId("clear-courses-button");   
+}
+
 async function addCourse(year: number, semester: number, name: string, id: string, description?: string){
     const yearElement = screen.getByTestId(`Year ${year}`);
     const semesterElement = getByTestId(yearElement,`semester ${semester}`);
@@ -32,7 +38,7 @@ async function addCourse(year: number, semester: number, name: string, id: strin
         target: { value: description !== undefined ? description : "" },
     });
 
-    screen.getByText("Add Course").click();
+    screen.getByTestId("submit-course-button").click();
 
     screen.getByTestId("close-course-form").click();
 
@@ -107,7 +113,7 @@ async function testForError(
 
 describe(Scheduler, () => {
     beforeEach(() => {
-        render(<Scheduler requirements={[]} />);
+        render(<Scheduler requirements={["MATH243"]} />);
     });
 
     it("Should start with 2 years and 3 semesters.", async () => {
@@ -213,17 +219,18 @@ describe(Scheduler, () => {
         expect(getByText(newSemester,"summer")).toBeInTheDocument();
     });
 
-    it("Should be able to remove a semester on clicking the '-' button next to the label", async () => {
-        const year = screen.getByTestId("Year 1");
-        const semester = getByTestId(year,"semester 1");
-        getByTestId(semester,"remove-semester").click();
+    it("Should be able to remove a semester through the dropdown menu inside it", async () => {
+        await openCourseDropdown(1,1);
+        screen.getByTestId("remove-semester").click();
         expect(
-            queryByText(getByTestId(year,"semester 1"),"fall")
+            queryByText(getByTestId(screen.getByTestId("Year 1"),"semester 1"),"fall")
         ).not.toBeInTheDocument();
     });
 
     it("Removes all the semesters in the plan when the clear button is clicked", async () => {
-        screen.getByTestId("clear-button").click();
+        screen.getByTestId("clear-remove-years-toggle").click();
+        await screen.findByTestId("clear-years-button");
+        screen.getByTestId("clear-years-button").click();
 
         expect(screen.queryByText("fall")).not.toBeInTheDocument();
         expect(screen.queryByText("spring")).not.toBeInTheDocument();
@@ -376,6 +383,8 @@ describe(Scheduler, () => {
         expect(screen.getByText("0 Irish Dance")).toBeInTheDocument();
         expect(screen.getByText("0 Intro to Scots")).toBeInTheDocument();
 
+        await openCourseDropdown(1,1);
+
         getByTestId(fall, "clear-courses-button").click();
 
         expect(screen.queryByText("0 Irish Dance")).not.toBeInTheDocument();
@@ -383,6 +392,49 @@ describe(Scheduler, () => {
 
         expect(screen.getByText("0 Intro to stuff")).toBeInTheDocument();
         expect(screen.getByText("0 Intro to more stuff")).toBeInTheDocument();
+    });
+    it("Can add a course to a semester with prerequsites, corequisites, credits, a name, an id, and a description.", async () => {
+        //coreqs
+        await addCourse(1, 1,"Irish Dance", "IRSH-201");
+        await addCourse(1, 1,"Intro to Scots", "SCOT-201", "No, we don't sound like scots wikipedia.");
+        
+        //prereqs
+        await addCourse(1, 1, "Intro to stuff", "STUFF-101", "");
+        await addCourse(1, 1, "Intro to more stuff", "STUFF-102");
 
+        getByText(getByTestId(screen.getByTestId("Year 1"), "semester 1"), "Add Course").click();
+        await screen.findByTestId("course-form");
+
+        fireEvent.change(screen.getByLabelText("Course Name"),{target: {value: "Intro to testing"}});
+        fireEvent.change(screen.getByLabelText("Course Description (Optional)"),{target: {value: "Tedious but necessary"}});
+        fireEvent.change(screen.getByLabelText("Number of credits"), {target: {value: "3"}});
+        fireEvent.change(screen.getByLabelText("Course ID"),{target: {value: "CISC201"}});
+        screen.getByTestId("co-Intro to stuff").click();
+        screen.getByTestId("co-Intro to more stuff").click();
+        screen.getByTestId("co-Intro to more stuff").click();
+        //currently the checkboxes need to be double clicked to disable them for unknown reasons.
+        screen.getByTestId("co-Intro to more stuff").click();
+        screen.getByTestId("pre-Irish Dance").click();
+        screen.getByTestId("pre-Intro to Scots").click();
+        screen.getByTestId("pre-Intro to Scots").click();
+        screen.getByTestId("pre-Intro to Scots").click();
+        screen.getByTestId("submit-course-button").click();
+        expect(screen.getAllByTestId("edit-course-button")).toHaveLength(5)
+
+    });
+});
+
+describe(Scheduler, () => {
+    it("Should display the requirements given to it as props", async () => {
+        render(<Scheduler requirements={["CISC123", "MATH243"]}/>);
+        const requirements = screen.getByTestId("degree-requirements");
+        expect(getByText(requirements,"CISC123, MATH243")).toBeInTheDocument();
+    });
+    it("Should remove requirements from the requirents list if the course is in the semester", async () => {
+        render(<Scheduler requirements={["CISC123", "MATH243"]}/>)
+        const requirements = screen.getByTestId("degree-requirements");
+        expect(getByText(requirements, "CISC123, MATH243")).toBeInTheDocument();
+        await addCourse(1,1,"calculus I think", "MATH243", "");
+        
     });
 });

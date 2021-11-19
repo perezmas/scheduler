@@ -3,16 +3,17 @@ import {screen, render, waitFor} from "@testing-library/react";
 import MainPageWalkthrough from "../components/MainPageWalkthrough";
 
 describe(MainPageWalkthrough, ()=> {
-    it("Starts tour when you click the button", async() => {
+    it("renders without issue", ()=> {
+        render(<MainPageWalkthrough/>);
+    });
+    it("Starts tour when you click the text", async() => {
         render(<MainPageWalkthrough
             
         />);
-        (await screen.findByTestId("take-tour-button")).click();
 
-        screen.getByText("Close Tour").click();
+        expect(screen.getByTestId("main-page-walkthrough-modal")).toBeInTheDocument();
+        
+        expect(screen.getByText("Tutorial")).toBeInTheDocument();
 
-        await waitFor( ()=> {
-            screen.queryByTestId("main-page-walkthrough-modal".not.toBeInTheDocument());
-        })
-    })
-})
+    });
+});
