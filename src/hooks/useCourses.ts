@@ -3,22 +3,31 @@ import CourseProps from "../interfaces/Course";
 import { getByUUID } from "./useYears";
 
 export interface AbstractCourseAction {
-    type: "ADD COURSE" | "REMOVE COURSE";
+    type: "ADD COURSE" | "REMOVE COURSE" | "UPDATE COURSE";
 }
 
 export interface AddCourseAction {
-    type: "ADD COURSE",
-    newCourse: CourseProps
+    type: "ADD COURSE";
+    newCourse: CourseProps;
 }
 
 export interface RemoveCourseAction {
-    type: "REMOVE COURSE",
-    uuid: string
+    type: "REMOVE COURSE";
+    uuid: string;
+}
+
+export interface UpdateCourseAction {
+    type: "UPDATE COURSE";
+    id: string;
+    payload: CourseProps;
 }
 
 // easy access to the courses
 
-const courseReducer = (state: Array<CourseProps>,action: AbstractCourseAction): Array<CourseProps> => {
+const courseReducer = (
+    state: Array<CourseProps>,
+    action: AbstractCourseAction
+): Array<CourseProps> => {
     const newState = state.map((course: CourseProps) => {
         return course;
     });
@@ -31,11 +40,20 @@ const courseReducer = (state: Array<CourseProps>,action: AbstractCourseAction): 
     case "REMOVE COURSE": {
         const realAction = action as RemoveCourseAction;
         const target = getByUUID(newState, realAction.uuid);
-        if(target !== -1){
+        if (target !== -1) {
             newState.splice(target, 1);
         }
         return newState;
     }
+    case "UPDATE COURSE": {
+        const realAction = action as UpdateCourseAction;
+        const target = getByUUID(newState, realAction.id);
+        newState.splice(target, 1);
+        newState.push(realAction.payload);
+        return newState;
+    }
+    default:
+        throw new Error("Unknown action type");
     }
 };
 
@@ -56,12 +74,27 @@ function useCourses(initialCourses?: Array<CourseProps>): Courses {
     );
 
     const push = (course: CourseProps) => {
-        const action: AddCourseAction = {type: "ADD COURSE", newCourse: course};
-        updateCourses(action);
+        //check if course is already in the list
+        const target = getByUUID(courses, course.uuid);
+        if (target !== -1) {
+            updateCourses({
+                type: "UPDATE COURSE",
+                id: course.uuid,
+                payload: course,
+            } as UpdateCourseAction);
+        } else {
+            updateCourses({
+                type: "ADD COURSE",
+                newCourse: course,
+            } as AddCourseAction);
+        }
     };
 
     const remove = (uuid: string) => {
-        const action: RemoveCourseAction = {type: "REMOVE COURSE", uuid: uuid};
+        const action: RemoveCourseAction = {
+            type: "REMOVE COURSE",
+            uuid: uuid,
+        };
         updateCourses(action);
     };
 

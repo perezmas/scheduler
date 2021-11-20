@@ -8,7 +8,7 @@ import { ChangeEvent, FormEvent } from "react";
 import { Courses } from "../../hooks/useCourses";
 import SemesterProps from "../../interfaces/Semester";
 
-interface YearProps {
+export interface FullYearProps {
     clearYear: () => void;
     removeYear: () => void;
     removeSemester: (uuid: string) => void;
@@ -26,7 +26,7 @@ interface YearProps {
     submissionAllowed: boolean;
 }
 
-export default function Year(props: YearProps): JSX.Element {
+export default function Year(props: FullYearProps): JSX.Element {
     return (
         <div data-testid={`Year ${props.index}`} key={props.uuid}>
             <YearHeader
