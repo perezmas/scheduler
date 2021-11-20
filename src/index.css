@@ -69,8 +69,7 @@ code {
     padding: 50px;
     z-index: 1000;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-    border-left: 5px solid #5f37ff;
-    border-top: 5px solid #5f37ff;
+
     /*makes the content be the center*/
     transform: translate(-50%, -50%);
 }
