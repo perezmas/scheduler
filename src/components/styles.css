@@ -17,3 +17,19 @@
         width: "50%";
         padding: 10px;
 }
+
+.button{
+        margin-left: "2%";
+        margin-right: "auto";
+        background-color: "#ff0044";
+        color: "white";
+        border: "none";
+        font-size: "15px";
+        padding: "15px 32px";
+        cursor: "pointer";
+        border-radius: "5px";
+      }
+      
+.button:hover{
+        background-color: "#ff0072";
+}

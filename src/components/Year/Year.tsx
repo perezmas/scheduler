@@ -8,39 +8,57 @@ import { ChangeEvent, FormEvent } from "react";
 import { Courses } from "../../hooks/useCourses";
 import SemesterProps from "../../interfaces/Semester";
 
-interface YearProps{
-    clearYear: () => void
-    removeSemester: (uuid: string) => void,
-    courses: Courses,
-    index: number,
-    uuid: string,
-    handleSemesterSubmit: (event: FormEvent<HTMLFormElement>, uuid: string) => void,
-    handleSemesterInput: (event: ChangeEvent<HTMLInputElement>) => void,
-    semesters: Array<SemesterProps>,
-    currentForm: string | null,
-    setForm: (newForm: string | null) => void,
-    submissionAllowed: boolean
+export interface FullYearProps {
+    clearYear: () => void;
+    removeYear: () => void;
+    removeSemester: (uuid: string) => void;
+    courses: Courses;
+    index: number;
+    uuid: string;
+    handleSemesterSubmit: (
+        event: FormEvent<HTMLFormElement>,
+        uuid: string
+    ) => void;
+    handleSemesterInput: (event: ChangeEvent<HTMLInputElement>) => void;
+    semesters: Array<SemesterProps>;
+    currentForm: string | null;
+    setForm: (newForm: string | null) => void;
+    submissionAllowed: boolean;
 }
 
-export default function Year(props: YearProps): JSX.Element{
+export default function Year(props: FullYearProps): JSX.Element {
     return (
         <div data-testid={`Year ${props.index}`} key={props.uuid}>
-            <YearHeader index={props.index} clearSemesters={() => {
-                props.clearYear();
-            }}
+            <YearHeader
+                index={props.index}
+                clearYear={() => {
+                    props.clearYear();
+                }}
+                removeYear={() => {
+                    props.removeYear();
+                }}
             >
-                <SemesterList semesters={props.semesters} courses={props.courses} removeSemester={(semesterUuid: string) => {
-                    props.removeSemester(semesterUuid);
-                }}
-                clearCourses={(semesterUuid: string) => {
-                    for(const course of props.courses.courseList.filter((course: CourseProps) => {
-                        return course.semester === semesterUuid;
-                    })){
-                        props.courses.removeCourse(course.uuid); 
-                    }
-                }}
+                <SemesterList
+                    semesters={props.semesters}
+                    courses={props.courses}
+                    removeSemester={(semesterUuid: string) => {
+                        props.removeSemester(semesterUuid);
+                    }}
+                    clearCourses={(semesterUuid: string) => {
+                        for (const course of props.courses.courseList.filter(
+                            (course: CourseProps) => {
+                                return course.semester === semesterUuid;
+                            }
+                        )) {
+                            props.courses.removeCourse(course.uuid);
+                        }
+                    }}
                 />
-                <FormTrigger currentForm={props.currentForm} setForm={props.setForm} YearUuid={props.uuid}>
+                <FormTrigger
+                    currentForm={props.currentForm}
+                    setForm={props.setForm}
+                    YearUuid={props.uuid}
+                >
                     <SemesterForm
                         canSubmit={props.submissionAllowed}
                         handleInput={props.handleSemesterInput}

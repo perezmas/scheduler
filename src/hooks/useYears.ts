@@ -115,7 +115,20 @@ function yearReducer(
         throw Error(`${action.type} not implemented!`);
     }
 }
+function removeYears(
+    years: Array<YearProps>,
 
+    yearRemover: (uuid: string) => void,
+    yearUuid?: string
+) {
+    if (yearUuid !== undefined && yearUuid !== "") {
+        yearRemover(yearUuid);
+    } else if (yearUuid === undefined || yearUuid === "") {
+        for (const year of years) {
+            yearRemover(year.uuid);
+        }
+    }
+}
 function clearSemesters(
     years: Array<YearProps>,
     pusher: (uuid: string, index: number) => void,
@@ -166,10 +179,13 @@ export interface Years {
         /**The uuid of the year the semester is being removed from */
         uuid: string,
         /**The uuid of the semester being removed */
-        semesterUuid: string) => void;
-    removeYear: (uuid: string) => void;
+        semesterUuid: string
+    ) => void;
+
     /**Clears all the semesters in a given year. If no year is supplied, deletes all semesters in value. */
-    clear: (uuid?: string) => void;
+    clearYears: (uuid?: string) => void;
+    /**removes a given year. If no year is supplied, deletes all years. */
+    removeYears: (uuid?: string) => void;
 }
 
 /**Returns a Years interface to keep track of the years in a plan (see above)
@@ -232,8 +248,10 @@ function useYears(init?: () => Array<YearProps>): Years {
         push: addYear,
         putSemester: addSemester,
         removeSemester: removeSemester,
-        removeYear: removeYear,
-        clear: (uuid?: string) => {
+        removeYears: (uuid?: string) => {
+            removeYears(years, removeYear, uuid);
+        },
+        clearYears: (uuid?: string) => {
             clearSemesters(years, addYear, removeSemester, removeYear, uuid);
         },
     };

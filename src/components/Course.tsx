@@ -12,13 +12,7 @@ interface CurrentCourseProps extends CourseProps {
 const Course = (props: CurrentCourseProps): JSX.Element => {
     return (
         <div draggable={true} data-testid={`Course ${props.id}: ${props.name}`}>
-            <div
-                style={{ display: "inline-block" }}
-                onClick={() => {
-                    props.removeCourse(props.uuid);
-                }}
-                data-testid="remove-course"
-            >
+            <div style={{ display: "inline-block" }}>
                 {`${props.credits} ${props.name}`}
             </div>
             <button
@@ -30,6 +24,16 @@ const Course = (props: CurrentCourseProps): JSX.Element => {
                 }}
             >
                 Edit
+            </button>
+            <button
+                style={{ display: "inline-block", color: "#DC3E45" }}
+                className="trigger"
+                data-testid="remove-course"
+                onClick={() => {
+                    props.removeCourse(props.uuid);
+                }}
+            >
+                Remove
             </button>
         </div>
     );

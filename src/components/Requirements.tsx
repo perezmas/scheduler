@@ -7,7 +7,7 @@ import {
     Col,
     Container,
 } from "react-bootstrap";
-import { RouteComponentProps, Link } from "react-router-dom";
+import { RouteComponentProps } from "react-router-dom";
 
 type RequirementsProps = RouteComponentProps & {
     /**The current requirements. */
@@ -28,7 +28,7 @@ const Requirements: FC<RequirementsProps> = (props): JSX.Element => {
     };
     return (
         <Container className="flex-column-reverse">
-            <h3>School of Engineering Requirements</h3>
+            <h3 className="center">Computer Science Requirements</h3>
             {requirements.map((requirement) => 
                 <Row
                     key={requirement}
@@ -41,6 +41,7 @@ const Requirements: FC<RequirementsProps> = (props): JSX.Element => {
                     <Col xs lg="2">
                         <Button
                             onClick={() => onRemoveRequirement(requirement)}
+                            data-testid="remove-requirement"
                         >
                             Remove
                         </Button>
@@ -56,20 +57,19 @@ const Requirements: FC<RequirementsProps> = (props): JSX.Element => {
                             setNewRequirement(el.target.value);
                         }}
                         aria-label="Text input with button"
+                        title="requirement-input"
                     />
                     <Button
                         variant="outline-secondary"
                         title="Action"
                         id="segmented-button-dropdown-2"
                         onClick={onSubmit}
+                        data-testid="submit-requirement"
                     >
                         Add Course
                     </Button>
                 </InputGroup>
             </Row>
-            <Link to="/">
-                <Button className="my-3">Back</Button>
-            </Link>
         </Container>
     );
 };

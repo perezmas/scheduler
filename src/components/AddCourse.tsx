@@ -27,7 +27,12 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
     return ReactDOM.createPortal(
         <div>
             <div className="modal-add-course" data-testid="modal-add-course">
-                <button onClick={props.onClickClose} data-testid="close-course-form">Close Button</button>
+                <button
+                    onClick={props.onClickClose}
+                    data-testid="close-course-form"
+                >
+                    Close Button
+                </button>
 
                 <Form onSubmit={props.onClickSubmit} data-testid="course-form">
                     <Row className="mb-3">
@@ -42,7 +47,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                 placeholder="Enter Course Name"
                                 data-testid="courseNameField"
                                 name="courseName"
-                                defaultValue={props.defaultValues.name}
+                                value={props.defaultValues.name}
                                 onChange={props.onChange}
                             />
                             <Form.Text className="text-muted">
@@ -64,8 +69,12 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                 name="courseID"
                                 placeholder="eg. CISC220"
                                 onChange={props.onChange}
-                                defaultValue={props.defaultValues.id}
+                                value={props.defaultValues.id}
                             />
+                            <Form.Text className="text-muted">
+                                This field is used to check requirements. The
+                                spelling should match requirements exactly
+                            </Form.Text>
                         </Form.Group>
                     </Row>
                     <Row>
@@ -79,7 +88,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                 type="number"
                                 name="courseCredits"
                                 placeholder="eg. 3"
-                                defaultValue={props.defaultValues.credits}
+                                value={props.defaultValues.credits}
                                 onChange={props.onChange}
                             />
                         </Form.Group>
@@ -92,12 +101,13 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                 )
                                 .map((course: CourseProps) => 
                                     <Form.Check
+                                        data-testid={`co-${course.name}`}
                                         key={course.id}
                                         type="checkbox"
                                         label={course.name}
                                         name="courseCorequisites"
                                         value={course.id}
-                                        defaultChecked={props.defaultValues.coreqs.includes(
+                                        checked={props.defaultValues.coreqs.includes(
                                             course.id
                                         )}
                                         onChange={props.onChange}
@@ -114,11 +124,12 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                 .map((course: CourseProps) => 
                                     <Form.Check
                                         key={course.id}
+                                        data-testid={`pre-${course.name}`}
                                         type="checkbox"
                                         label={course.name}
                                         name="coursePrerequisites"
                                         value={course.id}
-                                        defaultChecked={props.defaultValues.prereqs.includes(
+                                        checked={props.defaultValues.prereqs.includes(
                                             course.id
                                         )}
                                         onChange={props.onChange}
@@ -133,13 +144,17 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                             name="courseDescription"
                             as="textarea"
                             placeholder="enter the course description here"
-                            defaultValue={props.defaultValues.description}
+                            value={props.defaultValues.description}
                             onChange={props.onChange}
                             style={{ height: "100px" }}
                         />
                     </Form.Group>
 
-                    <Button variant="primary" type="submit" data-testid="submit-course-button">
+                    <Button
+                        variant="success"
+                        type="submit"
+                        data-testid="submit-course-button"
+                    >
                         {props.isEditing ? "Edit Course" : "Add Course"}
                     </Button>
                 </Form>

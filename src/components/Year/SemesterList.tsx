@@ -1,18 +1,17 @@
-import React, {useMemo} from "react";
+import React, { useMemo } from "react";
 import SemesterProps from "../../interfaces/Semester";
 import Col from "react-bootstrap/Col";
 import Semester from "../Semester";
 import { Courses } from "../../hooks/useCourses";
 
 interface SemesterListProps {
-    removeSemester: (uuid: string) => void,
-    clearCourses: (semesterUuid: string) => void,
-    courses: Courses,
-    semesters: Array<SemesterProps>,
-
+    removeSemester: (uuid: string) => void;
+    clearCourses: (semesterUuid: string) => void;
+    courses: Courses;
+    semesters: Array<SemesterProps>;
 }
 
-export default function SemesterList(props: SemesterListProps): JSX.Element{
+export default function SemesterList(props: SemesterListProps): JSX.Element {
     const sortedSemesters = useMemo(() => {
         return props.semesters
             .sort((a: SemesterProps, b: SemesterProps) => {
@@ -56,39 +55,30 @@ export default function SemesterList(props: SemesterListProps): JSX.Element{
 
     return (
         <>
-            {sortedSemesters.map((semesterProps: SemesterProps,index: number) => {
-                return (
-                    <Col
-                        data-testid={`semester ${index + 1}`}
-                        key={semesterProps.uuid}
-                    >
-                        <Semester
-                            courses={
-                                props.courses.courseList
-                            }
-                            {...semesterProps}
-                            removeSemester={() => {
-                                props.removeSemester(
-                                    semesterProps.uuid
-                                );
-                            }}
-                            push={
-                                props.courses.push
-                            }
-                            removeCourse={
-                                props.courses.removeCourse
-                            }
-                            clearCourses={() => {
-                                props.clearCourses(
-                                    semesterProps.uuid
-                                );
-                            }}
-                        />
-                    </Col>
-                );
-            }
+            {sortedSemesters.map(
+                (semesterProps: SemesterProps, index: number) => {
+                    return (
+                        <Col
+                            className="mb-3"
+                            data-testid={`semester ${index + 1}`}
+                            key={semesterProps.uuid}
+                        >
+                            <Semester
+                                courses={props.courses.courseList}
+                                {...semesterProps}
+                                removeSemester={() => {
+                                    props.removeSemester(semesterProps.uuid);
+                                }}
+                                push={props.courses.push}
+                                removeCourse={props.courses.removeCourse}
+                                clearCourses={() => {
+                                    props.clearCourses(semesterProps.uuid);
+                                }}
+                            />
+                        </Col>
+                    );
+                }
             )}
-        </> 
+        </>
     );
 }
-
