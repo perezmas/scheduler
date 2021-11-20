@@ -1,12 +1,6 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
-import { Button, Card, Col, Form, Row } from "react-bootstrap";
+import React, { ChangeEvent, FormEvent } from "react";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import "./styles.css";
-import { Link } from "react-router-dom";
-import { v4 as uuid } from "uuid";
-import PlanProps from "../interfaces/Plan";
-import { YearProps } from "../interfaces/Year";
-import ReactDOM from "react-dom";
-
 
 interface AddPlanNameProps {
     isOpen: boolean;
@@ -19,8 +13,7 @@ interface AddPlanNameProps {
     onChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
-
-export function AddPlanName(props: AddPlanNameProps) {
+export function AddPlanName(props: AddPlanNameProps): JSX.Element {
     //if (!props.isOpen) return null;
     return (
         <div>

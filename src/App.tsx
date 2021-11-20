@@ -4,7 +4,6 @@ import "./App.css";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
-    Link,
     HashRouter as Router,
     Route,
     HashRouter,
@@ -12,7 +11,7 @@ import {
 } from "react-router-dom";
 import { Switch } from "react-router-dom";
 import PlanPage from "./components/PlanPage";
-import { Button } from "react-bootstrap";
+
 import { Scheduler } from "./components/Scheduler";
 import Requirements from "./components/Requirements";
 import SchedulerWalkthrough from "./components/SchedulerWalkthrough";
@@ -82,30 +81,31 @@ function App(): JSX.Element {
                     <Router>
                         <Route
                             path="/Plans/:uuid"
-                            render={(props) => (
+                            render={(props) => 
                                 <Plan {...props} requirements={requirements} />
-                            )}
+                            }
                         ></Route>
                         <Route
                             path="/Requirements"
-                            render={(props) => (
+                            render={(props) => 
                                 <Requirements
                                     {...props}
                                     requirements={requirements}
                                     onAddRequirement={addRequirement}
                                     onRemoveRequirement={removeRequirement}
                                 />
-                            )}
+                            }
                         ></Route>
                         <Route
                             path="/"
-                            render={(props) => (
+                            exact
+                            render={(props) => 
                                 <IndexPage
                                     {...props}
                                     plans={plans}
                                     setPlans={setPlans}
                                 />
-                            )}
+                            }
                         ></Route>
                     </Router>
                 </Switch>

@@ -47,7 +47,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                 placeholder="Enter Course Name"
                                 data-testid="courseNameField"
                                 name="courseName"
-                                defaultValue={props.defaultValues.name}
+                                value={props.defaultValues.name}
                                 onChange={props.onChange}
                             />
                             <Form.Text className="text-muted">
@@ -69,7 +69,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                 name="courseID"
                                 placeholder="eg. CISC220"
                                 onChange={props.onChange}
-                                defaultValue={props.defaultValues.id}
+                                value={props.defaultValues.id}
                             />
                             <Form.Text className="text-muted">
                                 This field is used to check requirements. The
@@ -88,7 +88,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                 type="number"
                                 name="courseCredits"
                                 placeholder="eg. 3"
-                                defaultValue={props.defaultValues.credits}
+                                value={props.defaultValues.credits}
                                 onChange={props.onChange}
                             />
                         </Form.Group>
@@ -99,7 +99,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                     (course) =>
                                         course.id != props.defaultValues.id
                                 )
-                                .map((course: CourseProps) => (
+                                .map((course: CourseProps) => 
                                     <Form.Check
                                         data-testid={`co-${course.name}`}
                                         key={course.id}
@@ -107,12 +107,12 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                         label={course.name}
                                         name="courseCorequisites"
                                         value={course.id}
-                                        defaultChecked={props.defaultValues.coreqs.includes(
+                                        checked={props.defaultValues.coreqs.includes(
                                             course.id
                                         )}
                                         onChange={props.onChange}
                                     />
-                                ))}
+                                )}
                         </Form.Group>
                         <Form.Group className="mb-3" as={Col}>
                             <Form.Label>Select Prerequisites</Form.Label>
@@ -121,7 +121,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                     (course) =>
                                         course.id != props.defaultValues.id
                                 )
-                                .map((course: CourseProps) => (
+                                .map((course: CourseProps) => 
                                     <Form.Check
                                         key={course.id}
                                         data-testid={`pre-${course.name}`}
@@ -129,12 +129,12 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                         label={course.name}
                                         name="coursePrerequisites"
                                         value={course.id}
-                                        defaultChecked={props.defaultValues.prereqs.includes(
+                                        checked={props.defaultValues.prereqs.includes(
                                             course.id
                                         )}
                                         onChange={props.onChange}
                                     />
-                                ))}
+                                )}
                         </Form.Group>
                     </Row>
 
@@ -144,7 +144,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                             name="courseDescription"
                             as="textarea"
                             placeholder="enter the course description here"
-                            defaultValue={props.defaultValues.description}
+                            value={props.defaultValues.description}
                             onChange={props.onChange}
                             style={{ height: "100px" }}
                         />
@@ -160,7 +160,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                 </Form>
             </div>
         </div>,
-        (document.getElementById("modal-view") as Element) || document.body
+        document.getElementById("modal-view") as Element || document.body
     );
 };
 
