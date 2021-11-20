@@ -27,7 +27,12 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
     return ReactDOM.createPortal(
         <div>
             <div className="modal-add-course" data-testid="modal-add-course">
-                <button onClick={props.onClickClose} data-testid="close-course-form">Close Button</button>
+                <button
+                    onClick={props.onClickClose}
+                    data-testid="close-course-form"
+                >
+                    Close Button
+                </button>
 
                 <Form onSubmit={props.onClickSubmit} data-testid="course-form">
                     <Row className="mb-3">
@@ -66,6 +71,10 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                 onChange={props.onChange}
                                 defaultValue={props.defaultValues.id}
                             />
+                            <Form.Text className="text-muted">
+                                This field is used to check requirements. The
+                                spelling should match requirements exactly
+                            </Form.Text>
                         </Form.Group>
                     </Row>
                     <Row>
@@ -90,7 +99,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                     (course) =>
                                         course.id != props.defaultValues.id
                                 )
-                                .map((course: CourseProps) => 
+                                .map((course: CourseProps) => (
                                     <Form.Check
                                         data-testid={`co-${course.name}`}
                                         key={course.id}
@@ -103,7 +112,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                         )}
                                         onChange={props.onChange}
                                     />
-                                )}
+                                ))}
                         </Form.Group>
                         <Form.Group className="mb-3" as={Col}>
                             <Form.Label>Select Prerequisites</Form.Label>
@@ -112,7 +121,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                     (course) =>
                                         course.id != props.defaultValues.id
                                 )
-                                .map((course: CourseProps) => 
+                                .map((course: CourseProps) => (
                                     <Form.Check
                                         key={course.id}
                                         data-testid={`pre-${course.name}`}
@@ -125,7 +134,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                         )}
                                         onChange={props.onChange}
                                     />
-                                )}
+                                ))}
                         </Form.Group>
                     </Row>
 
@@ -141,13 +150,17 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                         />
                     </Form.Group>
 
-                    <Button variant="primary" type="submit" data-testid="submit-course-button">
+                    <Button
+                        variant="success"
+                        type="submit"
+                        data-testid="submit-course-button"
+                    >
                         {props.isEditing ? "Edit Course" : "Add Course"}
                     </Button>
                 </Form>
             </div>
         </div>,
-        document.getElementById("modal-view") as Element || document.body
+        (document.getElementById("modal-view") as Element) || document.body
     );
 };
 
