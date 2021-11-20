@@ -31,9 +31,15 @@ export const testList: PlanProps[] = [
     },
 ];
 
+interface PlanPageProps {
+    plans: PlanProps[];
+    setPlans: (plans: PlanProps[]) => void;
+}
+
 /**A card on the home screen that lets the user move between schedulers, mainly so that advisors can keep track of their students. */
-export function Plan(props: PlanProps): JSX.Element {
-    const [plans, setPlans] = useState<Array<PlanProps>>([]);
+export function PlanPage(props: PlanPageProps): JSX.Element {
+    const { plans, setPlans } = props;
+
     const addPlan = () => {
         // sets array of all cards
         setPlans([
@@ -48,7 +54,7 @@ export function Plan(props: PlanProps): JSX.Element {
         ]);
         const index = plans.length;
         console.log("index: ", index);
-        const arr: typeof props[] = [];
+        const arr: typeof PlanProps[] = [];
 
         // if empty array of plans
 
@@ -192,4 +198,4 @@ export function Plan(props: PlanProps): JSX.Element {
     );
 }
 
-export default Plan;
+export default PlanPage;
