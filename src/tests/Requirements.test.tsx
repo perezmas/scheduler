@@ -18,11 +18,11 @@ function RequirementsTester(props: RequirementsTestProps): JSX.Element{
         <HashRouter>
             <Switch>
                 <Route path="/" render={(routeProps: RouteComponentProps) => {
-                    return <Requirements {...props} {...routeProps}/>
+                    return <Requirements {...props} {...routeProps}/>;
                 }}/>
             </Switch>
         </HashRouter>
-    )
+    );
 }
 
 describe(Requirements, () => {
