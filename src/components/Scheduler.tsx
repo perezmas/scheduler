@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import useYears, { getByUUID } from "../hooks/useYears";
+import useYears from "../hooks/useYears";
 import { v4 as uuid } from "uuid";
 import { YearProps } from "../interfaces/Year";
 import useProblems, { Problem } from "../hooks/useProblems";
@@ -169,7 +169,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>School of Engineering</td>
+                                    <td>Computer Science</td>
                                     <td>{unmetRequirements.join(", ")}</td>
                                 </tr>
                             </tbody>

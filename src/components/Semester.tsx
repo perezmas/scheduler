@@ -51,6 +51,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
         const courseToAdd: CourseProps = { ...newCourse };
+
         switch (event.target.name) {
         case "courseName":
             courseToAdd.name = event.target.value;
@@ -90,6 +91,9 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
     const handleCourseSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         props.push(newCourse);
+        if (!isEditing) {
+            setNewCourse(getEmptyCourse(props.uuid));
+        }
     };
     const semesterCourses = useMemo(() => {
         return props.courses.filter((course: CourseProps) => {
@@ -165,7 +169,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                                 split
                                 variant="success"
                                 id="dropdown-split-basic"
-                                data-testid="dropdown-toggle"
+                                data-testid="clear-courses-toggle"
                             />
 
                             <Dropdown.Menu>

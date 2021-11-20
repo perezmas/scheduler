@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
     Button,
     Card,
@@ -54,7 +54,7 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
         ]);
         const index = plans.length;
         console.log("index: ", index);
-        const arr: typeof PlanProps[] = [];
+        const arr: PlanProps[] = [];
 
         // if empty array of plans
 
@@ -178,9 +178,9 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
     return (
         <Container>
             <Row xs={1} md={3} className="g-4">
-                {plans.map((planItem) => (
+                {plans.map((planItem) => 
                     <Col key={planItem.uuid}>{renderCard(planItem)}</Col>
-                ))}
+                )}
                 <Col>
                     <Card
                         bg="light"

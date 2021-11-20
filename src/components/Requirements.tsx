@@ -7,7 +7,7 @@ import {
     Col,
     Container,
 } from "react-bootstrap";
-import { RouteComponentProps, Link } from "react-router-dom";
+import { RouteComponentProps } from "react-router-dom";
 
 type RequirementsProps = RouteComponentProps & {
     /**The current requirements. */
@@ -29,7 +29,7 @@ const Requirements: FC<RequirementsProps> = (props): JSX.Element => {
     return (
         <Container className="flex-column-reverse">
             <h3 className="center">Computer Science Requirements</h3>
-            {requirements.map((requirement) => (
+            {requirements.map((requirement) => 
                 <Row
                     key={requirement}
                     className="justify-content-md-center my-3"
@@ -47,7 +47,7 @@ const Requirements: FC<RequirementsProps> = (props): JSX.Element => {
                         </Button>
                     </Col>
                 </Row>
-            ))}
+            )}
             <Row className="justify-content-md-center my-3">
                 <InputGroup className="mb-3" style={{ width: "50%" }}>
                     <FormControl
