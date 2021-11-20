@@ -15,7 +15,7 @@ import {
 async function openCourseDropdown(semester: number): Promise<void> {
     getByTestId(
         screen.getByTestId(`semester ${semester}`),
-        "dropdown-toggle"
+        "clear-courses-toggle"
     ).click();
     await screen.findByTestId("clear-courses-button");
 }
