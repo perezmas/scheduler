@@ -17,7 +17,6 @@ import Requirements from "./components/Requirements";
 import SchedulerWalkthrough from "./components/SchedulerWalkthrough";
 import NavigationBar from "./components/NavigationBar";
 import PlanProps from "./interfaces/Plan";
-//import ReactDOM from "react-dom";
 
 // Master Plan View
 type IndexPageProps = RouteComponentProps & {
@@ -72,45 +71,43 @@ function App(): JSX.Element {
         setRequirements(requirements.filter((r) => r !== requirement));
     };
     return (
-        <>
-            <HashRouter>
-                <div>
-                    <NavigationBar />
-                </div>
-                <Switch>
-                    <Router>
-                        <Route
-                            path="/Plans/:uuid"
-                            render={(props) => 
-                                <Plan {...props} requirements={requirements} />
-                            }
-                        ></Route>
-                        <Route
-                            path="/Requirements"
-                            render={(props) => 
-                                <Requirements
-                                    {...props}
-                                    requirements={requirements}
-                                    onAddRequirement={addRequirement}
-                                    onRemoveRequirement={removeRequirement}
-                                />
-                            }
-                        ></Route>
-                        <Route
-                            path="/"
-                            exact
-                            render={(props) => 
-                                <IndexPage
-                                    {...props}
-                                    plans={plans}
-                                    setPlans={setPlans}
-                                />
-                            }
-                        ></Route>
-                    </Router>
-                </Switch>
-            </HashRouter>
-        </>
+        <HashRouter>
+            <div>
+                <NavigationBar />
+            </div>
+            <Switch>
+                <Router>
+                    <Route
+                        path="/Plans/:uuid"
+                        render={(props) => 
+                            <Plan {...props} requirements={requirements} />
+                        }
+                    ></Route>
+                    <Route
+                        path="/Requirements"
+                        render={(props) => 
+                            <Requirements
+                                {...props}
+                                requirements={requirements}
+                                onAddRequirement={addRequirement}
+                                onRemoveRequirement={removeRequirement}
+                            />
+                        }
+                    ></Route>
+                    <Route
+                        path="/"
+                        exact
+                        render={(props) => 
+                            <IndexPage
+                                {...props}
+                                plans={plans}
+                                setPlans={setPlans}
+                            />
+                        }
+                    ></Route>
+                </Router>
+            </Switch>
+        </HashRouter>
     );
 }
 
