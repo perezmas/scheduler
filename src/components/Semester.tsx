@@ -90,8 +90,6 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
     const handleCourseSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         props.push(newCourse);
-        setNewCourse(getEmptyCourse(props.uuid));
-        if (isEditing) setIsEditing(false);
     };
     const semesterCourses = useMemo(() => {
         return props.courses.filter((course: CourseProps) => {
@@ -136,6 +134,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                 onClickClose={() => {
                     setIsOpen(false);
                     setIsEditing(false);
+                    setNewCourse(getEmptyCourse(props.uuid));
                 }}
                 onClickSubmit={(event: FormEvent<HTMLFormElement>) => {
                     handleCourseSubmit(event);
@@ -229,7 +228,10 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                     clear
                 </button> */}
 
-                <Card.Footer data-testid="credits-count" className="text-muted">{`Credits: ${totalCredits}`}</Card.Footer>
+                <Card.Footer
+                    data-testid="credits-count"
+                    className="text-muted"
+                >{`Credits: ${totalCredits}`}</Card.Footer>
             </Card>
         </>
     );
