@@ -1,12 +1,10 @@
 import React from "react";
 import App from "../App";
-import {screen, render, waitFor} from "@testing-library/react";
-
-
+import { screen, render, waitFor } from "@testing-library/react";
 
 describe("Plan", () => {
     beforeEach(async () => {
-        render(<App/>);
+        render(<App />);
     });
 
     it("Should add plans when the add plan button is clicked", async () => {
@@ -21,6 +19,8 @@ describe("Plan", () => {
         confirmSpy.mockReturnValue(false);
         screen.getByTestId("add-plan").click();
         expect(confirmSpy).not.toHaveBeenCalled();
+        screen.getByTestId("plan-toggle").click();
+        await screen.findByTestId("delete-plan");
         screen.getByTestId("delete-plan").click();
         expect(confirmSpy).toHaveBeenCalled();
         expect(screen.getByTestId("edit-plan")).toBeInTheDocument();
@@ -30,6 +30,8 @@ describe("Plan", () => {
     });
     it("Allows you to duplicate a plan", async () => {
         screen.getByTestId("add-plan").click();
+        screen.getByTestId("plan-toggle").click();
+        await screen.findByTestId("copy-plan");
         screen.getByTestId("copy-plan").click();
         expect(screen.getAllByText("Plan #0")).toHaveLength(2);
     });
@@ -37,10 +39,9 @@ describe("Plan", () => {
         screen.getByTestId("add-plan").click();
         screen.getByTestId("edit-plan").click();
         await screen.findByTestId("Year 1");
-        screen.getByTestId("back-button").click();
+        screen.getByText("Home").click();
         await waitFor(() => {
             expect(screen.queryByTestId("Year 1")).not.toBeInTheDocument();
         });
     });
-    
 });

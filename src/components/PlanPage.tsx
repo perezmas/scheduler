@@ -143,6 +143,7 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
                         as={Link}
                         to={`Plans/${planItem.uuid}`}
                         variant="success"
+                        data-testid="edit-plan"
                     >
                         Edit Plan
                     </Button>
@@ -151,6 +152,7 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
                         split
                         variant="success"
                         id="dropdown-split-basic"
+                        data-testid="plan-toggle"
                     />
 
                     <Dropdown.Menu>
@@ -158,6 +160,7 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
                             onClick={() => {
                                 copy(planItem);
                             }}
+                            data-testid="copy-plan"
                         >
                             Duplicate Plan
                         </Dropdown.Item>
@@ -167,6 +170,7 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
                             onClick={() => {
                                 deleteCard(plans, planItem);
                             }}
+                            data-testid="delete-plan"
                         >
                             Remove Plan
                         </Dropdown.Item>
@@ -187,7 +191,11 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
                         className="add-plan-card"
                         style={{ height: "100%" }}
                     >
-                        <Button id="add-plan-button" onClick={addPlan}>
+                        <Button
+                            id="add-plan-button"
+                            data-testid="add-plan"
+                            onClick={addPlan}
+                        >
                             Add a plan <br />{" "}
                             <span id="add-plan-icon"> + </span>
                         </Button>
