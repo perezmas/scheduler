@@ -190,15 +190,6 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                         </Dropdown>
                     </div>
                 </Card.Header>
-                {/* 
-                <button
-                    
-                    className="trigger"
-                    
-                >
-                    -
-                </button> */}
-
                 <ListGroup className="courses">
                     {semesterCourses.map((course: CourseProps) => {
                         return (
@@ -217,21 +208,6 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                         );
                     })}
                 </ListGroup>
-                {/* <button
-                    className="trigger"
-                    
-                    
-                >
-                    +
-                </button>
-                <br />
-                <button
-                    
-                    
-                >
-                    clear
-                </button> */}
-
                 <Card.Footer
                     data-testid="credits-count"
                     className="text-muted"
