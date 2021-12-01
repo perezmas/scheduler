@@ -14,7 +14,7 @@ import Course from "./Course";
 import { v4 as uuid } from "uuid";
 import { getByUUID } from "../hooks/useYears";
 
-interface FullSemesterProps extends SemesterProps {
+export interface FullSemesterProps extends SemesterProps {
     /**The uuid's of all exiting courses */
     courses: Array<CourseProps>;
     /**A function that will delete this semester.*/
@@ -41,7 +41,7 @@ function getEmptyCourse(semester: string): CourseProps {
 }
 
 /**Represents a single semester of courses within an academic year. */
-const Semester = (props: FullSemesterProps): JSX.Element => {
+const Semester = React.forwardRef((props: FullSemesterProps, ref: React.ForwardedRef<HTMLDivElement>): JSX.Element => {
     const [newCourse, setNewCourse] = useState<CourseProps>(() => {
         return getEmptyCourse(props.uuid);
     });
@@ -90,7 +90,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
     };
     const handleCourseSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        props.push(newCourse);
+        props.push({...newCourse});
         if (!isEditing) {
             setNewCourse(getEmptyCourse(props.uuid));
         }
@@ -145,7 +145,7 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                 }}
                 onChange={handleOnChange}
             ></AddCourse>
-            <Card>
+            <Card ref={ref}>
                 <Card.Header data-testid={"semester-name"}>
                     <div
                         style={{
@@ -191,11 +191,11 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
                     </div>
                 </Card.Header>
                 <ListGroup className="courses">
-                    {semesterCourses.map((course: CourseProps) => {
+                    {semesterCourses.map((course: CourseProps, i: number) => {
                         return (
                             <ListGroupItem
                                 className="course-item"
-                                key={course.id}
+                                key={i}
                             >
                                 {
                                     <Course
@@ -215,6 +215,8 @@ const Semester = (props: FullSemesterProps): JSX.Element => {
             </Card>
         </>
     );
-};
+});
+
+Semester.displayName = "Semester";
 
 export default Semester;

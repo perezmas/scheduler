@@ -180,7 +180,10 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                             removeSemester={(semesterUuid: string) => {
                                 years.removeSemester(props.uuid, semesterUuid);
                             }}
-                            courses={courses}
+                            courses={courses.courseList}
+                            addCourse={courses.push}
+                            moveCourse={courses.move}
+                            removeCourse={courses.removeCourse}
                             index={props.index}
                             uuid={props.uuid}
                             handleSemesterSubmit={handleSemesterSubmit}

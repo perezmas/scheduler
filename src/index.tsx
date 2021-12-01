@@ -4,7 +4,7 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
-document.title = "CIS Scheduler"
+document.title = "CIS Scheduler";
 
 ReactDOM.render(
     <React.StrictMode>

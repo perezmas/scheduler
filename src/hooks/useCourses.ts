@@ -21,7 +21,6 @@ export interface UpdateCourseAction {
     id: string;
     payload: CourseProps;
 }
-
 // easy access to the courses
 
 const courseReducer = (
@@ -29,12 +28,12 @@ const courseReducer = (
     action: AbstractCourseAction
 ): Array<CourseProps> => {
     const newState = state.map((course: CourseProps) => {
-        return course;
+        return {...course};
     });
     switch (action.type) {
     case "ADD COURSE": {
         const realAction = action as AddCourseAction;
-        newState.push(realAction.newCourse);
+        newState.push({...realAction.newCourse});
         return newState;
     }
     case "REMOVE COURSE": {
@@ -65,6 +64,7 @@ export interface Courses {
     courseList: Array<CourseProps>;
     removeCourse: (courseID: string) => void;
     push: (course: CourseProps) => void;
+    move: (target: string, destinationUuid: string) => void;
 }
 function useCourses(initialCourses?: Array<CourseProps>): Courses {
     const [courses, updateCourses] = useReducer(
@@ -98,10 +98,25 @@ function useCourses(initialCourses?: Array<CourseProps>): Courses {
         updateCourses(action);
     };
 
+    const move = (uuid: string, destinationUuid: string) => {
+        const target = getByUUID(courses, uuid);
+        if(target != -1){
+            const old = {...courses[target]};
+            old.semester = destinationUuid;
+            const action: UpdateCourseAction = {
+                type: "UPDATE COURSE",
+                id: uuid,
+                payload: old
+            };
+            updateCourses(action);
+        }  
+    };
+
     return {
         courseList: courses,
         removeCourse: remove,
-        push: push,
+        push,
+        move
     };
 }
 export default useCourses;

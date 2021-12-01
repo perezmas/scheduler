@@ -1,13 +1,16 @@
 import React, { useMemo } from "react";
 import SemesterProps from "../../interfaces/Semester";
 import Col from "react-bootstrap/Col";
-import Semester from "../Semester";
-import { Courses } from "../../hooks/useCourses";
+import SemesterDragger from "../SemesterDragger";
+import CourseProps from "../../interfaces/Course";
 
 interface SemesterListProps {
     removeSemester: (uuid: string) => void;
     clearCourses: (semesterUuid: string) => void;
-    courses: Courses;
+    courses: Array<CourseProps>;
+    moveCourse: (uuid: string, destinationUuid: string) => void,
+    addCourse: (course: CourseProps) => void,
+    removeCourse: (uuid: string) => void,
     semesters: Array<SemesterProps>;
 }
 
@@ -63,14 +66,17 @@ export default function SemesterList(props: SemesterListProps): JSX.Element {
                             data-testid={`semester ${index + 1}`}
                             key={semesterProps.uuid}
                         >
-                            <Semester
-                                courses={props.courses.courseList}
+                            <SemesterDragger
+                                acceptCourse={(uuid: string) => {
+                                    props.moveCourse(uuid, semesterProps.uuid);
+                                }}
+                                courses={props.courses}
                                 {...semesterProps}
                                 removeSemester={() => {
                                     props.removeSemester(semesterProps.uuid);
                                 }}
-                                push={props.courses.push}
-                                removeCourse={props.courses.removeCourse}
+                                push={props.addCourse}
+                                removeCourse={props.removeCourse}
                                 clearCourses={() => {
                                     props.clearCourses(semesterProps.uuid);
                                 }}

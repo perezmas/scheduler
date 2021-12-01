@@ -5,14 +5,16 @@ import FormTrigger from "./FormTrigger";
 import SemesterForm from "./SemesterForm";
 import CourseProps from "../../interfaces/Course";
 import { ChangeEvent, FormEvent } from "react";
-import { Courses } from "../../hooks/useCourses";
 import SemesterProps from "../../interfaces/Semester";
 
 export interface FullYearProps {
     clearYear: () => void;
     removeYear: () => void;
     removeSemester: (uuid: string) => void;
-    courses: Courses;
+    courses: Array<CourseProps>,
+    addCourse: (course: CourseProps) => void,
+    removeCourse: (uuid: string) => void,
+    moveCourse: (uuid: string, destinationUuid: string) => void,
     index: number;
     uuid: string;
     handleSemesterSubmit: (
@@ -41,16 +43,19 @@ export default function Year(props: FullYearProps): JSX.Element {
                 <SemesterList
                     semesters={props.semesters}
                     courses={props.courses}
+                    removeCourse={props.removeCourse}
+                    moveCourse={props.moveCourse}
+                    addCourse={props.addCourse}
                     removeSemester={(semesterUuid: string) => {
                         props.removeSemester(semesterUuid);
                     }}
                     clearCourses={(semesterUuid: string) => {
-                        for (const course of props.courses.courseList.filter(
+                        for (const course of props.courses.filter(
                             (course: CourseProps) => {
                                 return course.semester === semesterUuid;
                             }
                         )) {
-                            props.courses.removeCourse(course.uuid);
+                            props.removeCourse(course.uuid);
                         }
                     }}
                 />

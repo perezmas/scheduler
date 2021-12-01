@@ -55,7 +55,7 @@ function yearReducer(
     action: AbstractAction
 ): Array<YearProps> {
     const next = prev.map((x: YearProps) => {
-        return x;
+        return {...x};
     });
     switch (action.type) {
     case "ADD SEMESTER": {
