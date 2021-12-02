@@ -510,7 +510,25 @@ describe(Scheduler, () => {
             expect(queryByText(getByTestId(screen.getByTestId("Year 1"), "semester 1"), "0 course")).not.toBeInTheDocument();
         });
         expect(getByText(target, "0 course")).toBeInTheDocument();
-
+    });
+    it("Should remove a year when the button to remove the appropriate year is clicked", async () => {
+        getByTestId(screen.getByTestId("Year 1 label"),"open-dropdown").click();
+        await waitFor(() => {
+            expect(screen.queryByTestId("remove-year 1")).toBeInTheDocument();
+        });
+        screen.getByTestId("remove-year 1").click();
+        expect(screen.queryByTestId("Year 1")).not.toBeInTheDocument();
+    });
+    it("Should remove all the years in the plan if the button to do so is clicked", async () => {
+        screen.getByTestId("clear-remove-years-toggle").click();
+        await waitFor(() => {
+            expect(screen.queryByTestId("remove-years-button")).toBeInTheDocument();
+        });
+        expect(screen.getByTestId("Year 1")).toBeInTheDocument();
+        expect(screen.getByTestId("Year 2")).toBeInTheDocument();
+        screen.getByTestId("remove-years-button").click();
+        expect(screen.queryByTestId("Year 1")).not.toBeInTheDocument();
+        expect(screen.queryByTestId("Year 2")).not.toBeInTheDocument();
     });
 });
 

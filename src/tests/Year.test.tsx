@@ -209,4 +209,19 @@ describe(Year, () => {
             })
         );
     });
+    it("Should call its removeYear prop when the button to remove this year in the YearHeader is clicked", async () => {
+        const testProps: FullYearProps = {...defaultProps};
+        testProps.removeYear = jest.fn<void, [void]>();
+        render(<WrappedYear 
+            {...testProps}
+        />);
+        getByTestId(screen.getByTestId("Year 1 label"),"open-dropdown").click();
+        await waitFor(() => {
+            expect(screen.queryByTestId("remove-year 1")).toBeInTheDocument();
+        });
+        expect(testProps.removeYear).not.toHaveBeenCalled();
+        screen.getByTestId("remove-year 1").click();
+        expect(testProps.removeYear).toHaveBeenCalled();
+
+    });
 });

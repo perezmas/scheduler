@@ -39,6 +39,7 @@ export default function YearHeader(props: YearHeaderProps): JSX.Element {
                                 split
                                 variant="success"
                                 id="dropdown-split-basic"
+                                data-testid="open-dropdown"
                             />
 
                             <Dropdown.Menu>
