@@ -190,7 +190,7 @@ const Semester = React.forwardRef((props: FullSemesterProps, ref: React.Forwarde
                         </Dropdown>
                     </div>
                 </Card.Header>
-                <ListGroup className="courses">
+                <ListGroup className="courses" data-testid="drop-point">
                     {semesterCourses.map((course: CourseProps, i: number) => {
                         return (
                             <ListGroupItem

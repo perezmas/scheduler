@@ -18,7 +18,7 @@ function WrappedYear(props: FullYearProps): JSX.Element{
         <DndProvider backend={HTML5Backend}>
             <Year {...props}/>
         </DndProvider>
-    )
+    );
 }
 
 async function openCourseDropdown(semester: number): Promise<void> {

@@ -498,6 +498,20 @@ describe(Scheduler, () => {
         screen.getByTestId("submit-course-button").click();
         expect(screen.getAllByTestId("edit-course-button")).toHaveLength(5);
     });
+
+    it("Should allow you to drag courses from one semester to another", async () => {
+        await addCourse(1, 1, "course", "CISC100");
+        const course = screen.getByText("0 course");
+        const target = getByTestId(getByTestId(screen.getByTestId("Year 1"), "semester 2"),"drop-point");
+        fireEvent.dragStart(course);
+        fireEvent.drop(target);
+
+        await waitFor(() => {
+            expect(queryByText(getByTestId(screen.getByTestId("Year 1"), "semester 1"), "0 course")).not.toBeInTheDocument();
+        });
+        expect(getByText(target, "0 course")).toBeInTheDocument();
+
+    });
 });
 
 describe(Scheduler, () => {

@@ -34,7 +34,7 @@ describe(SemesterList, () => {
         addCourse: doNothingWithCourseProps,
         moveCourse: doNothingWithStrings,
         removeCourse: doNothingWithString,
-    }
+    };
     it("Should be able to render a Semester if a SemesterProps object is passed to its Semesters prop.", async () => {
         const testProps: SemesterListProps = {...defaultProps};
 
