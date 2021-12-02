@@ -11,9 +11,17 @@ import {
 } from "@testing-library/react";
 
 import { act } from "react-dom/test-utils";
-import { Scheduler } from "../components/Scheduler";
+import { Scheduler, SchedulerProps } from "../components/Scheduler";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+
+function WrappedScheduler(props: SchedulerProps): JSX.Element{
+    return (
+        <DndProvider backend={HTML5Backend}>
+            <Scheduler {...props}/>
+        </DndProvider>
+    );
+}
 
 async function openCourseDropdown(
     year: number,
@@ -122,9 +130,7 @@ async function testForError(
 describe(Scheduler, () => {
     beforeEach(() => {
         render(
-            <DndProvider backend={HTML5Backend}>
-                <Scheduler requirements={["MATH243"]} />
-            </DndProvider>
+            <WrappedScheduler requirements={["MATH243"]}/>
         );
     });
 
@@ -496,12 +502,12 @@ describe(Scheduler, () => {
 
 describe(Scheduler, () => {
     it("Should display the requirements given to it as props", async () => {
-        render(<Scheduler requirements={["CISC123", "MATH243"]} />);
+        render(<WrappedScheduler requirements={["CISC123", "MATH243"]} />);
         const requirements = screen.getByTestId("degree-requirements");
         expect(getByText(requirements, "CISC123, MATH243")).toBeInTheDocument();
     });
     it("Should remove requirements from the requirents list if the course is in the semester", async () => {
-        render(<Scheduler requirements={["CISC123", "MATH243"]} />);
+        render(<WrappedScheduler requirements={["CISC123", "MATH243"]} />);
         const requirements = screen.getByTestId("degree-requirements");
         expect(getByText(requirements, "CISC123, MATH243")).toBeInTheDocument();
         await addCourse(1, 1, "calculus I think", "MATH243", "");

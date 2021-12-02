@@ -53,7 +53,6 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
             },
         ]);
         const index = plans.length;
-        console.log("index: ", index);
         const arr: PlanProps[] = [];
 
         // if empty array of plans
@@ -96,7 +95,6 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
             },
         ]);
         const index = plans.length;
-        console.log("index: ", index);
     };
 
     const renderCard = (planItem: PlanProps) => {
@@ -117,26 +115,6 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
                     >
                         {planItem.date}
                     </Card.Text>
-                    {/* 
-                    <Link to={`Plans/${planItem.uuid}`}>
-                        <button>Edit Plan</button>
-                    </Link>
-                    
-                    <Button
-                        onClick={() => {
-                            console.log("button pressed");
-                            deleteCard(plans, planItem);
-                        }}
-                    >
-                        -
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            copy(planItem);
-                        }}
-                    >
-                        Duplicate Plan
-                    </Button> */}
                 </Card.Body>
                 <Dropdown as={ButtonGroup}>
                     <Button
