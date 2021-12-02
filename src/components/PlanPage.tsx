@@ -52,22 +52,6 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
                 years: Array<YearProps>(),
             },
         ]);
-        const index = plans.length;
-        const arr: PlanProps[] = [];
-
-        // if empty array of plans
-
-        if (index <= 0) {
-            arr.push(plans[0]);
-        }
-
-        // if first item in array, set value of index 0
-        if (index === 1) {
-            arr.push(plans[0]);
-        }
-        if (index > 1) {
-            arr.push(plans[index - 1]);
-        }
     };
 
     const deleteCard = (oldArray: typeof plans, planItem: PlanProps) => {

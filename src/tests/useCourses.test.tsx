@@ -126,6 +126,26 @@ describe(useCourses,() => {
         render(<PushCourseTest/>);
         expectCourses([CISC123]);
     });
+    it("Will update an existing course instead of adding it if you try to push a new course with the same uuid", async () => {
+        const newCourse = {...CISC123};
+        newCourse.id = "CISC124";
+        function UpdateCourseTest(): JSX.Element{
+            const courses = useCourses();
+            const [updated, setUpdated] = useState(false);
+            if(courses.courseList.length < 1){
+                courses.push(CISC123);
+            }
+            else if(!updated){
+                courses.push(newCourse);
+                setUpdated(true);
+            }
+            return (
+                <TestuseCourses courseList={courses.courseList}/>
+            );
+        }
+        render(<UpdateCourseTest/>);
+        expectCourses([newCourse]);
+    })
     it("Can remove courses from the state with removeCourse", async () => {
         function RemoveCourseTest(): JSX.Element{
             const courses = useCourses([CISC123]);
