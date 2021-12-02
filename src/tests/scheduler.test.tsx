@@ -12,6 +12,8 @@ import {
 
 import { act } from "react-dom/test-utils";
 import { Scheduler } from "../components/Scheduler";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 async function openCourseDropdown(
     year: number,
@@ -119,7 +121,11 @@ async function testForError(
 
 describe(Scheduler, () => {
     beforeEach(() => {
-        render(<Scheduler requirements={["MATH243"]} />);
+        render(
+            <DndProvider backend={HTML5Backend}>
+                <Scheduler requirements={["MATH243"]} />
+            </DndProvider>
+        );
     });
 
     it("Should start with 2 years and 3 semesters.", async () => {

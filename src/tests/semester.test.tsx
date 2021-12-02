@@ -7,11 +7,21 @@ import {
     getByText,
     getByTestId,
 } from "@testing-library/react";
-import Semester from "../components/Semester";
+import Semester, { FullSemesterProps } from "../components/Semester";
 import CourseProps from "../interfaces/Course";
 import { v4 as uuid } from "uuid";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
-describe(Semester, () => {
+function WrappedSemester(props: FullSemesterProps): JSX.Element{
+    return (
+        <DndProvider backend={HTML5Backend}>
+            <Semester {...props}/>
+        </DndProvider>
+    );
+}
+
+describe("Semester", () => {
     const doNothing = jest.fn<void, [void]>();
     const doNothingWithString = jest.fn<void, [string]>();
     const doNothingWithCourseProps = jest.fn<void, [CourseProps]>();
@@ -19,7 +29,7 @@ describe(Semester, () => {
 
     it("Displays its name", async () => {
         render(
-            <Semester
+            <WrappedSemester
                 uuid={semesterUuid}
                 courses={[]}
                 removeSemester={doNothing}
@@ -35,7 +45,7 @@ describe(Semester, () => {
     });
     it("Displays the total number of credits between all courses in the semester", async () => {
         const { rerender } = render(
-            <Semester
+            <WrappedSemester
                 uuid={semesterUuid}
                 courses={[]}
                 removeSemester={doNothing}
@@ -83,7 +93,7 @@ describe(Semester, () => {
         });
 
         rerender(
-            <Semester
+            <WrappedSemester
                 uuid={semesterUuid}
                 courses={courses}
                 removeSemester={doNothing}
@@ -102,7 +112,7 @@ describe(Semester, () => {
     });
     it("it opens a course modal when you click add course button", async () => {
         render(
-            <Semester
+            <WrappedSemester
                 uuid={semesterUuid}
                 courses={[]}
                 removeSemester={doNothing}
@@ -120,7 +130,7 @@ describe(Semester, () => {
     });
     it("Closes the course modal when the close button is clicked", async () => {
         render(
-            <Semester
+            <WrappedSemester
                 uuid={semesterUuid}
                 courses={[]}
                 removeSemester={doNothing}
@@ -158,7 +168,7 @@ describe(Semester, () => {
             },
         ];
         render(
-            <Semester
+            <WrappedSemester
                 uuid={semesterUuid}
                 courses={testCourses}
                 removeSemester={doNothing}
@@ -177,7 +187,7 @@ describe(Semester, () => {
     it("Calls updateCourses when you submit a form", async () => {
         const pushSpy = jest.fn<void, [CourseProps]>();
         render(
-            <Semester
+            <WrappedSemester
                 uuid={semesterUuid}
                 courses={[]}
                 removeSemester={doNothing}
@@ -206,7 +216,7 @@ describe(Semester, () => {
     it("Calls the function to clear all courses when the clear button is clicked.", async () => {
         const clearSpy = jest.fn<void, [void]>();
         render(
-            <Semester
+            <WrappedSemester
                 uuid={semesterUuid}
                 courses={[]}
                 removeSemester={doNothing}
@@ -253,7 +263,7 @@ describe(Semester, () => {
             },
         ];
         render(
-            <Semester
+            <WrappedSemester
                 uuid={semesterUuid}
                 courses={testCourses}
                 removeSemester={doNothing}

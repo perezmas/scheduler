@@ -1,6 +1,5 @@
 import React, { FormEvent, ChangeEvent } from "react";
 import Year, { FullYearProps } from "../components/Year/Year";
-import { Courses } from "../hooks/useCourses";
 import SemesterProps from "../interfaces/Semester";
 import CourseProps from "../interfaces/Course";
 import { v4 as uuid } from "uuid";
@@ -30,17 +29,15 @@ describe(Year, () => {
     const doNothingWithRemoveYear = jest.fn<void, [void]>();
 
     const yearUuid = uuid();
-    const emptyCourses: Courses = {
-        courseList: [],
-        removeCourse: doNothingWithString,
-        push: doNothingWithCourseProps,
-    };
 
     const defaultProps: FullYearProps = {
         removeYear: doNothingWithRemoveYear,
         clearYear: doNothing,
         removeSemester: doNothingWithString,
-        courses: emptyCourses,
+        courses: [],
+        addCourse: doNothingWithCourseProps,
+        moveCourse: jest.fn<void, [string, string]>(),
+        removeCourse: doNothingWithString,
         index: 1,
         uuid: yearUuid,
         handleSemesterSubmit: emptySubmitHandler,

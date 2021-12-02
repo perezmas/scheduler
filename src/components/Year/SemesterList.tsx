@@ -4,7 +4,7 @@ import Col from "react-bootstrap/Col";
 import SemesterDragger from "../SemesterDragger";
 import CourseProps from "../../interfaces/Course";
 
-interface SemesterListProps {
+export interface SemesterListProps {
     removeSemester: (uuid: string) => void;
     clearCourses: (semesterUuid: string) => void;
     courses: Array<CourseProps>;
