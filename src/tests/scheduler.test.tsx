@@ -392,6 +392,22 @@ describe(Scheduler, () => {
         });
         expect(screen.getByTestId("submit-button")).toBeDisabled();
     });
+    it("Does not prevent submission if there are only warnings, not errors", async () => {
+        await openForm(1);
+
+        act(() => {
+            fireEvent.change(screen.getByTestId("season-input"), {
+                target: { value: "fall" },
+            });
+            fireEvent.change(screen.getByTestId("starts-input"), {
+                target: { value: "2022-08-31" },
+            });
+            fireEvent.change(screen.getByTestId("ends-input"), {
+                target: { value: "2022-09-14" },
+            });
+        });
+        expect(screen.getByTestId("submit-button")).not.toBeDisabled();
+    })
     it("Can remove a course from a semester", async () => {
         await addCourse(1, 1, "Irish Dance", "IRSH-201");
         await addCourse(
