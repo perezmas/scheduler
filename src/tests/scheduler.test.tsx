@@ -11,7 +11,17 @@ import {
 } from "@testing-library/react";
 
 import { act } from "react-dom/test-utils";
-import { Scheduler } from "../components/Scheduler";
+import { Scheduler, SchedulerProps } from "../components/Scheduler";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+
+function WrappedScheduler(props: SchedulerProps): JSX.Element{
+    return (
+        <DndProvider backend={HTML5Backend}>
+            <Scheduler {...props}/>
+        </DndProvider>
+    );
+}
 
 async function openCourseDropdown(
     year: number,
@@ -119,7 +129,9 @@ async function testForError(
 
 describe(Scheduler, () => {
     beforeEach(() => {
-        render(<Scheduler requirements={["MATH243"]} />);
+        render(
+            <WrappedScheduler requirements={["MATH243"]}/>
+        );
     });
 
     it("Should start with 2 years and 3 semesters.", async () => {
@@ -380,6 +392,22 @@ describe(Scheduler, () => {
         });
         expect(screen.getByTestId("submit-button")).toBeDisabled();
     });
+    it("Does not prevent submission if there are only warnings, not errors", async () => {
+        await openForm(1);
+
+        act(() => {
+            fireEvent.change(screen.getByTestId("season-input"), {
+                target: { value: "fall" },
+            });
+            fireEvent.change(screen.getByTestId("starts-input"), {
+                target: { value: "2022-08-31" },
+            });
+            fireEvent.change(screen.getByTestId("ends-input"), {
+                target: { value: "2022-09-14" },
+            });
+        });
+        expect(screen.getByTestId("submit-button")).not.toBeDisabled();
+    });
     it("Can remove a course from a semester", async () => {
         await addCourse(1, 1, "Irish Dance", "IRSH-201");
         await addCourse(
@@ -486,16 +514,48 @@ describe(Scheduler, () => {
         screen.getByTestId("submit-course-button").click();
         expect(screen.getAllByTestId("edit-course-button")).toHaveLength(5);
     });
+
+    it("Should allow you to drag courses from one semester to another", async () => {
+        await addCourse(1, 1, "course", "CISC100");
+        const course = screen.getByText("0 course");
+        const target = getByTestId(getByTestId(screen.getByTestId("Year 1"), "semester 2"),"drop-point");
+        fireEvent.dragStart(course);
+        fireEvent.drop(target);
+
+        await waitFor(() => {
+            expect(queryByText(getByTestId(screen.getByTestId("Year 1"), "semester 1"), "0 course")).not.toBeInTheDocument();
+        });
+        expect(getByText(target, "0 course")).toBeInTheDocument();
+    });
+    it("Should remove a year when the button to remove the appropriate year is clicked", async () => {
+        getByTestId(screen.getByTestId("Year 1 label"),"open-dropdown").click();
+        await waitFor(() => {
+            expect(screen.queryByTestId("remove-year 1")).toBeInTheDocument();
+        });
+        screen.getByTestId("remove-year 1").click();
+        expect(screen.queryByTestId("Year 1")).not.toBeInTheDocument();
+    });
+    it("Should remove all the years in the plan if the button to do so is clicked", async () => {
+        screen.getByTestId("clear-remove-years-toggle").click();
+        await waitFor(() => {
+            expect(screen.queryByTestId("remove-years-button")).toBeInTheDocument();
+        });
+        expect(screen.getByTestId("Year 1")).toBeInTheDocument();
+        expect(screen.getByTestId("Year 2")).toBeInTheDocument();
+        screen.getByTestId("remove-years-button").click();
+        expect(screen.queryByTestId("Year 1")).not.toBeInTheDocument();
+        expect(screen.queryByTestId("Year 2")).not.toBeInTheDocument();
+    });
 });
 
 describe(Scheduler, () => {
     it("Should display the requirements given to it as props", async () => {
-        render(<Scheduler requirements={["CISC123", "MATH243"]} />);
+        render(<WrappedScheduler requirements={["CISC123", "MATH243"]} />);
         const requirements = screen.getByTestId("degree-requirements");
         expect(getByText(requirements, "CISC123, MATH243")).toBeInTheDocument();
     });
     it("Should remove requirements from the requirents list if the course is in the semester", async () => {
-        render(<Scheduler requirements={["CISC123", "MATH243"]} />);
+        render(<WrappedScheduler requirements={["CISC123", "MATH243"]} />);
         const requirements = screen.getByTestId("degree-requirements");
         expect(getByText(requirements, "CISC123, MATH243")).toBeInTheDocument();
         await addCourse(1, 1, "calculus I think", "MATH243", "");

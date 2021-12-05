@@ -1,6 +1,5 @@
 import React, { FormEvent, ChangeEvent } from "react";
 import Year, { FullYearProps } from "../components/Year/Year";
-import { Courses } from "../hooks/useCourses";
 import SemesterProps from "../interfaces/Semester";
 import CourseProps from "../interfaces/Course";
 import { v4 as uuid } from "uuid";
@@ -11,6 +10,16 @@ import {
     waitFor,
     fireEvent,
 } from "@testing-library/react";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+
+function WrappedYear(props: FullYearProps): JSX.Element{
+    return (
+        <DndProvider backend={HTML5Backend}>
+            <Year {...props}/>
+        </DndProvider>
+    );
+}
 
 async function openCourseDropdown(semester: number): Promise<void> {
     getByTestId(
@@ -30,17 +39,15 @@ describe(Year, () => {
     const doNothingWithRemoveYear = jest.fn<void, [void]>();
 
     const yearUuid = uuid();
-    const emptyCourses: Courses = {
-        courseList: [],
-        removeCourse: doNothingWithString,
-        push: doNothingWithCourseProps,
-    };
 
     const defaultProps: FullYearProps = {
         removeYear: doNothingWithRemoveYear,
         clearYear: doNothing,
         removeSemester: doNothingWithString,
-        courses: emptyCourses,
+        courses: [],
+        addCourse: doNothingWithCourseProps,
+        moveCourse: jest.fn<void, [string, string]>(),
+        removeCourse: doNothingWithString,
         index: 1,
         uuid: yearUuid,
         handleSemesterSubmit: emptySubmitHandler,
@@ -65,22 +72,22 @@ describe(Year, () => {
         uuid: springUuid,
     };
     it("Displays the correct index", async () => {
-        const { rerender } = render(<Year {...defaultProps} />);
+        const { rerender } = render(<WrappedYear {...defaultProps} />);
         expect(screen.getByText("Year 1")).toBeInTheDocument();
         const newProps = { ...defaultProps };
         newProps.index = 3;
-        rerender(<Year {...newProps} />);
+        rerender(<WrappedYear {...newProps} />);
         expect(screen.getByText("Year 3")).toBeInTheDocument();
         expect(screen.queryByTestId("Year 1")).not.toBeInTheDocument();
     });
     it("Can display one or more semesters", async () => {
         const newProps = { ...defaultProps };
         newProps.semesters = [fall];
-        const { rerender } = render(<Year {...newProps} />);
+        const { rerender } = render(<WrappedYear {...newProps} />);
         expect(screen.getByTestId("semester 1")).toBeInTheDocument();
         expect(screen.queryByTestId("semester 2")).not.toBeInTheDocument();
         newProps.semesters = [fall, spring];
-        rerender(<Year {...newProps} />);
+        rerender(<WrappedYear {...newProps} />);
         expect(screen.getByTestId("semester 1")).toBeInTheDocument();
         expect(screen.getByTestId("semester 2")).toBeInTheDocument();
         expect(screen.queryByTestId("semester 3")).not.toBeInTheDocument();
@@ -90,7 +97,7 @@ describe(Year, () => {
         const newProps = { ...defaultProps };
         newProps.semesters = [fall, spring];
         newProps.removeSemester = removeSemesterSpy;
-        render(<Year {...newProps} />);
+        render(<WrappedYear {...newProps} />);
         await openCourseDropdown(1);
         expect(removeSemesterSpy).not.toHaveBeenCalled();
         getByTestId(
@@ -104,7 +111,7 @@ describe(Year, () => {
         const clearYearSpy = jest.fn<void, [void]>();
         const newProps = { ...defaultProps };
         newProps.clearYear = clearYearSpy;
-        render(<Year {...newProps} />);
+        render(<WrappedYear {...newProps} />);
         expect(clearYearSpy).not.toHaveBeenCalled();
         screen.getByTestId("clear-year 1").click();
         expect(clearYearSpy).toHaveBeenCalled();
@@ -112,22 +119,22 @@ describe(Year, () => {
     it("Displays the form to add a new semester to the year iff the currentForm is set to uuid of a semester in the year", async () => {
         const newProps = { ...defaultProps };
         newProps.currentForm = yearUuid;
-        const { rerender } = render(<Year {...newProps} />);
+        const { rerender } = render(<WrappedYear {...newProps} />);
         await screen.findByTestId("popover");
         newProps.currentForm = null;
-        rerender(<Year {...newProps} />);
+        rerender(<WrappedYear {...newProps} />);
         await waitFor(() => {
             expect(screen.queryByTestId("popover")).not.toBeInTheDocument();
         });
         newProps.currentForm = "x";
-        rerender(<Year {...newProps} />);
+        rerender(<WrappedYear {...newProps} />);
         expect(screen.queryByTestId("popover")).not.toBeInTheDocument();
     });
     it("Calls setForm with the year's uuid if the open-semester-form is clicked while the form is closed", async () => {
         const setFormSpy = jest.fn<void, [string | null]>();
         const newProps = { ...defaultProps };
         newProps.setForm = setFormSpy;
-        render(<Year {...newProps} />);
+        render(<WrappedYear {...newProps} />);
         expect(setFormSpy).not.toHaveBeenCalled();
         screen.getByTestId("open-semester-form").click();
         expect(setFormSpy).toHaveBeenCalled();
@@ -138,7 +145,7 @@ describe(Year, () => {
         const newProps = { ...defaultProps };
         newProps.setForm = setFormSpy;
         newProps.currentForm = yearUuid;
-        render(<Year {...newProps} />);
+        render(<WrappedYear {...newProps} />);
         await screen.findByTestId("popover");
         expect(setFormSpy).not.toHaveBeenCalled();
         screen.getByTestId("open-semester-form").click();
@@ -154,12 +161,12 @@ describe(Year, () => {
         const newProps = { ...defaultProps };
         newProps.handleSemesterSubmit = handleSemesterSubmitSpy;
         newProps.currentForm = yearUuid;
-        const { rerender } = render(<Year {...newProps} />);
+        const { rerender } = render(<WrappedYear {...newProps} />);
         await screen.findByTestId("popover");
         screen.getByTestId("submit-button").click();
         expect(handleSemesterSubmitSpy).not.toHaveBeenCalled();
         newProps.submissionAllowed = true;
-        rerender(<Year {...newProps} />);
+        rerender(<WrappedYear {...newProps} />);
         screen.getByTestId("submit-button").click();
         expect(handleSemesterSubmitSpy).toHaveBeenCalled();
     });
@@ -172,7 +179,7 @@ describe(Year, () => {
         const newProps = { ...defaultProps };
         newProps.handleSemesterInput = handleSemesterInputSpy;
         newProps.currentForm = yearUuid;
-        render(<Year {...newProps} />);
+        render(<WrappedYear {...newProps} />);
         await screen.findByTestId("popover");
         const seasonBox = screen.getByTestId("season-input");
         const startBox = screen.getByTestId("starts-input");
@@ -201,5 +208,20 @@ describe(Year, () => {
                 target: expect.objectContaining({ value: "2021-12-15" }),
             })
         );
+    });
+    it("Should call its removeYear prop when the button to remove this year in the YearHeader is clicked", async () => {
+        const testProps: FullYearProps = {...defaultProps};
+        testProps.removeYear = jest.fn<void, [void]>();
+        render(<WrappedYear 
+            {...testProps}
+        />);
+        getByTestId(screen.getByTestId("Year 1 label"),"open-dropdown").click();
+        await waitFor(() => {
+            expect(screen.queryByTestId("remove-year 1")).toBeInTheDocument();
+        });
+        expect(testProps.removeYear).not.toHaveBeenCalled();
+        screen.getByTestId("remove-year 1").click();
+        expect(testProps.removeYear).toHaveBeenCalled();
+
     });
 });

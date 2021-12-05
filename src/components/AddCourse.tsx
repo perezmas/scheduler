@@ -102,7 +102,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                 .map((course: CourseProps) => 
                                     <Form.Check
                                         data-testid={`co-${course.name}`}
-                                        key={course.id}
+                                        key={course.uuid}
                                         type="checkbox"
                                         label={course.name}
                                         name="courseCorequisites"
@@ -123,7 +123,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                 )
                                 .map((course: CourseProps) => 
                                     <Form.Check
-                                        key={course.id}
+                                        key={course.uuid}
                                         data-testid={`pre-${course.name}`}
                                         type="checkbox"
                                         label={course.name}

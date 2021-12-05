@@ -12,7 +12,7 @@ import {
 } from "../util/events/SemesterFormEvents";
 import Year from "./Year/Year";
 
-interface SchedulerProps {
+export interface SchedulerProps {
     /**All the course ID's for the requirements for the degree this scheduler is designed to help acquire. */
     requirements: Array<string>;
 }
@@ -180,7 +180,10 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                             removeSemester={(semesterUuid: string) => {
                                 years.removeSemester(props.uuid, semesterUuid);
                             }}
-                            courses={courses}
+                            courses={courses.courseList}
+                            addCourse={courses.push}
+                            moveCourse={courses.move}
+                            removeCourse={courses.removeCourse}
                             index={props.index}
                             uuid={props.uuid}
                             handleSemesterSubmit={handleSemesterSubmit}

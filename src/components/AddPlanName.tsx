@@ -14,10 +14,8 @@ interface AddPlanNameProps {
 }
 
 export function AddPlanName(props: AddPlanNameProps): JSX.Element {
-    //if (!props.isOpen) return null;
     return (
         <div>
-            {/* <div className="non-modal-overlay" /> */}
             <div className="modal-add-plan-name">
                 <button onClick={props.onClickClose}>Close Button</button>
 

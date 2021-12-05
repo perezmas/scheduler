@@ -2,8 +2,10 @@ import React from "react";
 import { screen, render, getByTestId } from "@testing-library/react";
 import SemesterList from "../components/Year/SemesterList";
 import { v4 as uuid } from "uuid";
-import { Courses } from "../hooks/useCourses";
 import CourseProps from "../interfaces/Course";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import {SemesterListProps} from "../components/Year/SemesterList";
 
 async function openCourseDropdown(semester: number): Promise<void> {
     getByTestId(
@@ -12,71 +14,83 @@ async function openCourseDropdown(semester: number): Promise<void> {
     ).click();
     await screen.findByTestId("clear-courses-button");
 }
+function WrappedSemesterList(props: SemesterListProps): JSX.Element{
+    return (
+        <DndProvider backend={HTML5Backend}>
+            <SemesterList {...props}/>
+        </DndProvider>
+    );
+}
 
 describe(SemesterList, () => {
     const doNothingWithString = jest.fn<void, [string]>();
-    const emptyCourses: Courses = {
-        courseList: [],
-        push: jest.fn<void, [CourseProps]>(),
+    const doNothingWithStrings = jest.fn<void, [string, string]>();
+    const doNothingWithCourseProps = jest.fn<void, [CourseProps]>();
+    const defaultProps: SemesterListProps = {
+        semesters: [],
+        removeSemester: doNothingWithString,
+        clearCourses: doNothingWithString,
+        courses: [],
+        addCourse: doNothingWithCourseProps,
+        moveCourse: doNothingWithStrings,
         removeCourse: doNothingWithString,
     };
     it("Should be able to render a Semester if a SemesterProps object is passed to its Semesters prop.", async () => {
+        const testProps: SemesterListProps = {...defaultProps};
+
+        testProps.semesters.push({
+            uuid: uuid(),
+            name: "fall",
+            start: new Date("08-31-2021"),
+            end: new Date("12-15-2021"),
+        });
+
         render(
-            <SemesterList
-                semesters={[
-                    {
-                        uuid: uuid(),
-                        name: "fall",
-                        start: new Date("08-31-2021"),
-                        end: new Date("12-15-2021"),
-                    },
-                ]}
-                removeSemester={doNothingWithString}
-                clearCourses={doNothingWithString}
-                courses={emptyCourses}
+            <WrappedSemesterList
+                {...testProps}
             />
         );
 
         expect(screen.getByTestId("semester 1")).toBeInTheDocument();
     });
     it("Should be able to render several semesters sorted by their starting dates. Semesters with the same name should be numbered.", async () => {
+        const testProps: SemesterListProps = {...defaultProps};
+        testProps.semesters = [
+            {
+                name: "summer",
+                start: new Date("2022-07-11"),
+                end: new Date("2022-08-12"),
+                uuid: uuid(),
+            },
+            {
+                name: "spring",
+                start: new Date("2022-02-07"),
+                end: new Date("2022-05-26"),
+                uuid: uuid(),
+            },
+            {
+                name: "winter",
+                start: new Date("2022-01-03"),
+                end: new Date("2022-02-05"),
+                uuid: uuid(),
+            },
+            {
+                name: "fall",
+                start: new Date("2021-08-31"),
+                end: new Date("2021-12-18"),
+                uuid: uuid(),
+            },
+            {
+                name: "summer",
+                start: new Date("2022-06-06"),
+                end: new Date("2022-07-28"),
+                uuid: uuid(),
+            },
+        ];
+
         render(
-            <SemesterList
-                removeSemester={doNothingWithString}
-                clearCourses={doNothingWithString}
-                courses={emptyCourses}
-                semesters={[
-                    {
-                        name: "summer",
-                        start: new Date("2022-07-11"),
-                        end: new Date("2022-08-12"),
-                        uuid: uuid(),
-                    },
-                    {
-                        name: "spring",
-                        start: new Date("2022-02-07"),
-                        end: new Date("2022-05-26"),
-                        uuid: uuid(),
-                    },
-                    {
-                        name: "winter",
-                        start: new Date("2022-01-03"),
-                        end: new Date("2022-02-05"),
-                        uuid: uuid(),
-                    },
-                    {
-                        name: "fall",
-                        start: new Date("2021-08-31"),
-                        end: new Date("2021-12-18"),
-                        uuid: uuid(),
-                    },
-                    {
-                        name: "summer",
-                        start: new Date("2022-06-06"),
-                        end: new Date("2022-07-28"),
-                        uuid: uuid(),
-                    },
-                ]}
+            <WrappedSemesterList
+                {...testProps}
             />
         );
 
@@ -101,20 +115,20 @@ describe(SemesterList, () => {
     it("Should call removeSemester if the remove-semester button in one of its child Semesters is clicked.", async () => {
         const removeSemesterSpy = jest.fn<void, [string]>();
         const semesterUuid = uuid();
+        const testProps: SemesterListProps = {...defaultProps};
+        testProps.semesters = [
+            {
+                name: "summer",
+                start: new Date("2022-07-11"),
+                end: new Date("2022-08-12"),
+                uuid: semesterUuid,
+            },
+        ];
+        testProps.removeSemester = removeSemesterSpy;
 
         render(
-            <SemesterList
-                removeSemester={removeSemesterSpy}
-                clearCourses={doNothingWithString}
-                courses={emptyCourses}
-                semesters={[
-                    {
-                        name: "summer",
-                        start: new Date("2022-07-11"),
-                        end: new Date("2022-08-12"),
-                        uuid: semesterUuid,
-                    },
-                ]}
+            <WrappedSemesterList
+                {...testProps}
             />
         );
         await openCourseDropdown(1);
@@ -127,20 +141,20 @@ describe(SemesterList, () => {
     it("Should call clearCourses if the clear courses button in one of its Semester children is clicked", async () => {
         const clearCoursesSpy = jest.fn<void, [string]>();
         const semesterUuid = uuid();
+        const testProps: SemesterListProps = {...defaultProps};
+        testProps.clearCourses = clearCoursesSpy;
+        testProps.semesters = [
+            {
+                name: "summer",
+                start: new Date("2022-07-11"),
+                end: new Date("2022-08-12"),
+                uuid: semesterUuid,
+            },
+        ];
 
         render(
-            <SemesterList
-                removeSemester={doNothingWithString}
-                clearCourses={clearCoursesSpy}
-                courses={emptyCourses}
-                semesters={[
-                    {
-                        name: "summer",
-                        start: new Date("2022-07-11"),
-                        end: new Date("2022-08-12"),
-                        uuid: semesterUuid,
-                    },
-                ]}
+            <WrappedSemesterList
+                {...testProps}
             />
         );
         await openCourseDropdown(1);
@@ -153,9 +167,9 @@ describe(SemesterList, () => {
     it("Should call courses.removeCourse if a course in one of the semesters is clicked", async () => {
         const semesterUuid1 = uuid();
         const courseUuid1 = uuid();
-        const testCourses = { ...emptyCourses };
-        testCourses.removeCourse = jest.fn<void, [string]>();
-        testCourses.courseList = [
+        const testProps: SemesterListProps = {...defaultProps};
+        const removeCourseSpy = jest.fn<void,[string]>();
+        testProps.courses = [
             {
                 uuid: courseUuid1,
                 semester: semesterUuid1,
@@ -167,26 +181,37 @@ describe(SemesterList, () => {
                 prereqs: [],
             },
         ];
+        testProps.semesters = [
+            {
+                name: "fall",
+                start: new Date("2021-08-31"),
+                end: new Date("2021-12-15"),
+                uuid: semesterUuid1,
+            },
+        ];
+        testProps.courses = [
+            {
+                uuid: courseUuid1,
+                semester: semesterUuid1,
+                id: "CISC111",
+                name: "Intro to testing",
+                description: "We really need this",
+                credits: 3,
+                coreqs: [],
+                prereqs: [],
+            },
+        ];
+        testProps.removeCourse = removeCourseSpy;
 
         render(
-            <SemesterList
-                removeSemester={doNothingWithString}
-                clearCourses={doNothingWithString}
-                courses={testCourses}
-                semesters={[
-                    {
-                        name: "fall",
-                        start: new Date("2021-08-31"),
-                        end: new Date("2021-12-15"),
-                        uuid: semesterUuid1,
-                    },
-                ]}
+            <WrappedSemesterList
+                {...testProps}
             />
         );
-        expect(testCourses.removeCourse).not.toHaveBeenCalled();
+        expect(removeCourseSpy).not.toHaveBeenCalled();
         const semester = screen.getByTestId("semester 1");
         getByTestId(semester, "remove-course").click();
-        expect(testCourses.removeCourse).toHaveBeenCalledTimes(1);
-        expect(testCourses.removeCourse).toHaveBeenLastCalledWith(courseUuid1);
+        expect(removeCourseSpy).toHaveBeenCalledTimes(1);
+        expect(removeCourseSpy).toHaveBeenLastCalledWith(courseUuid1);
     });
 });

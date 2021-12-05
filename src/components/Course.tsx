@@ -1,7 +1,8 @@
 import React from "react";
 import CourseProps from "../interfaces/Course";
+import {useDrag} from "react-dnd";
 
-interface CurrentCourseProps extends CourseProps {
+export interface FullCourseProps extends CourseProps {
     /**A function that deletes this course from the global map containing all courses. */
     removeCourse: (uuid: string) => void;
     /**A function that is called when the user clicks the edit button to edit this course. */
@@ -9,9 +10,15 @@ interface CurrentCourseProps extends CourseProps {
 }
 
 /**A component that represents a course. */
-const Course = (props: CurrentCourseProps): JSX.Element => {
+const Course = (props: FullCourseProps): JSX.Element => {
+    const [,drag] = useDrag(() => ({
+        type: "COURSE",
+        item: {
+            uuid: props.uuid
+        }
+    }),[props.uuid]);
     return (
-        <div draggable={true} data-testid={`Course ${props.id}: ${props.name}`}>
+        <div ref={drag} draggable={true} data-testid={`Course ${props.id}: ${props.name}`}>
             <div style={{ display: "inline-block" }}>
                 {`${props.credits} ${props.name}`}
             </div>
