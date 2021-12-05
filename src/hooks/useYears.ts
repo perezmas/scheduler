@@ -3,15 +3,18 @@ import { useReducer } from "react";
 import SemesterProps from "../interfaces/Semester";
 import { YearProps } from "../interfaces/Year";
 import AbstractProps from "../interfaces/Props";
+import { type } from "os";
+import { AddCourseAction } from "./useCourses";
+
+type YearActionType = 
+  "ADD YEAR"
+| "DELETE YEAR"
+| "ADD SEMESTER"
+| "DELETE SEMESTER"
+| "ADD COURSE";
+
 interface AbstractAction {
-    type:
-        | "ADD YEAR"
-        | "DELETE YEAR"
-        | "UPDATE SEMESTER"
-        | "ADD SEMESTER"
-        | "DELETE SEMESTER"
-        | "ADD COURSE"
-        | "DELETE COURSE";
+    type: YearActionType;
     uuid: string;
 }
 
@@ -50,9 +53,16 @@ export function getByUUID<T extends AbstractProps>(
     return -1;
 }
 
-function yearReducer(
+type YearAction<T extends YearActionType> = 
+T extends "ADD YEAR" ? AddYearAction :
+T extends "DELETE YEAR" ? DeleteYearAction :
+T extends "ADD SEMESTER" ? AddSemesterAction : 
+T extends "DELETE SEMESTER" ? DeleteSemesterAction :
+AddCourseAction
+
+function yearReducer<T extends YearActionType>(
     prev: Array<YearProps>,
-    action: AbstractAction
+    action: YearAction<T>
 ): Array<YearProps> {
     const next = prev.map((x: YearProps) => {
         return {...x};
@@ -203,56 +213,52 @@ function useYears(init?: () => Array<YearProps>): Years {
             : init
     );
 
-    const addYear = (uuid: string, index: number) => {
-        const action: AddYearAction = {
+    const push = (uuid: string, index: number) => {
+        updateYears({
             type: "ADD YEAR",
             uuid: uuid,
             index: index,
-        };
-        updateYears(action);
+        });
     };
-    const addSemester = (
+    const putSemester = (
         uuid: string,
         semesterUuid: string,
         start: Date,
         end: Date,
         name: string
     ) => {
-        const action: AddSemesterAction = {
+        updateYears({
             type: "ADD SEMESTER",
             uuid: uuid,
             name: name,
             start: start,
             end: end,
             semesterUuid: semesterUuid,
-        };
-        updateYears(action);
+        });
     };
     const removeSemester = (uuid: string, semesterUuid: string) => {
-        const action: DeleteSemesterAction = {
+        updateYears({
             type: "DELETE SEMESTER",
             uuid: uuid,
             semesterUuid: semesterUuid,
-        };
-        updateYears(action);
+        });
     };
     const removeYear = (uuid: string) => {
-        const action: DeleteYearAction = {
+        updateYears({
             type: "DELETE YEAR",
             uuid: uuid,
-        };
-        updateYears(action);
+        });
     };
     return {
         value: years,
-        push: addYear,
-        putSemester: addSemester,
-        removeSemester: removeSemester,
+        push,
+        putSemester,
+        removeSemester,
         removeYears: (uuid?: string) => {
             removeYears(years, removeYear, uuid);
         },
         clearYears: (uuid?: string) => {
-            clearSemesters(years, addYear, removeSemester, removeYear, uuid);
+            clearSemesters(years, push, removeSemester, removeYear, uuid);
         },
     };
 }

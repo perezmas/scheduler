@@ -31,7 +31,13 @@ interface ClearProblemAction extends AbstractProblemAction{
     source: string,
 }
 
-function problemReducer(prev: Array<Problem>, action: AbstractProblemAction): Array<Problem>{
+type ProblemAction<T extends "RESOLVE-TYPE" | "ADD" | "CLEAR"> = 
+T extends "RESOLVE-TYPE" ? ResolveProblemAction : 
+T extends "ADD" ? AddProblemAction : 
+T extends "CLEAR" ? ClearProblemAction : 
+AbstractProblemAction; 
+
+function problemReducer<T extends "RESOLVE-TYPE" | "ADD" | "CLEAR">(prev: Array<Problem>, action: ProblemAction<T>): Array<Problem>{
     const newState: Array<Problem> = prev.map((value: Problem) => {
         return {error: value.error, message: value.message, source: value.source, problemType: value.problemType};
     });
@@ -82,19 +88,16 @@ export default function useProblems(): ProblemsInterface{
     const [output, dispatchOutput] = useReducer(problemReducer,undefined,initializer);
 
     const resolve = (target: string) => {
-        const action: ResolveProblemAction = {type: "RESOLVE-TYPE", target: target};
-        dispatchOutput(action);
+        dispatchOutput({type: "RESOLVE-TYPE", target: target});
     };
 
     const add = (problem: Problem) => {
-        const action: AddProblemAction = {type: "ADD", problem: problem};
-        dispatchOutput(action);
+        dispatchOutput({type: "ADD", problem: problem});
     };
 
     const clear = (source: string) => {
-        const action: ClearProblemAction = {type: "CLEAR", source: source};
-        dispatchOutput(action);
+        dispatchOutput({type: "CLEAR", source: source});
     };
 
-    return {add: add, resolve: resolve, clear: clear, value: output};
+    return {add, resolve, clear, value: output};
 }

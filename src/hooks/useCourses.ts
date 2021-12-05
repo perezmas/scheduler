@@ -1,6 +1,13 @@
+import { type } from "os";
 import { useReducer } from "react";
 import CourseProps from "../interfaces/Course";
 import { getByUUID } from "./useYears";
+
+enum CourseActionType{
+    add,
+    remove,
+    update
+}
 
 export interface AbstractCourseAction {
     type: "ADD COURSE" | "REMOVE COURSE" | "UPDATE COURSE";
@@ -21,12 +28,17 @@ export interface UpdateCourseAction {
     id: string;
     payload: CourseProps;
 }
+
+
+
+type CourseAction<T extends "ADD COURSE" | "REMOVE COURSE" | "UPDATE COURSE"> = 
+T extends "ADD COURSE" ? AddCourseAction :
+T extends "REMOVE COURSE" ? RemoveCourseAction : 
+UpdateCourseAction;
+
 // easy access to the courses
 
-const courseReducer = (
-    state: Array<CourseProps>,
-    action: AbstractCourseAction
-): Array<CourseProps> => {
+function courseReducer<T extends "ADD COURSE" | "REMOVE COURSE" | "UPDATE COURSE">(state: Array<CourseProps>,action: CourseAction<T>): Array<CourseProps> {
     const newState = state.map((course: CourseProps) => {
         return {...course};
     });
@@ -81,21 +93,20 @@ function useCourses(initialCourses?: Array<CourseProps>): Courses {
                 type: "UPDATE COURSE",
                 id: course.uuid,
                 payload: course,
-            } as UpdateCourseAction);
+            });
         } else {
             updateCourses({
                 type: "ADD COURSE",
                 newCourse: course,
-            } as AddCourseAction);
+            });
         }
     };
 
     const remove = (uuid: string) => {
-        const action: RemoveCourseAction = {
+        updateCourses({
             type: "REMOVE COURSE",
             uuid: uuid,
-        };
-        updateCourses(action);
+        });
     };
 
     const move = (uuid: string, destinationUuid: string) => {
@@ -103,12 +114,11 @@ function useCourses(initialCourses?: Array<CourseProps>): Courses {
         if(target != -1){
             const old = {...courses[target]};
             old.semester = destinationUuid;
-            const action: UpdateCourseAction = {
+            updateCourses({
                 type: "UPDATE COURSE",
                 id: uuid,
                 payload: old
-            };
-            updateCourses(action);
+            });
         }  
     };
 
