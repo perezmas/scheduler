@@ -1,7 +1,7 @@
-import AbstractProps from "./Props";
-import { YearProps } from "./Year";
+import AbstractData from "./Data";
+import YearData from "./Year";
 
-interface PlanProps extends AbstractProps {
+interface PlanData extends AbstractData {
     /* The id of the plan */
     id: number
     /**The display name of the plan. */
@@ -9,7 +9,7 @@ interface PlanProps extends AbstractProps {
     /**The date the plan was created. */
     date?: string
     /**All of the years in the plan. */
-    years?: Array<YearProps>
+    years?: Array<YearData>
 }
 
-export default PlanProps;
+export default PlanData;

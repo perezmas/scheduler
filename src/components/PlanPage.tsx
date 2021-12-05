@@ -11,29 +11,29 @@ import {
 import "./styles.css";
 import { Link } from "react-router-dom";
 import { v4 as uuid } from "uuid";
-import PlanProps from "../interfaces/Plan";
-import { YearProps } from "../interfaces/Year";
+import YearData from "../interfaces/Year";
+import PlanData from "../interfaces/Plan";
 
-export const testList: PlanProps[] = [
+export const testList: PlanData[] = [
     {
         uuid: "1",
         id: 1,
         name: "max",
         date: "01/01/2021",
-        years: Array<YearProps>(),
+        years: Array<YearData>(),
     },
     {
         uuid: "2",
         id: 2,
         name: "amani",
         date: "02/02/2021",
-        years: Array<YearProps>(),
+        years: Array<YearData>(),
     },
 ];
 
 interface PlanPageProps {
-    plans: PlanProps[];
-    setPlans: (plans: PlanProps[]) => void;
+    plans: PlanData[];
+    setPlans: (plans: PlanData[]) => void;
 }
 
 /**A card on the home screen that lets the user move between schedulers, mainly so that advisors can keep track of their students. */
@@ -49,12 +49,12 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
                 uuid: uuid(),
                 name: "",
                 date: new Date().toLocaleDateString(),
-                years: Array<YearProps>(),
+                years: Array<YearData>(),
             },
         ]);
     };
 
-    const deleteCard = (oldArray: typeof plans, planItem: PlanProps) => {
+    const deleteCard = (planItem: PlanData) => {
         if (window.confirm("Are you sure you want to delete this plan?")) {
             const newArray = [...plans];
             const index = newArray.indexOf(planItem);
@@ -66,7 +66,7 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
         }
     };
 
-    const copy = (planItem: PlanProps) => {
+    const copy = (planItem: PlanData) => {
         // sets array of all cards
         setPlans([
             ...plans,
@@ -80,7 +80,7 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
         ]);
     };
 
-    const renderCard = (planItem: PlanProps) => {
+    const renderCard = (planItem: PlanData) => {
         localStorage.setItem("Plans Array", JSON.stringify(plans));
         return (
             <Card
@@ -129,7 +129,7 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
                             style={{ color: "#DC3E45" }}
                             color="white"
                             onClick={() => {
-                                deleteCard(plans, planItem);
+                                deleteCard(planItem);
                             }}
                             data-testid="delete-plan"
                         >

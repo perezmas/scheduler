@@ -1,19 +1,19 @@
 import { getByTestId, getByText, render, screen} from "@testing-library/react";
 import React, {useState} from "react";
 import useCourses from "../hooks/useCourses";
-import CourseProps from "../interfaces/Course";
+import CourseData from "../interfaces/Course";
 import {v4 as uuid} from "uuid";
 
 interface TestuseCoursesProps{
-    courseList: Array<CourseProps>
+    courseList: Array<CourseData>
 }
 
 function TestuseCourses(props: TestuseCoursesProps): JSX.Element{
     return (
         <>
             <div data-testid="courses">
-                {props.courseList.map((course: CourseProps, i: number) => {
-                    return <CourseData key = {i} {...course} index={i}/>;
+                {props.courseList.map((course: CourseData, i: number) => {
+                    return <CourseDataDisplay key = {i} {...course} index={i}/>;
                 })}
             </div>
             <div data-testid="courses-length">
@@ -23,11 +23,11 @@ function TestuseCourses(props: TestuseCoursesProps): JSX.Element{
     );
 }
 
-interface CourseDataProps extends CourseProps{
+interface CourseDataDisplayProps extends CourseData{
     index: number
 }
 
-function CourseData(props: CourseDataProps): JSX.Element{
+function CourseDataDisplay(props: CourseDataDisplayProps): JSX.Element{
     return (
         <div data-testid={`course ${props.index}`}>
             <div data-testid="uuid">
@@ -72,7 +72,7 @@ function CourseData(props: CourseDataProps): JSX.Element{
     );
 }
 
-function expectCourses(expected: Array<CourseProps>): void{
+function expectCourses(expected: Array<CourseData>): void{
     const courses = screen.getByTestId("courses");
     const ln = screen.getByTestId("courses-length");
     expect(getByText(ln,expected.length)).toBeInTheDocument();
@@ -92,7 +92,7 @@ function expectCourses(expected: Array<CourseProps>): void{
 
 describe(useCourses,() => {
     const courseUuid = uuid();
-    const CISC123: CourseProps = {uuid: courseUuid, id: "CISC123", description: "", name: "test", coreqs: [], prereqs: [], credits: 0, semester: ""};
+    const CISC123: CourseData = {uuid: courseUuid, id: "CISC123", description: "", name: "test", coreqs: [], prereqs: [], credits: 0, semester: ""};
     it("initializes to an empty array if no argument is given", async () => {
         function InitTest(): JSX.Element{
             const courses = useCourses();

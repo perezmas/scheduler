@@ -1,30 +1,22 @@
 import React from "react";
-import Semester, {FullSemesterProps} from "./Semester";
+import Semester, {SemesterProps} from "./Semester";
 import {useDrop} from "react-dnd";
-import AbstractProps from "../interfaces/Props";
+import AbstractData from "../interfaces/Data";
 
-export interface SemesterDraggerProps extends FullSemesterProps{
+export interface SemesterDraggerProps extends SemesterProps{
     acceptCourse: (uuid: string) => void
 }
 
 export default function SemesterDragger(props: SemesterDraggerProps): JSX.Element{
     const [,drop] = useDrop(() => ({
         accept: "COURSE",
-        drop: (item: AbstractProps) => {
+        drop: (item: AbstractData) => {
             props.acceptCourse(item.uuid);
         } 
     }), [props.acceptCourse]);
 
     return <Semester
         ref={drop}
-        courses={props.courses}
-        clearCourses={props.clearCourses}
-        removeSemester={props.removeSemester}
-        push={props.push}
-        name={props.name}
-        start={props.start}
-        end={props.end}
-        removeCourse={props.removeCourse}
-        uuid={props.uuid}
+        {...props}
     ></Semester>;
 }

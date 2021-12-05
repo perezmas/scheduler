@@ -4,8 +4,8 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import SemesterDragger, {SemesterDraggerProps} from "../components/SemesterDragger";
 import {v4 as uuid} from "uuid";
 import { screen, render, fireEvent, waitFor } from "@testing-library/react";
-import CourseProps from "../interfaces/Course";
-import AbstractProps from "../interfaces/Props";
+import CourseData from "../interfaces/Course";
+import AbstractData from "../interfaces/Data";
 
 interface WrappedSemesterDraggerProps extends SemesterDraggerProps {
     draggableUuid: string
@@ -20,7 +20,7 @@ function WrappedSemesterDragger(props: WrappedSemesterDraggerProps): JSX.Element
     );
 }
 
-function DraggableThing(props: AbstractProps): JSX.Element{
+function DraggableThing(props: AbstractData): JSX.Element{
     const [,drag] = useDrag(() => ({
         type: "COURSE",
         item: {
@@ -46,7 +46,7 @@ describe(SemesterDragger, () => {
         start: new Date("2021-08-31"),
         end: new Date("2021-12-15"),
         uuid: semesterUuid,
-        push: jest.fn<void, [CourseProps]>(),
+        push: jest.fn<void, [CourseData]>(),
         clearCourses: jest.fn<void, [void]>(),
         draggableUuid
     };

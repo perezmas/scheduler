@@ -1,5 +1,5 @@
 import React, { FormEvent, useState, useMemo } from "react";
-import CourseProps from "../interfaces/Course";
+import CourseData from "../interfaces/Course";
 import {
     ListGroup,
     ListGroupItem,
@@ -8,26 +8,26 @@ import {
     ButtonGroup,
     Button,
 } from "react-bootstrap";
-import SemesterProps from "../interfaces/Semester";
+import SemesterData from "../interfaces/Semester";
 import AddCourse from "./AddCourse";
 import Course from "./Course";
 import { v4 as uuid } from "uuid";
 import { getByUUID } from "../hooks/useYears";
 
-export interface FullSemesterProps extends SemesterProps {
+export interface SemesterProps extends SemesterData {
     /**The uuid's of all exiting courses */
-    courses: Array<CourseProps>;
+    courses: Array<CourseData>;
     /**A function that will delete this semester.*/
     removeSemester: () => void;
     /**A function that removes a course from the global list. */
     removeCourse: (uuid: string) => void;
     /**A function that pushes courses into the global list. */
-    push: (course: CourseProps) => void;
+    push: (course: CourseData) => void;
     /**A function that clears all courses from this semester. */
     clearCourses: () => void;
 }
 
-function getEmptyCourse(semester: string): CourseProps {
+function getEmptyCourse(semester: string): CourseData {
     return {
         id: "",
         name: "",
@@ -41,8 +41,8 @@ function getEmptyCourse(semester: string): CourseProps {
 }
 
 /**Represents a single semester of courses within an academic year. */
-const Semester = React.forwardRef((props: FullSemesterProps, ref: React.ForwardedRef<HTMLDivElement>): JSX.Element => {
-    const [newCourse, setNewCourse] = useState<CourseProps>(() => {
+const Semester = React.forwardRef((props: SemesterProps, ref: React.ForwardedRef<HTMLDivElement>): JSX.Element => {
+    const [newCourse, setNewCourse] = useState<CourseData>(() => {
         return getEmptyCourse(props.uuid);
     });
     const [isOpen, setIsOpen] = useState(false);
@@ -50,7 +50,7 @@ const Semester = React.forwardRef((props: FullSemesterProps, ref: React.Forwarde
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
-        const courseToAdd: CourseProps = { ...newCourse };
+        const courseToAdd: CourseData = { ...newCourse };
 
         switch (event.target.name) {
         case "courseName":
@@ -96,14 +96,14 @@ const Semester = React.forwardRef((props: FullSemesterProps, ref: React.Forwarde
         }
     };
     const semesterCourses = useMemo(() => {
-        return props.courses.filter((course: CourseProps) => {
+        return props.courses.filter((course: CourseData) => {
             return course.semester === props.uuid;
         });
     }, [props.courses]);
 
     const totalCredits = useMemo(() => {
         return semesterCourses.reduce(
-            (previousValue: CourseProps, currentValue: CourseProps) => {
+            (previousValue: CourseData, currentValue: CourseData) => {
                 return {
                     id: "",
                     description: "",
@@ -191,7 +191,7 @@ const Semester = React.forwardRef((props: FullSemesterProps, ref: React.Forwarde
                     </div>
                 </Card.Header>
                 <ListGroup className="courses" data-testid="drop-point">
-                    {semesterCourses.map((course: CourseProps, i: number) => {
+                    {semesterCourses.map((course: CourseData, i: number) => {
                         return (
                             <ListGroupItem
                                 className="course-item"

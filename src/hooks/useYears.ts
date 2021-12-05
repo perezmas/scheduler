@@ -1,8 +1,8 @@
 import { useReducer } from "react";
 
 import SemesterProps from "../interfaces/Semester";
-import { YearProps } from "../interfaces/Year";
-import AbstractProps from "../interfaces/Props";
+import YearData from "../interfaces/Year";
+import AbstractProps from "../interfaces/Data";
 import { type } from "os";
 import { AddCourseAction } from "./useCourses";
 
@@ -61,17 +61,17 @@ T extends "DELETE SEMESTER" ? DeleteSemesterAction :
 AddCourseAction
 
 function yearReducer<T extends YearActionType>(
-    prev: Array<YearProps>,
+    prev: Array<YearData>,
     action: YearAction<T>
-): Array<YearProps> {
-    const next = prev.map((x: YearProps) => {
+): Array<YearData> {
+    const next = prev.map((x: YearData) => {
         return {...x};
     });
     switch (action.type) {
     case "ADD SEMESTER": {
         const semAction: AddSemesterAction = action as AddSemesterAction;
         const targetIndex: number = getByUUID(next, semAction.uuid);
-        const target: YearProps = next[targetIndex];
+        const target: YearData = next[targetIndex];
         const newYear1 = new Array<SemesterProps>().concat(
             target.semesters
         );
@@ -90,7 +90,7 @@ function yearReducer<T extends YearActionType>(
     }
     case "ADD YEAR": {
         const addYear = action as AddYearAction;
-        const newYear2: YearProps = {
+        const newYear2: YearData = {
             index: addYear.index,
             uuid: addYear.uuid,
             semesters: new Array<SemesterProps>(),
@@ -101,7 +101,7 @@ function yearReducer<T extends YearActionType>(
     case "DELETE SEMESTER": {
         const removeSemester = action as DeleteSemesterAction;
         const targetIndex: number = getByUUID(next, removeSemester.uuid);
-        const targetYear: YearProps = next[targetIndex];
+        const targetYear: YearData = next[targetIndex];
         const newYear = targetYear.semesters.filter(
             (semester: SemesterProps) => {
                 return semester.uuid !== removeSemester.semesterUuid;
@@ -116,7 +116,7 @@ function yearReducer<T extends YearActionType>(
     }
     case "DELETE YEAR": {
         const removeYear = action as DeleteYearAction;
-        const output = next.filter((value: YearProps) => {
+        const output = next.filter((value: YearData) => {
             return value.uuid !== removeYear.uuid;
         });
         return output;
@@ -126,7 +126,7 @@ function yearReducer<T extends YearActionType>(
     }
 }
 function removeYears(
-    years: Array<YearProps>,
+    years: Array<YearData>,
 
     yearRemover: (uuid: string) => void,
     yearUuid?: string
@@ -140,7 +140,7 @@ function removeYears(
     }
 }
 function clearSemesters(
-    years: Array<YearProps>,
+    years: Array<YearData>,
     pusher: (uuid: string, index: number) => void,
     semesterRemover: (uuid: string, semesterUuid: string) => void,
     yearRemover: (uuid: string) => void,
@@ -151,7 +151,7 @@ function clearSemesters(
             semesterRemover(yearUuid, semester.uuid);
         }
     } else if (yearUuid === undefined) {
-        const newYears: YearProps[] = new Array<YearProps>();
+        const newYears: YearData[] = new Array<YearData>();
         for (const year of years) {
             newYears.push({
                 semesters: [],
@@ -168,7 +168,7 @@ function clearSemesters(
 
 export interface Years {
     /**The list of years in the schedule */
-    value: Array<YearProps>;
+    value: Array<YearData>;
     /**Adds a new year to a schedule. */
     push: (uuid: string, index: number) => void;
     /**Puts a semester into a year */
@@ -199,16 +199,16 @@ export interface Years {
 }
 
 /**Returns a Years interface to keep track of the years in a plan (see above)
- * @param init A funciton that returns an array of YearProps; this returns the initial value in the output's value field. If empty, the default value will be an empty array.
+ * @param init A funciton that returns an array of YearData; this returns the initial value in the output's value field. If empty, the default value will be an empty array.
  * @returns A Years object (see above for usage.)
  */
-function useYears(init?: () => Array<YearProps>): Years {
+function useYears(init?: () => Array<YearData>): Years {
     const [years, updateYears] = useReducer(
         yearReducer,
         undefined,
         init === undefined
             ? () => {
-                return new Array<YearProps>();
+                return new Array<YearData>();
             }
             : init
     );

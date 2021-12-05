@@ -1,30 +1,30 @@
 import React, { useMemo } from "react";
-import SemesterProps from "../../interfaces/Semester";
+import SemesterData from "../../interfaces/Semester";
 import Col from "react-bootstrap/Col";
 import SemesterDragger from "../SemesterDragger";
-import CourseProps from "../../interfaces/Course";
+import CourseData from "../../interfaces/Course";
 
 export interface SemesterListProps {
     removeSemester: (uuid: string) => void;
     clearCourses: (semesterUuid: string) => void;
-    courses: Array<CourseProps>;
+    courses: Array<CourseData>;
     moveCourse: (uuid: string, destinationUuid: string) => void,
-    addCourse: (course: CourseProps) => void,
+    addCourse: (course: CourseData) => void,
     removeCourse: (uuid: string) => void,
-    semesters: Array<SemesterProps>;
+    semesters: Array<SemesterData>;
 }
 
 export default function SemesterList(props: SemesterListProps): JSX.Element {
     const sortedSemesters = useMemo(() => {
         return props.semesters
-            .sort((a: SemesterProps, b: SemesterProps) => {
+            .sort((a: SemesterData, b: SemesterData) => {
                 return a.start.getTime() - b.start.getTime();
             })
             .map(
                 (
-                    semester: SemesterProps,
+                    semester: SemesterData,
                     index: number,
-                    array: Array<SemesterProps>
+                    array: Array<SemesterData>
                 ) => {
                     let count = 0;
                     for (let i = 0; i < index; i++) {
@@ -32,7 +32,7 @@ export default function SemesterList(props: SemesterListProps): JSX.Element {
                             count++;
                         }
                     }
-                    const newSemester: SemesterProps = {
+                    const newSemester: SemesterData = {
                         name:
                             count > 0
                                 ? `${semester.name} ${count + 1}`
@@ -59,7 +59,7 @@ export default function SemesterList(props: SemesterListProps): JSX.Element {
     return (
         <>
             {sortedSemesters.map(
-                (semesterProps: SemesterProps, index: number) => {
+                (semesterProps: SemesterData, index: number) => {
                     return (
                         <Col
                             className="mb-3"

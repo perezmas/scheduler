@@ -2,18 +2,18 @@ import React, { useState } from "react";
 import useYears from "../hooks/useYears";
 import { v4 as uuid } from "uuid";
 import { screen, render, getByTestId, getByText } from "@testing-library/react";
-import { YearProps } from "../interfaces/Year";
-import SemesterProps from "../interfaces/Semester";
-import CourseProps from "../interfaces/Course";
+import YearData from "../interfaces/Year";
+import SemesterData from "../interfaces/Semester";
+import CourseData from "../interfaces/Course";
 
 interface HookTesterProps {
     testIndex: number;
-    initSpy?: () => Array<YearProps>;
+    initSpy?: () => Array<YearData>;
 }
 
 export interface Years {
     /**The list of years in the schedule */
-    value: Array<YearProps>;
+    value: Array<YearData>;
     /**Adds a new year to a schedule. */
     push: (uuid: string, index: number) => void;
     /**Puts a semester into a year */
@@ -116,7 +116,7 @@ function UseYearsTest(props: HookTesterProps): JSX.Element {
                             name: "fall",
                             start: new Date("2021-08-31"),
                             end: new Date("2021-12-15"),
-                            courses: new Map<string, CourseProps>(),
+                            courses: new Map<string, CourseData>(),
                             uuid: targetSemesterUuid,
                         },
                     ],
@@ -136,7 +136,7 @@ function UseYearsTest(props: HookTesterProps): JSX.Element {
     }
     return (
         <div>
-            {years.value.map((year: YearProps, index: number) => {
+            {years.value.map((year: YearData, index: number) => {
                 return (
                     <div data-testid={`Year ${index}`} key={index}>
                         <Year {...year} />
@@ -148,7 +148,7 @@ function UseYearsTest(props: HookTesterProps): JSX.Element {
     );
 }
 
-function Year(props: YearProps): JSX.Element {
+function Year(props: YearData): JSX.Element {
     return (
         <div>
             <div data-testid={"year-uuid"}>{props.uuid}</div>
@@ -157,7 +157,7 @@ function Year(props: YearProps): JSX.Element {
                 {props.semesters.length === 0
                     ? "[]"
                     : props.semesters.map(
-                        (semesterProps: SemesterProps, index: number) => {
+                        (semesterProps: SemesterData, index: number) => {
                             return (
                                 <div
                                     key={index}
@@ -174,7 +174,7 @@ function Year(props: YearProps): JSX.Element {
     );
 }
 
-function Semester(props: SemesterProps): JSX.Element {
+function Semester(props: SemesterData): JSX.Element {
     return (
         <div>
             <div data-testid={"semester-uuid"}>{props.uuid}</div>
@@ -187,7 +187,7 @@ function Semester(props: SemesterProps): JSX.Element {
 
 function expectSemesters(
     year: HTMLElement,
-    expected: Array<SemesterProps>
+    expected: Array<SemesterData>
 ): void {
     const ln = getByTestId(year, "semesters-length");
     expect(getByText(ln, expected.length)).toBeInTheDocument();
@@ -209,7 +209,7 @@ function expectSemesters(
     }
 }
 
-function expectYears(years: Array<[number, Array<SemesterProps>]>) {
+function expectYears(years: Array<[number, Array<SemesterData>]>) {
     const ln = screen.getByTestId("years-length");
     expect(getByText(ln, years.length.toString())).toBeInTheDocument();
 
@@ -241,7 +241,7 @@ describe(useYears, () => {
     });
 
     it("Calls the initialization function lazily", async () => {
-        const spy = jest.fn<YearProps[], [void]>(() => {
+        const spy = jest.fn<YearData[], [void]>(() => {
             return [{ uuid: uuid(), index: 1, semesters: [] }];
         });
 

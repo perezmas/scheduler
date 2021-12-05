@@ -2,7 +2,7 @@ import React from "react";
 import { screen, render, getByTestId } from "@testing-library/react";
 import SemesterList from "../components/Year/SemesterList";
 import { v4 as uuid } from "uuid";
-import CourseProps from "../interfaces/Course";
+import CourseData from "../interfaces/Course";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import {SemesterListProps} from "../components/Year/SemesterList";
@@ -25,13 +25,13 @@ function WrappedSemesterList(props: SemesterListProps): JSX.Element{
 describe(SemesterList, () => {
     const doNothingWithString = jest.fn<void, [string]>();
     const doNothingWithStrings = jest.fn<void, [string, string]>();
-    const doNothingWithCourseProps = jest.fn<void, [CourseProps]>();
+    const doNothingWithCourseData = jest.fn<void, [CourseData]>();
     const defaultProps: SemesterListProps = {
         semesters: [],
         removeSemester: doNothingWithString,
         clearCourses: doNothingWithString,
         courses: [],
-        addCourse: doNothingWithCourseProps,
+        addCourse: doNothingWithCourseData,
         moveCourse: doNothingWithStrings,
         removeCourse: doNothingWithString,
     };

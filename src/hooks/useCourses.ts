@@ -1,13 +1,7 @@
 import { type } from "os";
 import { useReducer } from "react";
-import CourseProps from "../interfaces/Course";
+import CourseData from "../interfaces/Course";
 import { getByUUID } from "./useYears";
-
-enum CourseActionType{
-    add,
-    remove,
-    update
-}
 
 export interface AbstractCourseAction {
     type: "ADD COURSE" | "REMOVE COURSE" | "UPDATE COURSE";
@@ -15,7 +9,7 @@ export interface AbstractCourseAction {
 
 export interface AddCourseAction {
     type: "ADD COURSE";
-    newCourse: CourseProps;
+    newCourse: CourseData;
 }
 
 export interface RemoveCourseAction {
@@ -26,10 +20,8 @@ export interface RemoveCourseAction {
 export interface UpdateCourseAction {
     type: "UPDATE COURSE";
     id: string;
-    payload: CourseProps;
+    payload: CourseData;
 }
-
-
 
 type CourseAction<T extends "ADD COURSE" | "REMOVE COURSE" | "UPDATE COURSE"> = 
 T extends "ADD COURSE" ? AddCourseAction :
@@ -38,8 +30,8 @@ UpdateCourseAction;
 
 // easy access to the courses
 
-function courseReducer<T extends "ADD COURSE" | "REMOVE COURSE" | "UPDATE COURSE">(state: Array<CourseProps>,action: CourseAction<T>): Array<CourseProps> {
-    const newState = state.map((course: CourseProps) => {
+function courseReducer<T extends "ADD COURSE" | "REMOVE COURSE" | "UPDATE COURSE">(state: Array<CourseData>,action: CourseAction<T>): Array<CourseData> {
+    const newState = state.map((course: CourseData) => {
         return {...course};
     });
     switch (action.type) {
@@ -66,26 +58,26 @@ function courseReducer<T extends "ADD COURSE" | "REMOVE COURSE" | "UPDATE COURSE
     default:
         throw new Error("Unknown action type");
     }
-};
+}
 
-const courseInit = (courses?: Array<CourseProps>): Array<CourseProps> => {
+const courseInit = (courses?: Array<CourseData>): Array<CourseData> => {
     return courses === undefined ? [] : courses;
 };
 
 export interface Courses {
-    courseList: Array<CourseProps>;
+    courseList: Array<CourseData>;
     removeCourse: (courseID: string) => void;
-    push: (course: CourseProps) => void;
+    push: (course: CourseData) => void;
     move: (target: string, destinationUuid: string) => void;
 }
-function useCourses(initialCourses?: Array<CourseProps>): Courses {
+function useCourses(initialCourses?: Array<CourseData>): Courses {
     const [courses, updateCourses] = useReducer(
         courseReducer,
         initialCourses,
         courseInit
     );
 
-    const push = (course: CourseProps) => {
+    const push = (course: CourseData) => {
         //check if course is already in the list
         const target = getByUUID(courses, course.uuid);
         if (target !== -1) {
