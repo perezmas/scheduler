@@ -35,7 +35,7 @@ function DropPoint(props: DropPointProps): JSX.Element{
         <div ref={drop}>
             drop here
         </div>
-    )
+    );
 }
 
 describe(Course, () => {
@@ -92,7 +92,7 @@ describe(Course, () => {
         fireEvent.drop(screen.getByText("drop here"));
         await waitFor(() => {
             expect(acceptCourseSpy).toHaveBeenCalled();
-        })
+        });
         expect(acceptCourseSpy).toHaveBeenLastCalledWith(courseUuid);
-    })
+    });
 });

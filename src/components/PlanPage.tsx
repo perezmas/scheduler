@@ -78,7 +78,6 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
                 years: planItem.years,
             },
         ]);
-        const index = plans.length;
     };
 
     const renderCard = (planItem: PlanProps) => {

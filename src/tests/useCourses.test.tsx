@@ -134,8 +134,7 @@ describe(useCourses,() => {
             const [updated, setUpdated] = useState(false);
             if(courses.courseList.length < 1){
                 courses.push(CISC123);
-            }
-            else if(!updated){
+            } else if(!updated){
                 courses.push(newCourse);
                 setUpdated(true);
             }
@@ -145,7 +144,7 @@ describe(useCourses,() => {
         }
         render(<UpdateCourseTest/>);
         expectCourses([newCourse]);
-    })
+    });
     it("Can remove courses from the state with removeCourse", async () => {
         function RemoveCourseTest(): JSX.Element{
             const courses = useCourses([CISC123]);

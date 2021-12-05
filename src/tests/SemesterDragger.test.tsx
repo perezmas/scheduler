@@ -56,10 +56,11 @@ describe(SemesterDragger, () => {
         testProps.acceptCourse = acceptCourseSpy;
         render(<WrappedSemesterDragger {...testProps}/>);
         fireEvent.dragStart(screen.getByText("drag me"));
+        expect(acceptCourseSpy).not.toHaveBeenCalled();
         fireEvent.drop(screen.getByTestId("drop-point"));
         await waitFor(() => {
             expect(acceptCourseSpy).toHaveBeenCalled();
         });
         expect(acceptCourseSpy).toHaveBeenLastCalledWith(draggableUuid);
     });
-});;
+});

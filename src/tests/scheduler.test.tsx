@@ -407,7 +407,7 @@ describe(Scheduler, () => {
             });
         });
         expect(screen.getByTestId("submit-button")).not.toBeDisabled();
-    })
+    });
     it("Can remove a course from a semester", async () => {
         await addCourse(1, 1, "Irish Dance", "IRSH-201");
         await addCourse(
