@@ -3,7 +3,7 @@ import Semester, {FullSemesterProps} from "./Semester";
 import {useDrop} from "react-dnd";
 import AbstractProps from "../interfaces/Props";
 
-interface SemesterDraggerProps extends FullSemesterProps{
+export interface SemesterDraggerProps extends FullSemesterProps{
     acceptCourse: (uuid: string) => void
 }
 
