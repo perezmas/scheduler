@@ -140,14 +140,22 @@ thead {
     background-color: #fff;
 }
 
-/* .Collapsible__trigger.is-closed + .Collapsible__contentOuter {
-    margin: 100rem;
-} */
-
 .clickable {
     cursor: pointer;
 }
 
 .dropdown-toggle.dropdown-toggle-split {
     background-color: #239b63;
+}
+
+.course {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+}
+
+.course-kebab-menu {
+    text-decoration: none;
 }
