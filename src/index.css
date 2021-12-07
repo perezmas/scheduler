@@ -41,14 +41,11 @@ code {
 #add-semester-button {
     background-color: transparent;
     border: none;
-    /* padding: 4.61rem 0.75rem; */
     color: #919191;
     font-weight: bold;
     cursor: pointer;
 }
-/* .plan-card {
-    flex-direction: row;
-} */
+
 #add-plan-icon,
 #add-semester-icon {
     font-size: 1.9rem;
@@ -158,5 +155,16 @@ thead {
 }
 
 .course-kebab-menu {
+    padding: 0.5rem;
     color: #6a6d70;
+}
+.course-kebab-menu:hover {
+    color: #6a6d70;
+}
+
+.met {
+    background-color: rgba(0, 255, 0, 0.3);
+}
+.unmet {
+    background-color: rgba(255, 0, 0, 0.2);
 }
