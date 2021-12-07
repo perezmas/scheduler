@@ -1,7 +1,4 @@
-
 import {useState, useEffect} from "react";
-
-
 
 function getStorageValue(key: string, defaultValue: string): string {
     // get the stored value
@@ -10,7 +7,6 @@ function getStorageValue(key: string, defaultValue: string): string {
     return initial || defaultValue;
 
 }
-
 
 export function useLocalStorage(key: string, defaultValue: string): [string, (value: string) => void] {
     

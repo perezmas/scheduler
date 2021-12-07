@@ -3,16 +3,16 @@ import YearHeader from "./YearHeader";
 import SemesterList from "./SemesterList";
 import FormTrigger from "./FormTrigger";
 import SemesterForm from "./SemesterForm";
-import CourseProps from "../../interfaces/Course";
+import CourseData from "../../interfaces/Course";
 import { ChangeEvent, FormEvent } from "react";
-import SemesterProps from "../../interfaces/Semester";
+import SemesterData from "../../interfaces/Semester";
 
-export interface FullYearProps {
+export interface YearProps {
     clearYear: () => void;
     removeYear: () => void;
     removeSemester: (uuid: string) => void;
-    courses: Array<CourseProps>,
-    addCourse: (course: CourseProps) => void,
+    courses: Array<CourseData>,
+    addCourse: (course: CourseData) => void,
     removeCourse: (uuid: string) => void,
     moveCourse: (uuid: string, destinationUuid: string) => void,
     index: number;
@@ -22,13 +22,13 @@ export interface FullYearProps {
         uuid: string
     ) => void;
     handleSemesterInput: (event: ChangeEvent<HTMLInputElement>) => void;
-    semesters: Array<SemesterProps>;
+    semesters: Array<SemesterData>;
     currentForm: string | null;
     setForm: (newForm: string | null) => void;
     submissionAllowed: boolean;
 }
 
-export default function Year(props: FullYearProps): JSX.Element {
+export default function Year(props: YearProps): JSX.Element {
     return (
         <div data-testid={`Year ${props.index}`} key={props.uuid}>
             <YearHeader
@@ -51,7 +51,7 @@ export default function Year(props: FullYearProps): JSX.Element {
                     }}
                     clearCourses={(semesterUuid: string) => {
                         for (const course of props.courses.filter(
-                            (course: CourseProps) => {
+                            (course: CourseData) => {
                                 return course.semester === semesterUuid;
                             }
                         )) {

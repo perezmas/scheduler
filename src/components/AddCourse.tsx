@@ -2,15 +2,15 @@ import React, { ChangeEvent, FormEvent } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 
 import ReactDOM from "react-dom";
-import CourseProps from "../interfaces/Course";
+import CourseData from "../interfaces/Course";
 
-interface AddNewCourseProps {
+interface AddNewCourseData {
     /**All of the existing courses. */
-    courses: CourseProps[];
+    courses: CourseData[];
     /**Whether or not to display the form. */
     isOpen: boolean;
     /**The default values for fields that are left blank. */
-    defaultValues: CourseProps;
+    defaultValues: CourseData;
     /**Whether or not this component is currently modifying an existing course. */
     isEditing: boolean;
     /**A function that closes this form. */
@@ -22,7 +22,7 @@ interface AddNewCourseProps {
 }
 
 /**A form that asks the user for the data required to create a new course. The form will be displayed in a modal attached to the document body via a portal. */
-const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
+const AddCourse = (props: AddNewCourseData): JSX.Element | null => {
     if (!props.isOpen) return null;
     return ReactDOM.createPortal(
         <div>
@@ -99,7 +99,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                     (course) =>
                                         course.id != props.defaultValues.id
                                 )
-                                .map((course: CourseProps) => 
+                                .map((course: CourseData) => 
                                     <Form.Check
                                         data-testid={`co-${course.name}`}
                                         key={course.uuid}
@@ -121,7 +121,7 @@ const AddCourse = (props: AddNewCourseProps): JSX.Element | null => {
                                     (course) =>
                                         course.id != props.defaultValues.id
                                 )
-                                .map((course: CourseProps) => 
+                                .map((course: CourseData) => 
                                     <Form.Check
                                         key={course.uuid}
                                         data-testid={`pre-${course.name}`}

@@ -1,7 +1,7 @@
 import React, { FormEvent, ChangeEvent } from "react";
-import Year, { FullYearProps } from "../components/Year/Year";
-import SemesterProps from "../interfaces/Semester";
-import CourseProps from "../interfaces/Course";
+import Year, { YearProps } from "../components/Year/Year";
+import SemesterData from "../interfaces/Semester";
+import CourseData from "../interfaces/Course";
 import { v4 as uuid } from "uuid";
 import {
     screen,
@@ -13,7 +13,7 @@ import {
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-function WrappedYear(props: FullYearProps): JSX.Element{
+function WrappedYear(props: YearProps): JSX.Element{
     return (
         <DndProvider backend={HTML5Backend}>
             <Year {...props}/>
@@ -34,18 +34,18 @@ describe(Year, () => {
     const doNothing = jest.fn<void, [void]>();
     const emptySubmitHandler = jest.fn<void, [FormEvent, string]>();
     const emptyInputHandler = jest.fn<void, [ChangeEvent]>();
-    const doNothingWithCourseProps = jest.fn<void, [CourseProps]>();
+    const doNothingWithCourseData = jest.fn<void, [CourseData]>();
     const doNothingWithStringOrNull = jest.fn<void, [string | null]>();
     const doNothingWithRemoveYear = jest.fn<void, [void]>();
 
     const yearUuid = uuid();
 
-    const defaultProps: FullYearProps = {
+    const defaultProps: YearProps = {
         removeYear: doNothingWithRemoveYear,
         clearYear: doNothing,
         removeSemester: doNothingWithString,
         courses: [],
-        addCourse: doNothingWithCourseProps,
+        addCourse: doNothingWithCourseData,
         moveCourse: jest.fn<void, [string, string]>(),
         removeCourse: doNothingWithString,
         index: 1,
@@ -59,13 +59,13 @@ describe(Year, () => {
     };
     const fallUuid = uuid();
     const springUuid = uuid();
-    const fall: SemesterProps = {
+    const fall: SemesterData = {
         name: "fall",
         start: new Date("08-31-21"),
         end: new Date("12-15-21"),
         uuid: fallUuid,
     };
-    const spring: SemesterProps = {
+    const spring: SemesterData = {
         name: "spring",
         start: new Date("02-07-2022"),
         end: new Date("06-08-2022"),
@@ -210,7 +210,7 @@ describe(Year, () => {
         );
     });
     it("Should call its removeYear prop when the button to remove this year in the YearHeader is clicked", async () => {
-        const testProps: FullYearProps = {...defaultProps};
+        const testProps: YearProps = {...defaultProps};
         testProps.removeYear = jest.fn<void, [void]>();
         render(<WrappedYear 
             {...testProps}

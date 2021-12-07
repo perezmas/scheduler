@@ -15,7 +15,7 @@ import { Scheduler } from "./components/Scheduler";
 import Requirements from "./components/Requirements";
 import SchedulerWalkthrough from "./components/SchedulerWalkthrough";
 import NavigationBar from "./components/NavigationBar";
-import PlanProps from "./interfaces/Plan";
+import PlanData from "./interfaces/Plan";
 import IndexPage from "./components/IndexPage";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
@@ -40,7 +40,7 @@ const Plan: FC<PlansPageProps> = (props) => {
 };
 
 function App(): JSX.Element {
-    const [plans, setPlans] = useState<Array<PlanProps>>([]);
+    const [plans, setPlans] = useState<Array<PlanData>>([]);
     const [requirements, setRequirements] = useState<string[]>(
         Array<string>("CISC220", "CISC275", "MATH243")
     );

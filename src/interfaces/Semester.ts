@@ -1,7 +1,7 @@
-import AbstractProps from "./Props";
+import AbstractData from "./Data";
 
 /**Represents a semester internally; you will need to add a few more props to actually create a Semester (see FullSemesterProps in Semester.tsx). */
-interface SemesterProps extends AbstractProps {
+interface SemesterData extends AbstractData {
     /**The name of the semester. */
     name: string;
     /**The starting date of the semester. */
@@ -10,4 +10,4 @@ interface SemesterProps extends AbstractProps {
     end: Date;
 }
 
-export default SemesterProps;
+export default SemesterData;

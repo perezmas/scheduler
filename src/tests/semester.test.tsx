@@ -7,13 +7,13 @@ import {
     getByText,
     getByTestId,
 } from "@testing-library/react";
-import Semester, { FullSemesterProps } from "../components/Semester";
+import Semester, { SemesterProps } from "../components/Semester";
 import CourseProps from "../interfaces/Course";
 import { v4 as uuid } from "uuid";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-function WrappedSemester(props: FullSemesterProps): JSX.Element{
+function WrappedSemester(props: SemesterProps): JSX.Element{
     return (
         <DndProvider backend={HTML5Backend}>
             <Semester {...props}/>

@@ -1,13 +1,13 @@
 import React from "react";
-import Course, {FullCourseProps} from "../components/Course";
+import Course, {CourseProps} from "../components/Course";
 import {screen, render, fireEvent, waitFor} from "@testing-library/react";
 import {v4 as uuid} from "uuid";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useDrop } from "react-dnd";
-import AbstractProps from "../interfaces/Props";
+import AbstractData from "../interfaces/Data";
 
-interface WrappedCourseProps extends FullCourseProps {
+interface WrappedCourseProps extends CourseProps {
     acceptCourse: (uuid: string) => void
 }
 
@@ -27,7 +27,7 @@ interface DropPointProps {
 function DropPoint(props: DropPointProps): JSX.Element{
     const [,drop] = useDrop(() => ({
         accept: "COURSE",
-        drop: (item: AbstractProps) => {
+        drop: (item: AbstractData) => {
             props.acceptCourse(item.uuid);
         }
     }));

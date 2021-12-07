@@ -1,6 +1,6 @@
-import AbstractProps from "./Props";
+import AbstractData from "./Data";
 
-interface CourseProps extends AbstractProps {
+interface CourseData extends AbstractData {
     /**The course ID (e.g. CISC275) */
     id: string;
     /* The name of the course */
@@ -17,4 +17,4 @@ interface CourseProps extends AbstractProps {
     prereqs: Array<string>;
 }
 
-export default CourseProps;
+export default CourseData;

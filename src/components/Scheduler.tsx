@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import useYears, { getByUUID } from "../hooks/useYears";
 import { v4 as uuid } from "uuid";
-import { YearProps } from "../interfaces/Year";
+import YearData from "../interfaces/Year";
 import useProblems, { Problem } from "../hooks/useProblems";
 import ErrorStack from "./ErrorStack";
 import useCourses from "../hooks/useCourses";
@@ -17,11 +17,11 @@ export interface SchedulerProps {
     requirements: Array<string>;
 }
 
-function getStartingYears(): Array<YearProps> {
+function getStartingYears(): Array<YearData> {
     const year = new Date().getFullYear();
 
-    const output = new Array<YearProps>();
-    const yearOne: YearProps = { index: 1, uuid: uuid(), semesters: [] };
+    const output = new Array<YearData>();
+    const yearOne: YearData = { index: 1, uuid: uuid(), semesters: [] };
     yearOne.semesters.push({
         uuid: uuid(),
         name: "fall",
@@ -34,7 +34,7 @@ function getStartingYears(): Array<YearProps> {
         start: new Date(`${year + 1}-02-07`),
         end: new Date(`${year + 1}-05-26`),
     });
-    const yearTwo: YearProps = { index: 2, uuid: uuid(), semesters: [] };
+    const yearTwo: YearData = { index: 2, uuid: uuid(), semesters: [] };
     yearTwo.semesters.push({
         uuid: uuid(),
         name: "fall",
@@ -167,7 +167,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                 </div>
             </div>
             <div>
-                {years.value.map((props: YearProps) => {
+                {years.value.map((props: YearData) => {
                     return (
                         <Year
                             key={props.uuid}
