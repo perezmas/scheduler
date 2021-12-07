@@ -131,7 +131,21 @@ export function Scheduler(scheduleProps: SchedulerProps): JSX.Element {
 
     //function to export the schedule as a CSV file
     const exportCSV = () => {
-        const csv = "df";
+        let csv =
+            "year,semester,course-id,course-name,course-description,course-credits,corequisites,prerequisites\n";
+        years.value.forEach((year) => {
+            year.semesters.forEach((semester) => {
+                const coursesToAdd = courses.courseList.filter((course) => {
+                    return course.semester === semester.uuid;
+                });
+                coursesToAdd.forEach((course) => {
+                    const coreqs = course.coreqs.join(",");
+                    const prereqs = course.prereqs.join(",");
+                    csv += `${year.index},${semester.name},${course.id},${course.name},${course.description},${course.credits},${coreqs},${prereqs}\n`;
+                });
+            });
+        });
+
         const csvFile = new Blob([csv], { type: "text/csv;charset=utf-8;" });
 
         FileSaver.saveAs(csvFile, "schedule.csv");
