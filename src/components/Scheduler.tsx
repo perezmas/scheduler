@@ -13,6 +13,7 @@ import {
 import Year from "./Year/Year";
 import CourseData from "../interfaces/Course";
 import MetRequirementsTable from "./MetRequirementsTable";
+import FileSaver from "file-saver";
 
 export interface SchedulerProps {
     /**All the course ID's for the requirements for the degree this scheduler is designed to help acquire. */
@@ -76,6 +77,7 @@ export function Scheduler(scheduleProps: SchedulerProps): JSX.Element {
     //Whether or not the form to create a new semester can be submitted
     const [submissionAllowed, setSubmissionAllowed] = useState(false);
     //The problems with the user's current inputs
+
     const problems = useProblems();
     const setForm = (uuid: string | null) => {
         setCurrentForm(uuid);
@@ -130,11 +132,9 @@ export function Scheduler(scheduleProps: SchedulerProps): JSX.Element {
     //function to export the schedule as a CSV file
     const exportCSV = () => {
         const csv = "df";
-        const csvFile = new Blob([csv], { type: "text/csv" });
-        const link = document.createElement("a");
-        link.download = "schedule.csv";
-        link.href = window.URL.createObjectURL(csvFile);
-        link.click();
+        const csvFile = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+
+        FileSaver.saveAs(csvFile, "schedule.csv");
     };
 
     //set if courses match requirements using props.requirements
@@ -170,7 +170,15 @@ export function Scheduler(scheduleProps: SchedulerProps): JSX.Element {
     return (
         <>
             <h1 className="center ">Course Schedule</h1>
-
+            <Button
+                as="a"
+                href="#"
+                onClick={exportCSV}
+                className="export-button"
+            >
+                {" "}
+                Export Schedule{" "}
+            </Button>
             <MetRequirementsTable
                 requirements={scheduleProps.requirements}
                 unmetRequirements={unmetRequirements}
