@@ -19,6 +19,7 @@ import PlanData from "./interfaces/Plan";
 import IndexPage from "./components/IndexPage";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
+import usePlans from "./hooks/usePlans";
 
 // Master Plan View
 
@@ -40,7 +41,7 @@ const Plan: FC<PlansPageProps> = (props) => {
 };
 
 function App(): JSX.Element {
-    const [plans, setPlans] = useState<Array<PlanData>>([]);
+    const plans = usePlans();
     const [requirements, setRequirements] = useState<string[]>(
         Array<string>("CISC220", "CISC275", "MATH243")
     );

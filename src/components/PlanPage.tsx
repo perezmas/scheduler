@@ -13,27 +13,10 @@ import { Link } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import YearData from "../interfaces/Year";
 import PlanData from "../interfaces/Plan";
-
-export const testList: PlanData[] = [
-    {
-        uuid: "1",
-        id: 1,
-        name: "max",
-        date: "01/01/2021",
-        years: Array<YearData>(),
-    },
-    {
-        uuid: "2",
-        id: 2,
-        name: "amani",
-        date: "02/02/2021",
-        years: Array<YearData>(),
-    },
-];
+import { Plans } from "../hooks/usePlans";
 
 interface PlanPageProps {
-    plans: PlanData[];
-    setPlans: (plans: PlanData[]) => void;
+    plans: Plans;
 }
 
 /**A card on the home screen that lets the user move between schedulers, mainly so that advisors can keep track of their students. */
