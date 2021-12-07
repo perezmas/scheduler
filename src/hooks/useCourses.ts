@@ -1,4 +1,3 @@
-import { type } from "os";
 import { useReducer } from "react";
 import CourseData from "../interfaces/Course";
 import { getByUUID } from "./useYears";

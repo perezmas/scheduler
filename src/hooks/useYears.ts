@@ -3,7 +3,6 @@ import { useReducer } from "react";
 import SemesterProps from "../interfaces/Semester";
 import YearData from "../interfaces/Year";
 import AbstractProps from "../interfaces/Data";
-import { type } from "os";
 import { AddCourseAction } from "./useCourses";
 
 type YearActionType = 
