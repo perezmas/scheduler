@@ -55,7 +55,7 @@ const Course = (props: CourseProps): JSX.Element => {
             </div>
             <Dropdown style={{ display: "inline-block" }}>
                 <Dropdown.Toggle as={CustomToggle}>
-                    {/* <i className="fas fa-ellipsis-v"></i> */}⋮
+                    <i className="fa fa-ellipsis-v"></i>
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
