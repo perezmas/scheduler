@@ -11,10 +11,13 @@ import {
     handleSemesterFormSubmit,
 } from "../util/events/SemesterFormEvents";
 import Year from "./Year/Year";
+import { Plans } from "../hooks/usePlans";
 
 export interface SchedulerProps {
     /**All the course ID's for the requirements for the degree this scheduler is designed to help acquire. */
     requirements: Array<string>;
+    plans: Plans;
+    scheduleId: string;    
 }
 
 function getStartingYears(): Array<YearData> {

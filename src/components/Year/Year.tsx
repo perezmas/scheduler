@@ -26,6 +26,7 @@ export interface YearProps {
     currentForm: string | null;
     setForm: (newForm: string | null) => void;
     submissionAllowed: boolean;
+    
 }
 
 export default function Year(props: YearProps): JSX.Element {

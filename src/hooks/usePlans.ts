@@ -8,6 +8,7 @@ import SemesterData from "../interfaces/Semester";
 
 type PlanActionType = 
 "ADD PLAN" |
+"DELETE PLAN" |
   "SET YEARS"
 | "SET SEMESTERS"
 | "SET COURSES";
@@ -17,9 +18,13 @@ interface AbstractAction {
     uuid: string;
 }
 
-export interface AddYearAction extends AbstractAction {
-    type: "ADD YEARS";
-    yearList: Array<YearData>;
+export interface AddPlanAction extends AbstractAction {
+    type: "ADD PLAN";
+    planList: Array<PlanData>;
+}
+
+export interface DeletePlanAction extends AbstractAction {
+    type: "DELETE PLAN";
 }
 
 export interface SetYearAction extends AbstractAction {
@@ -39,6 +44,8 @@ export interface SetCourseAction extends AbstractAction {
 
 
 type PlanAction<T extends PlanActionType> = 
+T extends "ADD PLAN" ? AddPlanAction :
+T extends "DELETE PLAN" ? DeletePlanAction :
 T extends "SET YEARS" ? SetYearAction :
 T extends "SET SEMESTERS" ? SetSemesterAction : 
 SetCourseAction
@@ -51,8 +58,24 @@ function PlanReducer<T extends PlanActionType>(
         return {...x};
     });
     switch (action.type) {
-    case "ADD YEARS": {
-        
+    case "ADD PLAN": {
+        const addPlan = action as AddPlanAction;
+        const NewPlan: PlanData = {
+            id: length,
+            uuid: addPlan.uuid,
+            years: new Array<YearData>(),
+            semesters: new Array<SemesterData>(),
+            courses: new Array<CourseData>(),
+        }; 
+        next.push(NewPlan);
+        return next;
+    }
+    case "DELETE PLAN": {
+        const deletePlan = action as DeletePlanAction;
+        const output = next.filter((value: PlanData) => {
+            return value.uuid !== deletePlan.uuid;
+        });
+        return output;
     }
     case "SET YEARS": {
         const setYears = action as SetYearAction;
@@ -83,6 +106,8 @@ function PlanReducer<T extends PlanActionType>(
 export interface Plans {
     planList: Array<PlanData>;
     setYears: (uuid: string, yearList: Array<YearData>) => void;
+    addPlan: (uuid: string, planList: Array<PlanData>) => void;
+    deletePlan: (uuid: string) => void;
 }
 
 function usePlans(initialPlans?: () => Array<PlanData>): Plans {
@@ -103,9 +128,26 @@ function usePlans(initialPlans?: () => Array<PlanData>): Plans {
         });
     };
 
+    const addPlan = (uuid: string) => {
+        setPlans({
+            type: "ADD PLAN",
+            uuid: uuid,
+            planList: planList,
+        });
+    };
+
+    const deletePlan = (uuid: string) => {
+        setPlans({
+            type: "DELETE PLAN",
+            uuid: uuid,
+        });
+    };
+
     return {
         planList: plans,
-        setYears
+        setYears,
+        addPlan,
+        deletePlan,
     };
 }
 export default usePlans;
