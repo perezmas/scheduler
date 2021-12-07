@@ -13,7 +13,7 @@ import {
 import Year from "./Year/Year";
 import CourseData from "../interfaces/Course";
 import MetRequirementsTable from "./MetRequirementsTable";
-import FileSaver from "file-saver";
+import ExportCSV from "./ExportCSV";
 
 export interface SchedulerProps {
     /**All the course ID's for the requirements for the degree this scheduler is designed to help acquire. */
@@ -129,41 +129,17 @@ export function Scheduler(scheduleProps: SchedulerProps): JSX.Element {
         return -1;
     };
 
-    //function to export the schedule as a CSV file
-    const exportCSV = () => {
-        let csv =
-            "year,semester,course-id,course-name,course-description,course-credits,corequisites,prerequisites\n";
-        years.value.forEach((year) => {
-            year.semesters.forEach((semester) => {
-                const coursesToAdd = courses.courseList.filter((course) => {
-                    return course.semester === semester.uuid;
-                });
-                coursesToAdd.forEach((course) => {
-                    const coreqs = course.coreqs.join(",");
-                    const prereqs = course.prereqs.join(",");
-                    csv += `${year.index},${semester.name},${course.id},${course.name},${course.description},${course.credits},${coreqs},${prereqs}\n`;
-                });
-            });
-        });
-
-        const csvFile = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-
-        FileSaver.saveAs(csvFile, "schedule.csv");
-    };
-
     //set if courses match requirements using props.requirements
     useEffect(() => {
         const requirements = scheduleProps.requirements;
         const newCourses = Array<string>();
-        console.log("something's here");
 
         for (const requirement of requirements) {
             if (getByCourseID(courses.courseList, requirement) === -1) {
-                console.log("something's here2");
                 newCourses.push(requirement);
             }
         }
-        console.log(newCourses);
+
         setUnmetRequirements(newCourses);
     }, [scheduleProps.requirements, courses.courseList]);
 
@@ -184,15 +160,7 @@ export function Scheduler(scheduleProps: SchedulerProps): JSX.Element {
     return (
         <>
             <h1 className="center ">Course Schedule</h1>
-            <Button
-                as="a"
-                href="#"
-                onClick={exportCSV}
-                className="export-button"
-            >
-                {" "}
-                Export Schedule{" "}
-            </Button>
+            <ExportCSV courses={courses} years={years}></ExportCSV>
             <MetRequirementsTable
                 requirements={scheduleProps.requirements}
                 unmetRequirements={unmetRequirements}
