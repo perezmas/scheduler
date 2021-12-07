@@ -55,7 +55,6 @@ const Semester = React.forwardRef(
         const [isEditing, setIsEditing] = useState(false);
 
         const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-            event.preventDefault();
             const courseToAdd: CourseData = { ...newCourse };
 
             switch (event.target.name) {
@@ -86,6 +85,7 @@ const Semester = React.forwardRef(
                     );
                 break;
             }
+
             setNewCourse(courseToAdd);
         };
 

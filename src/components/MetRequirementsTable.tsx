@@ -17,7 +17,10 @@ const MetRequirementsTable = (
                 <Table>
                     <thead>
                         <tr>
-                            <th>Degree Requirements</th>
+                            <th>
+                                Degree Requirements <br /> (Green = met, Red =
+                                unmet)
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
