@@ -7,6 +7,8 @@ import CourseData from "../interfaces/Course";
 interface AddNewCourseData {
     /**All of the existing courses. */
     courses: CourseData[];
+    /** Degree requirements */
+    requirements: Array<string>;
     /**Whether or not to display the form. */
     isOpen: boolean;
     /**The default values for fields that are left blank. */
@@ -27,12 +29,13 @@ const AddCourse = (props: AddNewCourseData): JSX.Element | null => {
     return ReactDOM.createPortal(
         <div>
             <div className="modal-add-course" data-testid="modal-add-course">
-                <button
+                <Button
+                    variant="danger"
                     onClick={props.onClickClose}
                     data-testid="close-course-form"
                 >
-                    Close Button
-                </button>
+                    Cancel
+                </Button>
 
                 <Form onSubmit={props.onClickSubmit} data-testid="course-form">
                     <Row className="mb-3">
@@ -65,15 +68,32 @@ const AddCourse = (props: AddNewCourseData): JSX.Element | null => {
                         >
                             <Form.Label>Course ID</Form.Label>
                             <Form.Control
-                                type="text"
+                                as="select"
                                 name="courseID"
-                                placeholder="eg. CISC220"
+                                aria-label="dropdown with multiple course ids to choose from"
                                 onChange={props.onChange}
-                                value={props.defaultValues.id}
-                            />
+                                defaultValue={props.defaultValues.id}
+                            >
+                                <option>
+                                    {props.defaultValues.id.length > 0
+                                        ? props.defaultValues.id
+                                        : "Choose a course ID"}
+                                </option>
+                                {props.requirements.map((requirement) => {
+                                    return (
+                                        <option
+                                            key={requirement}
+                                            value={requirement}
+                                        >
+                                            {requirement}
+                                        </option>
+                                    );
+                                })}
+                            </Form.Control>
                             <Form.Text className="text-muted">
-                                This field is used to check requirements. The
-                                spelling should match requirements exactly
+                                This is used to check requirements. If you
+                                don&apos;t see a course add it&apos;s course ID
+                                in the requirements page instead.
                             </Form.Text>
                         </Form.Group>
                     </Row>
@@ -94,47 +114,55 @@ const AddCourse = (props: AddNewCourseData): JSX.Element | null => {
                         </Form.Group>
                         <Form.Group className="mb-3" as={Col}>
                             <Form.Label>Select Corequisites</Form.Label>
-                            {props.courses
-                                .filter(
-                                    (course) =>
-                                        course.id != props.defaultValues.id
-                                )
-                                .map((course: CourseData) => 
-                                    <Form.Check
-                                        data-testid={`co-${course.name}`}
-                                        key={course.uuid}
-                                        type="checkbox"
-                                        label={course.name}
-                                        name="courseCorequisites"
-                                        value={course.id}
-                                        checked={props.defaultValues.coreqs.includes(
-                                            course.id
-                                        )}
-                                        onChange={props.onChange}
-                                    />
-                                )}
+                            {props.courses.length > 0 ? (
+                                props.courses
+                                    .filter(
+                                        (course) =>
+                                            course.id != props.defaultValues.id
+                                    )
+                                    .map((course: CourseData) => (
+                                        <Form.Check
+                                            data-testid={`co-${course.name}`}
+                                            key={course.uuid}
+                                            type="checkbox"
+                                            label={course.name}
+                                            name="courseCorequisites"
+                                            value={course.id}
+                                            checked={props.defaultValues.coreqs.includes(
+                                                course.id
+                                            )}
+                                            onChange={props.onChange}
+                                        />
+                                    ))
+                            ) : (
+                                <div> No courses to choose from. </div>
+                            )}
                         </Form.Group>
                         <Form.Group className="mb-3" as={Col}>
                             <Form.Label>Select Prerequisites</Form.Label>
-                            {props.courses
-                                .filter(
-                                    (course) =>
-                                        course.id != props.defaultValues.id
-                                )
-                                .map((course: CourseData) => 
-                                    <Form.Check
-                                        key={course.uuid}
-                                        data-testid={`pre-${course.name}`}
-                                        type="checkbox"
-                                        label={course.name}
-                                        name="coursePrerequisites"
-                                        value={course.id}
-                                        checked={props.defaultValues.prereqs.includes(
-                                            course.id
-                                        )}
-                                        onChange={props.onChange}
-                                    />
-                                )}
+                            {props.courses.length > 0 ? (
+                                props.courses
+                                    .filter(
+                                        (course) =>
+                                            course.id != props.defaultValues.id
+                                    )
+                                    .map((course: CourseData) => (
+                                        <Form.Check
+                                            key={course.uuid}
+                                            data-testid={`pre-${course.name}`}
+                                            type="checkbox"
+                                            label={course.name}
+                                            name="coursePrerequisites"
+                                            value={course.id}
+                                            checked={props.defaultValues.prereqs.includes(
+                                                course.id
+                                            )}
+                                            onChange={props.onChange}
+                                        />
+                                    ))
+                            ) : (
+                                <div> No courses to choose from. </div>
+                            )}
                         </Form.Group>
                     </Row>
 
@@ -160,7 +188,7 @@ const AddCourse = (props: AddNewCourseData): JSX.Element | null => {
                 </Form>
             </div>
         </div>,
-        document.getElementById("modal-view") as Element || document.body
+        (document.getElementById("modal-view") as Element) || document.body
     );
 };
 
