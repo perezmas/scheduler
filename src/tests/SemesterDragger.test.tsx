@@ -48,7 +48,8 @@ describe(SemesterDragger, () => {
         uuid: semesterUuid,
         push: jest.fn<void, [CourseData]>(),
         clearCourses: jest.fn<void, [void]>(),
-        draggableUuid
+        draggableUuid,
+        requirements: []
     };
     it("Should call acceptCourse when something is dropped on it", async () => {
         const acceptCourseSpy = jest.fn<void, [string]>();
