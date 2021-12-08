@@ -1,16 +1,19 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import useYears, { getByUUID } from "../hooks/useYears";
+import useYears from "../hooks/useYears";
 import { v4 as uuid } from "uuid";
 import YearData from "../interfaces/Year";
 import useProblems, { Problem } from "../hooks/useProblems";
 import ErrorStack from "./ErrorStack";
 import useCourses from "../hooks/useCourses";
-import { Table, Button, Dropdown, ButtonGroup } from "react-bootstrap";
+import { Button, Dropdown, ButtonGroup } from "react-bootstrap";
 import {
     handleSemesterFormInput,
     handleSemesterFormSubmit,
 } from "../util/events/SemesterFormEvents";
 import Year from "./Year/Year";
+import CourseData from "../interfaces/Course";
+import MetRequirementsTable from "./MetRequirementsTable";
+import ExportCSV from "./ExportCSV";
 
 export interface SchedulerProps {
     /**All the course ID's for the requirements for the degree this scheduler is designed to help acquire. */
@@ -55,7 +58,7 @@ function hasError(problems: Array<Problem>): boolean {
     return false;
 }
 
-export function Scheduler(props: SchedulerProps): JSX.Element {
+export function Scheduler(scheduleProps: SchedulerProps): JSX.Element {
     const years = useYears(getStartingYears);
 
     const courses = useCourses();
@@ -74,6 +77,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
     //Whether or not the form to create a new semester can be submitted
     const [submissionAllowed, setSubmissionAllowed] = useState(false);
     //The problems with the user's current inputs
+
     const problems = useProblems();
     const setForm = (uuid: string | null) => {
         setCurrentForm(uuid);
@@ -113,19 +117,31 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
             years.putSemester
         );
     };
+    const getByCourseID = (
+        courseList: CourseData[],
+        courseID: string
+    ): number => {
+        for (let i = 0; i < courseList.length; i++) {
+            if (courseList[i].id === courseID) {
+                return i;
+            }
+        }
+        return -1;
+    };
 
     //set if courses match requirements using props.requirements
     useEffect(() => {
-        const requirements = props.requirements;
+        const requirements = scheduleProps.requirements;
         const newCourses = Array<string>();
 
         for (const requirement of requirements) {
-            if (getByUUID(courses.courseList, requirement) === -1) {
+            if (getByCourseID(courses.courseList, requirement) === -1) {
                 newCourses.push(requirement);
             }
         }
+
         setUnmetRequirements(newCourses);
-    }, [props.requirements, courses.courseList]);
+    }, [scheduleProps.requirements, courses.courseList]);
 
     if (
         newName &&
@@ -144,28 +160,11 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
     return (
         <>
             <h1 className="center ">Course Schedule</h1>
-
-            <div className="degree-requirements-wrapper">
-                <div
-                    className="degree-requirements"
-                    data-testid="degree-requirements"
-                >
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>Degree Requirements</th>
-                                <th>Unmet Requirements</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Computer Science</td>
-                                <td>{unmetRequirements.join(", ")}</td>
-                            </tr>
-                        </tbody>
-                    </Table>
-                </div>
-            </div>
+            <ExportCSV courses={courses} years={years}></ExportCSV>
+            <MetRequirementsTable
+                requirements={scheduleProps.requirements}
+                unmetRequirements={unmetRequirements}
+            />
             <div>
                 {years.value.map((props: YearData) => {
                     return (
@@ -192,6 +191,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
                             currentForm={currentForm}
                             setForm={setForm}
                             submissionAllowed={submissionAllowed}
+                            requirements={unmetRequirements}
                         />
                     );
                 })}

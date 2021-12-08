@@ -8,10 +8,11 @@ export interface SemesterListProps {
     removeSemester: (uuid: string) => void;
     clearCourses: (semesterUuid: string) => void;
     courses: Array<CourseData>;
-    moveCourse: (uuid: string, destinationUuid: string) => void,
-    addCourse: (course: CourseData) => void,
-    removeCourse: (uuid: string) => void,
+    moveCourse: (uuid: string, destinationUuid: string) => void;
+    addCourse: (course: CourseData) => void;
+    removeCourse: (uuid: string) => void;
     semesters: Array<SemesterData>;
+    requirements: Array<string>;
 }
 
 export default function SemesterList(props: SemesterListProps): JSX.Element {
@@ -67,6 +68,7 @@ export default function SemesterList(props: SemesterListProps): JSX.Element {
                             key={semesterProps.uuid}
                         >
                             <SemesterDragger
+                                requirements={props.requirements}
                                 acceptCourse={(uuid: string) => {
                                     props.moveCourse(uuid, semesterProps.uuid);
                                 }}
