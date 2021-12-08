@@ -54,7 +54,7 @@ async function addCourse(
     );
 
     fireEvent.change(courseName, { target: { value: name } });
-    fireEvent.change(courseID, {target: {value: id}});
+    fireEvent.change(courseID, { target: { value: id } });
     fireEvent.change(courseDescription, {
         target: { value: description !== undefined ? description : "" },
     });
@@ -129,7 +129,17 @@ async function testForError(
 
 describe(Scheduler, () => {
     beforeEach(() => {
-        render(<WrappedScheduler requirements={["MATH243","IRSH-201","SCOT-201","STUFF-101","STUFF-102"]} />);
+        render(
+            <WrappedScheduler
+                requirements={[
+                    "MATH243",
+                    "IRSH-201",
+                    "SCOT-201",
+                    "STUFF-101",
+                    "STUFF-102",
+                ]}
+            />
+        );
     });
 
     it("Should start with 2 years and 3 semesters.", async () => {
@@ -415,28 +425,22 @@ describe(Scheduler, () => {
             "SCOT-201",
             "No, we don't sound like scots wikipedia"
         );
-        await addCourse(1, 2, "Intro to stuff", "STUFF-101", "");
-        await addCourse(2, 1, "Intro to more stuff", "STUFF-102");
 
         getByTestId(
-            getByTestId(getByTestId(screen.getByTestId("Year 1"), "semester 1"),"Course IRSH-201: Irish Dance"),
+            getByTestId(
+                getByTestId(screen.getByTestId("Year 1"), "semester 1"),
+                "Course IRSH-201: Irish Dance"
+            ),
             "course-dropdown"
         ).click();
 
         (await screen.findByText("Remove")).click();
-        
 
         expect(
             screen.queryByTestId("Course IRSH-201: Irish Dance")
         ).not.toBeInTheDocument();
         expect(
             screen.getByTestId("Course SCOT-201: Intro to Scots")
-        ).toBeInTheDocument();
-        expect(
-            screen.getByTestId("Course STUFF-101: Intro to stuff")
-        ).toBeInTheDocument();
-        expect(
-            screen.getByTestId("Course STUFF-102: Intro to more stuff")
         ).toBeInTheDocument();
     });
 
@@ -566,12 +570,31 @@ describe(Scheduler, () => {
     it("Should display the requirements given to it as props", async () => {
         render(<WrappedScheduler requirements={["CISC123", "MATH243"]} />);
         const requirements = screen.getByTestId("degree-requirements");
-        expect(getByText(requirements, "CISC123, MATH243")).toBeInTheDocument();
+        expect(getByText(requirements, "CISC123")).toBeInTheDocument();
+        expect(getByText(requirements, "MATH243")).toBeInTheDocument();
     });
-    it("Should remove requirements from the requirents list if the course is in the semester", async () => {
+    it("Should update classes of requirements from the requirements list if the course is in the semester", async () => {
         render(<WrappedScheduler requirements={["CISC123", "MATH243"]} />);
-        const requirements = screen.getByTestId("degree-requirements");
-        expect(getByText(requirements, "CISC123, MATH243")).toBeInTheDocument();
+
+        expect(screen.getByTestId("requirement-row-CISC123")).toHaveClass(
+            "unmet"
+        );
+        expect(screen.getByTestId("requirement-row-MATH243")).toHaveClass(
+            "unmet"
+        );
         await addCourse(1, 1, "calculus I think", "MATH243", "");
+        expect(screen.getByTestId("requirement-row-CISC123")).toHaveClass(
+            "unmet"
+        );
+        expect(screen.getByTestId("requirement-row-MATH243")).toHaveClass(
+            "met"
+        );
+        await addCourse(1, 1, "intro cs", "CISC123", "");
+        expect(screen.getByTestId("requirement-row-CISC123")).toHaveClass(
+            "met"
+        );
+        expect(screen.getByTestId("requirement-row-MATH243")).toHaveClass(
+            "met"
+        );
     });
 });

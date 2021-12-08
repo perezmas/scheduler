@@ -1,7 +1,7 @@
 import React from "react";
 import CourseData from "../interfaces/Course";
 import { useDrag } from "react-dnd";
-import { Dropdown, Button, ButtonGroup } from "react-bootstrap";
+import { Dropdown } from "react-bootstrap";
 
 export interface CourseProps extends CourseData {
     /**A function that deletes this course from the global map containing all courses. */
@@ -56,7 +56,10 @@ const Course = (props: CourseProps): JSX.Element => {
             </div>
             <Dropdown style={{ display: "inline-block" }}>
                 <Dropdown.Toggle as={CustomToggle}>
-                    <i className="fa fa-ellipsis-v" data-testid="course-dropdown"></i>
+                    <i
+                        className="fa fa-ellipsis-v"
+                        data-testid="course-dropdown"
+                    ></i>
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>

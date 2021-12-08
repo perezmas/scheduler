@@ -34,6 +34,7 @@ const MetRequirementsTable = (
                                             ? "met"
                                             : "unmet"
                                     }
+                                    data-testid={`requirement-row-${requirement}`}
                                     key={requirement}
                                 >
                                     <td>{requirement}</td>

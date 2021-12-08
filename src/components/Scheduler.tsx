@@ -1,11 +1,11 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import useYears, { getByUUID } from "../hooks/useYears";
+import useYears from "../hooks/useYears";
 import { v4 as uuid } from "uuid";
 import YearData from "../interfaces/Year";
 import useProblems, { Problem } from "../hooks/useProblems";
 import ErrorStack from "./ErrorStack";
 import useCourses from "../hooks/useCourses";
-import { Table, Button, Dropdown, ButtonGroup } from "react-bootstrap";
+import { Button, Dropdown, ButtonGroup } from "react-bootstrap";
 import {
     handleSemesterFormInput,
     handleSemesterFormSubmit,
