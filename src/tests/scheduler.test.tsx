@@ -14,6 +14,7 @@ import { act } from "react-dom/test-utils";
 import { Scheduler, SchedulerProps } from "../components/Scheduler";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { Plans } from "../hooks/usePlans";
 
 function WrappedScheduler(props: SchedulerProps): JSX.Element {
     return (
@@ -128,6 +129,14 @@ async function testForError(
 }
 
 describe(Scheduler, () => {
+    const defaultPlan: Plans = {
+        addPlan: jest.fn<void, [string]>(),
+        copyPlan: jest.fn<void, [string]>(),
+        deletePlan: jest.fn<void, [string]>(),
+        planList: [],
+        setCourses: jest.fn<void, [string]>(),
+        setYears: jest.fn<void, [string]>(),
+    }
     beforeEach(() => {
         render(
             <WrappedScheduler
@@ -138,6 +147,8 @@ describe(Scheduler, () => {
                     "STUFF-101",
                     "STUFF-102",
                 ]}
+                plans={defaultPlan}
+                scheduleId="test"
             />
         );
     });
@@ -567,14 +578,25 @@ describe(Scheduler, () => {
 });
 
 describe(Scheduler, () => {
+    const defaultPlan: Plans = {
+        addPlan: jest.fn<void, [string]>(),
+        copyPlan: jest.fn<void, [string]>(),
+        deletePlan: jest.fn<void, [string]>(),
+        planList: [],
+        setCourses: jest.fn<void, [string]>(),
+        setYears: jest.fn<void, [string]>(),
+    }
+
     it("Should display the requirements given to it as props", async () => {
-        render(<WrappedScheduler requirements={["CISC123", "MATH243"]} />);
+        render(<WrappedScheduler requirements={["CISC123", "MATH243"]} plans={defaultPlan}
+        scheduleId="test"/>);
         const requirements = screen.getByTestId("degree-requirements");
         expect(getByText(requirements, "CISC123")).toBeInTheDocument();
         expect(getByText(requirements, "MATH243")).toBeInTheDocument();
     });
     it("Should update classes of requirements from the requirements list if the course is in the semester", async () => {
-        render(<WrappedScheduler requirements={["CISC123", "MATH243"]} />);
+        render(<WrappedScheduler requirements={["CISC123", "MATH243"]} plans={defaultPlan}
+        scheduleId="test"/>);
 
         expect(screen.getByTestId("requirement-row-CISC123")).toHaveClass(
             "unmet"
