@@ -11,11 +11,10 @@ import {
 } from "react-router-dom";
 import { Switch } from "react-router-dom";
 
-import { Scheduler, SchedulerProps } from "./components/Scheduler";
+import { Scheduler } from "./components/Scheduler";
 import Requirements from "./components/Requirements";
 import SchedulerWalkthrough from "./components/SchedulerWalkthrough";
 import NavigationBar from "./components/NavigationBar";
-import PlanData from "./interfaces/Plan";
 import IndexPage from "./components/IndexPage";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
@@ -23,19 +22,25 @@ import usePlans, { Plans } from "./hooks/usePlans";
 
 // Master Plan View
 
-type PlansPageProps = RouteComponentProps & {
+type PlansPageProps = RouteComponentProps<MatchParams> & {
     requirements: string[];
-    plans: Plans;
-    scheduleId: string;  
+    plans: Plans; 
 };
 
+interface MatchParams {
+    uuid: string;
+}
+
+
+
 const Plan: FC<PlansPageProps> = (props) => {
+    const uuid = props.match.params.uuid;
     return (
         <>
             <SchedulerWalkthrough />
             <p></p>
             <DndProvider backend={HTML5Backend}>
-                <Scheduler requirements={props.requirements} plans={props.plans} scheduleId={props.scheduleId} />
+                <Scheduler requirements={props.requirements} plans={props.plans} scheduleId={uuid} />
             </DndProvider>
             
         </>
@@ -63,7 +68,7 @@ function App(): JSX.Element {
                     <Route
                         path="/Plans/:uuid"
                         render={(props) => 
-                            <Plan {...props} requirements={requirements} plans={plans} scheduleId={"test"} />
+                            <Plan {...props} requirements={requirements} plans={plans} />
                         }
                     ></Route>
                     <Route

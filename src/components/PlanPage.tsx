@@ -11,7 +11,6 @@ import {
 import "./styles.css";
 import { Link } from "react-router-dom";
 import { v4 as uuid } from "uuid";
-import YearData from "../interfaces/Year";
 import PlanData from "../interfaces/Plan";
 import { Plans } from "../hooks/usePlans";
 

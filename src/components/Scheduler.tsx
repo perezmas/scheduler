@@ -130,6 +130,12 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
         setUnmetRequirements(newCourses);
     }, [props.requirements, courses.courseList]);
 
+
+    useEffect(() => {
+        props.plans.setYears(props.scheduleId, years.value);
+        props.plans.setCourses(props.scheduleId, courses.courseList);
+    }, [years.value, courses.courseList]);
+
     if (
         newName &&
         newEnd &&

@@ -2,7 +2,6 @@ import { useReducer } from "react";
 import CourseData from "../interfaces/Course";
 import PlanData from "../interfaces/Plan";
 import YearData from "../interfaces/Year";
-import { v4 as uuid } from "uuid";
 import { getByUUID } from "./useYears";
 import SemesterData from "../interfaces/Semester";
 
@@ -106,6 +105,7 @@ function PlanReducer<T extends PlanActionType>(
 export interface Plans {
     planList: Array<PlanData>;
     setYears: (uuid: string, yearList: Array<YearData>) => void;
+    setCourses: (uuid: string, courseList: Array<CourseData>) => void;
     addPlan: (uuid: string) => void;
     deletePlan: (uuid: string) => void;
 }
@@ -128,6 +128,14 @@ function usePlans(initialPlans?: () => Array<PlanData>): Plans {
         });
     };
 
+    const setCourses = (uuid: string, courseList: Array<CourseData>) => {
+        setPlans({
+            type: "SET COURSES",
+            uuid: uuid,
+            courseList: courseList,
+        });
+    };
+
     const addPlan = (uuid: string) => {
         setPlans({
             type: "ADD PLAN",
@@ -146,6 +154,7 @@ function usePlans(initialPlans?: () => Array<PlanData>): Plans {
     return {
         planList: plans,
         setYears,
+        setCourses,
         addPlan,
         deletePlan,
     };

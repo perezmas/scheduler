@@ -1,7 +1,6 @@
 import React, { FC } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { Plans } from "../hooks/usePlans";
-import PlanProps from "../interfaces/Plan";
 import PlanPage from "./PlanPage";
 
 type IndexPageProps = RouteComponentProps & {
