@@ -17,8 +17,8 @@ import SchedulerWalkthrough from "./components/SchedulerWalkthrough";
 import NavigationBar from "./components/NavigationBar";
 import PlanData from "./interfaces/Plan";
 import IndexPage from "./components/IndexPage";
-import {DndProvider} from "react-dnd";
-import {HTML5Backend} from "react-dnd-html5-backend";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 // Master Plan View
 
@@ -34,7 +34,6 @@ const Plan: FC<PlansPageProps> = (props) => {
             <DndProvider backend={HTML5Backend}>
                 <Scheduler requirements={props.requirements} />
             </DndProvider>
-            
         </>
     );
 };
