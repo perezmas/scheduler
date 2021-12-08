@@ -15,10 +15,10 @@ import { Scheduler, SchedulerProps } from "../components/Scheduler";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-function WrappedScheduler(props: SchedulerProps): JSX.Element{
+function WrappedScheduler(props: SchedulerProps): JSX.Element {
     return (
         <DndProvider backend={HTML5Backend}>
-            <Scheduler {...props}/>
+            <Scheduler {...props} />
         </DndProvider>
     );
 }
@@ -129,9 +129,7 @@ async function testForError(
 
 describe(Scheduler, () => {
     beforeEach(() => {
-        render(
-            <WrappedScheduler requirements={["MATH243"]}/>
-        );
+        render(<WrappedScheduler requirements={["MATH243"]} />);
     });
 
     it("Should start with 2 years and 3 semesters.", async () => {
@@ -422,7 +420,7 @@ describe(Scheduler, () => {
 
         getByTestId(
             screen.getByTestId("Course IRSH-201: Irish Dance"),
-            "remove-course"
+            "remove-course-IRISH-201"
         ).click();
 
         expect(
@@ -518,17 +516,28 @@ describe(Scheduler, () => {
     it("Should allow you to drag courses from one semester to another", async () => {
         await addCourse(1, 1, "course", "CISC100");
         const course = screen.getByText("0 course");
-        const target = getByTestId(getByTestId(screen.getByTestId("Year 1"), "semester 2"),"drop-point");
+        const target = getByTestId(
+            getByTestId(screen.getByTestId("Year 1"), "semester 2"),
+            "drop-point"
+        );
         fireEvent.dragStart(course);
         fireEvent.drop(target);
 
         await waitFor(() => {
-            expect(queryByText(getByTestId(screen.getByTestId("Year 1"), "semester 1"), "0 course")).not.toBeInTheDocument();
+            expect(
+                queryByText(
+                    getByTestId(screen.getByTestId("Year 1"), "semester 1"),
+                    "0 course"
+                )
+            ).not.toBeInTheDocument();
         });
         expect(getByText(target, "0 course")).toBeInTheDocument();
     });
     it("Should remove a year when the button to remove the appropriate year is clicked", async () => {
-        getByTestId(screen.getByTestId("Year 1 label"),"open-dropdown").click();
+        getByTestId(
+            screen.getByTestId("Year 1 label"),
+            "open-dropdown"
+        ).click();
         await waitFor(() => {
             expect(screen.queryByTestId("remove-year 1")).toBeInTheDocument();
         });
@@ -538,7 +547,9 @@ describe(Scheduler, () => {
     it("Should remove all the years in the plan if the button to do so is clicked", async () => {
         screen.getByTestId("clear-remove-years-toggle").click();
         await waitFor(() => {
-            expect(screen.queryByTestId("remove-years-button")).toBeInTheDocument();
+            expect(
+                screen.queryByTestId("remove-years-button")
+            ).toBeInTheDocument();
         });
         expect(screen.getByTestId("Year 1")).toBeInTheDocument();
         expect(screen.getByTestId("Year 2")).toBeInTheDocument();
