@@ -52,7 +52,7 @@ describe(SemesterDragger, () => {
     };
     it("Should call clearCourses if the clear button is clicked", async () => {
         const clearSpy = jest.fn<void, [void]>();
-        const testProps = {...defaultProps}
+        const testProps = {...defaultProps};
         testProps.clearCourses = clearSpy;
         render(<WrappedSemesterDragger {...testProps}/>);
         screen.getByTestId("clear-courses-toggle").click();
@@ -61,7 +61,7 @@ describe(SemesterDragger, () => {
         expect(clearSpy).not.toHaveBeenCalled();
         screen.getByTestId("clear-courses-button").click();
         expect(clearSpy).toHaveBeenCalled();
-    })
+    });
     it("Should call acceptCourse when something is dropped on it", async () => {
         const acceptCourseSpy = jest.fn<void, [string]>();
         const testProps: WrappedSemesterDraggerProps = {...defaultProps};
