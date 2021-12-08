@@ -11,10 +11,10 @@ export interface YearProps {
     clearYear: () => void;
     removeYear: () => void;
     removeSemester: (uuid: string) => void;
-    courses: Array<CourseData>,
-    addCourse: (course: CourseData) => void,
-    removeCourse: (uuid: string) => void,
-    moveCourse: (uuid: string, destinationUuid: string) => void,
+    courses: Array<CourseData>;
+    addCourse: (course: CourseData) => void;
+    removeCourse: (uuid: string) => void;
+    moveCourse: (uuid: string, destinationUuid: string) => void;
     index: number;
     uuid: string;
     handleSemesterSubmit: (
@@ -26,7 +26,7 @@ export interface YearProps {
     currentForm: string | null;
     setForm: (newForm: string | null) => void;
     submissionAllowed: boolean;
-    
+    requirements: Array<string>;
 }
 
 export default function Year(props: YearProps): JSX.Element {
@@ -44,6 +44,7 @@ export default function Year(props: YearProps): JSX.Element {
                 <SemesterList
                     semesters={props.semesters}
                     courses={props.courses}
+                    requirements={props.requirements}
                     removeCourse={props.removeCourse}
                     moveCourse={props.moveCourse}
                     addCourse={props.addCourse}

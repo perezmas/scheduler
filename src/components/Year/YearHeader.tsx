@@ -26,32 +26,38 @@ export default function YearHeader(props: YearHeaderProps): JSX.Element {
                         className="year-collapsible-header"
                     >
                         {`Year ${props.index}`}
-                        <Dropdown as={ButtonGroup}>
-                            <Button
-                                onClick={props.clearYear}
-                                data-testid={`clear-year ${props.index}`}
-                                variant="success"
-                            >
-                                Clear Year
-                            </Button>
-
-                            <Dropdown.Toggle
-                                split
-                                variant="success"
-                                id="dropdown-split-basic"
-                                data-testid="open-dropdown"
-                            />
-
-                            <Dropdown.Menu>
-                                <Dropdown.Item
-                                    style={{ color: "#DC3E45" }}
-                                    onClick={props.removeYear}
-                                    data-testid={`remove-year ${props.index}`}
+                        <div
+                            onClick={(e) => {
+                                e.stopPropagation();
+                            }}
+                        >
+                            <Dropdown as={ButtonGroup}>
+                                <Button
+                                    onClick={props.clearYear}
+                                    data-testid={`clear-year ${props.index}`}
+                                    variant="success"
                                 >
-                                    Remove Year
-                                </Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
+                                    Clear Year
+                                </Button>
+
+                                <Dropdown.Toggle
+                                    split
+                                    variant="success"
+                                    id="dropdown-split-basic"
+                                    data-testid="open-dropdown"
+                                />
+
+                                <Dropdown.Menu>
+                                    <Dropdown.Item
+                                        style={{ color: "#DC3E45" }}
+                                        onClick={props.removeYear}
+                                        data-testid={`remove-year ${props.index}`}
+                                    >
+                                        Remove Year
+                                    </Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </div>
                     </div>
                 }
                 transitionTime={200}
