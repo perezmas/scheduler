@@ -68,6 +68,7 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
             },
         ]);
         */
+        plans.addPlan(planItem.uuid);
     };
 
     const renderCard = (planItem: PlanData) => {
@@ -133,7 +134,7 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
     return (
         <Container>
             <Row xs={1} md={3} className="g-4">
-                {plans.map((planItem) => 
+                {plans.planList.map((planItem: PlanData) => 
                     <Col key={planItem.uuid}>{renderCard(planItem)}</Col>
                 )}
                 <Col>

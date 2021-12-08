@@ -106,7 +106,7 @@ function PlanReducer<T extends PlanActionType>(
 export interface Plans {
     planList: Array<PlanData>;
     setYears: (uuid: string, yearList: Array<YearData>) => void;
-    addPlan: (uuid: string, planList: Array<PlanData>) => void;
+    addPlan: (uuid: string) => void;
     deletePlan: (uuid: string) => void;
 }
 
@@ -115,9 +115,9 @@ function usePlans(initialPlans?: () => Array<PlanData>): Plans {
         PlanReducer,
         undefined,
         initialPlans === undefined
-        ? () => {
-            return new Array<PlanData>();
-        } : initialPlans
+            ? () => {
+                return new Array<PlanData>();
+            } : initialPlans
     );
 
     const setYears = (uuid: string, yearList: Array<YearData>) => {
@@ -132,7 +132,7 @@ function usePlans(initialPlans?: () => Array<PlanData>): Plans {
         setPlans({
             type: "ADD PLAN",
             uuid: uuid,
-            planList: planList,
+            planList: Array<PlanData>(),
         });
     };
 
