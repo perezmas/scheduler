@@ -588,15 +588,13 @@ describe(Scheduler, () => {
     };
 
     it("Should display the requirements given to it as props", async () => {
-        render(<WrappedScheduler requirements={["CISC123", "MATH243"]} plans={defaultPlan}
-            scheduleId="test"/>);
+        render(<WrappedScheduler requirements={["CISC123", "MATH243"]} plans={defaultPlan} scheduleId="test"/>);
         const requirements = screen.getByTestId("degree-requirements");
         expect(getByText(requirements, "CISC123")).toBeInTheDocument();
         expect(getByText(requirements, "MATH243")).toBeInTheDocument();
     });
     it("Should update classes of requirements from the requirements list if the course is in the semester", async () => {
-            render(<WrappedScheduler requirements={["CISC123", "MATH243"]} plans={defaultPlan}
-        scheduleId="test"/>);
+        render(<WrappedScheduler requirements={["CISC123", "MATH243"]} plans={defaultPlan} scheduleId="test"/>);
 
         expect(screen.getByTestId("requirement-row-CISC123")).toHaveClass(
             "unmet"
