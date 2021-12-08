@@ -23,51 +23,20 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
     const { plans } = props;
 
     const addPlan = () => {
-        // sets array of all cards
-        /*
-        setPlans([
-            ...plans,
-            {
-                id: plans.length,
-                uuid: uuid(),
-                name: "",
-                date: new Date().toLocaleDateString(),
-                years: Array<YearData>(),
-            },
-        ]);*/
+        // adds plan with new unique id
         plans.addPlan(uuid());
     };
 
     const deleteCard = (planItem: PlanData) => {
+        // asks if you want to delete plan and deletes it
         if (window.confirm("Are you sure you want to delete this plan?")) {
-            /*
-            const newArray = [...plans];
-            const index = newArray.indexOf(planItem);
-
-            if (index !== -1) {
-                newArray.splice(index, 1);
-                setPlans(newArray);
-            }*/
             plans.deletePlan(planItem.uuid);
         }
     };
 
     const copy = (planItem: PlanData) => {
-        // sets array of all cards
-
-        /*
-        setPlans([
-            ...plans,
-            {
-                id: planItem.id,
-                uuid: uuid(),
-                name: planItem.name,
-                date: planItem.date,
-                years: planItem.years,
-            },
-        ]);
-        */
-        plans.addPlan(planItem.uuid);
+        // makes copy of given plan
+        plans.copyPlan(planItem.uuid, planItem);
     };
 
     const renderCard = (planItem: PlanData) => {

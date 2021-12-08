@@ -12,6 +12,7 @@ import {
 } from "../util/events/SemesterFormEvents";
 import Year from "./Year/Year";
 import { Plans } from "../hooks/usePlans";
+import CourseData from "../interfaces/Course";
 
 export interface SchedulerProps {
     /**All the course ID's for the requirements for the degree this scheduler is designed to help acquire. */
@@ -19,6 +20,7 @@ export interface SchedulerProps {
     plans: Plans;
     scheduleId: string;    
 }
+
 
 function getStartingYears(): Array<YearData> {
     const year = new Date().getFullYear();
@@ -59,9 +61,34 @@ function hasError(problems: Array<Problem>): boolean {
 }
 
 export function Scheduler(props: SchedulerProps): JSX.Element {
-    const years = useYears(getStartingYears);
 
-    const courses = useCourses();
+    let getCurrentYears: () => Array<YearData> = getStartingYears;
+    let currentCourses: Array<CourseData> | undefined = undefined;
+
+    const planId = getByUUID(props.plans.planList, props.scheduleId);
+    // initialize years and courses
+    if (planId !== -1){
+
+        const plan = props.plans.planList[planId];
+        if ( plan.years !== undefined && plan.years.length > 0){
+            getCurrentYears = () => {
+                if (plan.years){
+                    return plan.years;
+                }else{
+                    return new Array<YearData>();
+                }
+            };
+            
+        }
+        if (plan.courses !== undefined && plan.courses.length > 0){
+            if (plan.courses){
+                currentCourses = plan.courses;
+            }
+        }
+    }
+    const years = useYears(getCurrentYears);
+
+    const courses = useCourses(currentCourses);
     //The requirements for the degree that are not present in the plan
     const [unmetRequirements, setUnmetRequirements] = useState<Array<string>>(
         []
@@ -129,6 +156,7 @@ export function Scheduler(props: SchedulerProps): JSX.Element {
         }
         setUnmetRequirements(newCourses);
     }, [props.requirements, courses.courseList]);
+
 
 
     useEffect(() => {

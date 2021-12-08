@@ -19,6 +19,7 @@ import IndexPage from "./components/IndexPage";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import usePlans, { Plans } from "./hooks/usePlans";
+import { getByUUID } from "./hooks/useYears";
 
 // Master Plan View
 
@@ -31,20 +32,29 @@ interface MatchParams {
     uuid: string;
 }
 
-
-
 const Plan: FC<PlansPageProps> = (props) => {
     const uuid = props.match.params.uuid;
-    return (
-        <>
-            <SchedulerWalkthrough />
-            <p></p>
-            <DndProvider backend={HTML5Backend}>
-                <Scheduler requirements={props.requirements} plans={props.plans} scheduleId={uuid} />
-            </DndProvider>
-            
-        </>
-    );
+    const checkUuid = getByUUID(props.plans.planList, uuid);
+    // if plans exist, generate page with proper plans otherwise display error page
+    if (checkUuid !== -1){
+        return (
+            <>
+                <SchedulerWalkthrough />
+                <p></p>
+                <DndProvider backend={HTML5Backend}>
+                    <Scheduler requirements={props.requirements} plans={props.plans} scheduleId={uuid} />
+                </DndProvider>
+                
+            </>
+        );
+    }else{
+        return (
+            <>
+                <p>Page does not exist. Check the URL and try again.</p>
+            </>
+        );
+    }
+    
 };
 
 function App(): JSX.Element {

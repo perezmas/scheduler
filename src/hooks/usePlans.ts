@@ -4,10 +4,12 @@ import PlanData from "../interfaces/Plan";
 import YearData from "../interfaces/Year";
 import { getByUUID } from "./useYears";
 import SemesterData from "../interfaces/Semester";
+import { v4 as uuid } from "uuid";
 
 type PlanActionType = 
 "ADD PLAN" |
 "DELETE PLAN" |
+"COPY PLAN" |
   "SET YEARS"
 | "SET SEMESTERS"
 | "SET COURSES";
@@ -24,6 +26,11 @@ export interface AddPlanAction extends AbstractAction {
 
 export interface DeletePlanAction extends AbstractAction {
     type: "DELETE PLAN";
+}
+
+export interface CopyPlanAction extends AbstractAction {
+    type: "COPY PLAN";
+    planItem: PlanData;
 }
 
 export interface SetYearAction extends AbstractAction {
@@ -45,6 +52,7 @@ export interface SetCourseAction extends AbstractAction {
 type PlanAction<T extends PlanActionType> = 
 T extends "ADD PLAN" ? AddPlanAction :
 T extends "DELETE PLAN" ? DeletePlanAction :
+T extends "COPY PLAN" ? CopyPlanAction :
 T extends "SET YEARS" ? SetYearAction :
 T extends "SET SEMESTERS" ? SetSemesterAction : 
 SetCourseAction
@@ -60,7 +68,7 @@ function PlanReducer<T extends PlanActionType>(
     case "ADD PLAN": {
         const addPlan = action as AddPlanAction;
         const NewPlan: PlanData = {
-            id: length,
+            id: next.length+1,
             uuid: addPlan.uuid,
             years: new Array<YearData>(),
             semesters: new Array<SemesterData>(),
@@ -75,6 +83,19 @@ function PlanReducer<T extends PlanActionType>(
             return value.uuid !== deletePlan.uuid;
         });
         return output;
+    }
+    case "COPY PLAN": {
+        const copyPlan = action as CopyPlanAction;
+        const target = getByUUID(next, copyPlan.uuid);
+        const NewCopiedPlan: PlanData = {
+            id: next[target].id,
+            uuid: uuid(),
+            years: next[target].years,
+            semesters: next[target].semesters,
+            courses: next[target].courses,
+        }; 
+        next.push(NewCopiedPlan);
+        return next;
     }
     case "SET YEARS": {
         const setYears = action as SetYearAction;
@@ -108,6 +129,7 @@ export interface Plans {
     setCourses: (uuid: string, courseList: Array<CourseData>) => void;
     addPlan: (uuid: string) => void;
     deletePlan: (uuid: string) => void;
+    copyPlan: (uuid: string, planItem: PlanData) => void;
 }
 
 function usePlans(initialPlans?: () => Array<PlanData>): Plans {
@@ -121,11 +143,13 @@ function usePlans(initialPlans?: () => Array<PlanData>): Plans {
     );
 
     const setYears = (uuid: string, yearList: Array<YearData>) => {
-        setPlans({
-            type: "SET YEARS",
-            uuid: uuid,
-            yearList: yearList,
-        });
+        if ( yearList !== undefined) {
+            setPlans({
+                type: "SET YEARS",
+                uuid: uuid,
+                yearList: yearList,
+            });
+        }
     };
 
     const setCourses = (uuid: string, courseList: Array<CourseData>) => {
@@ -151,12 +175,21 @@ function usePlans(initialPlans?: () => Array<PlanData>): Plans {
         });
     };
 
+    const copyPlan = (uuid: string, planItem: PlanData) => {
+        setPlans({
+            type: "COPY PLAN",
+            uuid: uuid,
+            planItem: planItem,
+        });
+    };
+
     return {
         planList: plans,
         setYears,
         setCourses,
         addPlan,
         deletePlan,
+        copyPlan,
     };
 }
 export default usePlans;
