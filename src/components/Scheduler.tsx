@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import useYears from "../hooks/useYears";
+import useYears, { getByUUID } from "../hooks/useYears";
 import { v4 as uuid } from "uuid";
 import YearData from "../interfaces/Year";
 import useProblems, { Problem } from "../hooks/useProblems";
@@ -11,6 +11,7 @@ import {
     handleSemesterFormSubmit,
 } from "../util/events/SemesterFormEvents";
 import Year from "./Year/Year";
+import { Plans } from "../hooks/usePlans";
 import CourseData from "../interfaces/Course";
 import MetRequirementsTable from "./MetRequirementsTable";
 import ExportCSV from "./ExportCSV";
@@ -18,7 +19,10 @@ import ExportCSV from "./ExportCSV";
 export interface SchedulerProps {
     /**All the course ID's for the requirements for the degree this scheduler is designed to help acquire. */
     requirements: Array<string>;
+    plans: Plans;
+    scheduleId: string;    
 }
+
 
 function getStartingYears(): Array<YearData> {
     const year = new Date().getFullYear();
@@ -59,9 +63,35 @@ function hasError(problems: Array<Problem>): boolean {
 }
 
 export function Scheduler(scheduleProps: SchedulerProps): JSX.Element {
-    const years = useYears(getStartingYears);
+    let years = useYears(getStartingYears);
 
-    const courses = useCourses();
+    let getCurrentYears: () => Array<YearData> = getStartingYears;
+    let currentCourses: Array<CourseData> | undefined = undefined;
+
+    const planId = getByUUID(scheduleProps.plans.planList, scheduleProps.scheduleId);
+    // initialize years and courses
+    if (planId !== -1){
+
+        const plan = scheduleProps.plans.planList[planId];
+        if ( plan.years !== undefined && plan.years.length > 0){
+            getCurrentYears = () => {
+                if (plan.years){
+                    return plan.years;
+                }else{
+                    return new Array<YearData>();
+                }
+            };
+            
+        }
+        if (plan.courses !== undefined && plan.courses.length > 0){
+            if (plan.courses){
+                currentCourses = plan.courses;
+            }
+        }
+    }
+    years = useYears(getCurrentYears);
+
+    const courses = useCourses(currentCourses);
     //The requirements for the degree that are not present in the plan
     const [unmetRequirements, setUnmetRequirements] = useState<Array<string>>(
         []
@@ -142,6 +172,13 @@ export function Scheduler(scheduleProps: SchedulerProps): JSX.Element {
 
         setUnmetRequirements(newCourses);
     }, [scheduleProps.requirements, courses.courseList]);
+
+
+
+    useEffect(() => {
+        scheduleProps.plans.setYears(scheduleProps.scheduleId, years.value);
+        scheduleProps.plans.setCourses(scheduleProps.scheduleId, courses.courseList);
+    }, [years.value, courses.courseList]);
 
     if (
         newName &&
