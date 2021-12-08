@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import ReactJoyride from "react-joyride";
 
@@ -36,9 +36,6 @@ const SchedulerWalkthrough: React.FunctionComponent = () => {
             },
         ],
     });
-    useEffect(() => {
-        setJoyride({ ...joyride, run: !joyride.run });
-    }, []);
     
     return (
         <>
