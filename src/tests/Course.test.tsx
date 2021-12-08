@@ -71,8 +71,8 @@ describe(Course, () => {
         render(<WrappedCourse {...testProps} />);
         expect(removeCourseSpy).not.toHaveBeenCalled();
         screen.getByTestId("course-dropdown-toggle").click(); // open dropdown
-        await screen.findByTestId(`remove-course-CISC123`);
-        screen.getByTestId(`remove-course-CISC123`).click();
+        await screen.findByTestId("remove-course-CISC123");
+        screen.getByTestId("remove-course-CISC123").click();
 
         expect(removeCourseSpy).toHaveBeenCalled();
         expect(removeCourseSpy).toHaveBeenLastCalledWith(courseUuid);

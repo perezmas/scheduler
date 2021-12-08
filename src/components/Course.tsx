@@ -26,7 +26,7 @@ const Course = (props: CourseProps): JSX.Element => {
         onClick?: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => null;
     }
     const CustomToggle = React.forwardRef(
-        (props: ToggleProps, ref: React.Ref<HTMLAnchorElement>) => (
+        (props: ToggleProps, ref: React.Ref<HTMLAnchorElement>) => 
             <a
                 className="course-kebab-menu"
                 data-testid="course-dropdown-toggle"
@@ -39,7 +39,7 @@ const Course = (props: CourseProps): JSX.Element => {
             >
                 {props.children}
             </a>
-        )
+        
     );
 
     CustomToggle.displayName = "CustomToggle";
@@ -56,7 +56,7 @@ const Course = (props: CourseProps): JSX.Element => {
             </div>
             <Dropdown style={{ display: "inline-block" }}>
                 <Dropdown.Toggle as={CustomToggle}>
-                    <i className="fa fa-ellipsis-v"></i>
+                    <i className="fa fa-ellipsis-v" data-testid="course-dropdown"></i>
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>

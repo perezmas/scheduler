@@ -114,13 +114,13 @@ const AddCourse = (props: AddNewCourseData): JSX.Element | null => {
                         </Form.Group>
                         <Form.Group className="mb-3" as={Col}>
                             <Form.Label>Select Corequisites</Form.Label>
-                            {props.courses.length > 0 ? (
+                            {props.courses.length > 0 ? 
                                 props.courses
                                     .filter(
                                         (course) =>
                                             course.id != props.defaultValues.id
                                     )
-                                    .map((course: CourseData) => (
+                                    .map((course: CourseData) => 
                                         <Form.Check
                                             data-testid={`co-${course.name}`}
                                             key={course.uuid}
@@ -133,20 +133,20 @@ const AddCourse = (props: AddNewCourseData): JSX.Element | null => {
                                             )}
                                             onChange={props.onChange}
                                         />
-                                    ))
-                            ) : (
+                                    )
+                                : 
                                 <div> No courses to choose from. </div>
-                            )}
+                            }
                         </Form.Group>
                         <Form.Group className="mb-3" as={Col}>
                             <Form.Label>Select Prerequisites</Form.Label>
-                            {props.courses.length > 0 ? (
+                            {props.courses.length > 0 ? 
                                 props.courses
                                     .filter(
                                         (course) =>
                                             course.id != props.defaultValues.id
                                     )
-                                    .map((course: CourseData) => (
+                                    .map((course: CourseData) => 
                                         <Form.Check
                                             key={course.uuid}
                                             data-testid={`pre-${course.name}`}
@@ -159,10 +159,10 @@ const AddCourse = (props: AddNewCourseData): JSX.Element | null => {
                                             )}
                                             onChange={props.onChange}
                                         />
-                                    ))
-                            ) : (
+                                    )
+                                : 
                                 <div> No courses to choose from. </div>
-                            )}
+                            }
                         </Form.Group>
                     </Row>
 
@@ -188,7 +188,7 @@ const AddCourse = (props: AddNewCourseData): JSX.Element | null => {
                 </Form>
             </div>
         </div>,
-        (document.getElementById("modal-view") as Element) || document.body
+        document.getElementById("modal-view") as Element || document.body
     );
 };
 

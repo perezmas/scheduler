@@ -290,14 +290,14 @@ describe("Semester", () => {
         screen;
         let course = screen.getByTestId("Course CISC111: Intro to testing");
         getByTestId(course, "course-dropdown-toggle").click(); // open dropdown
-        await findByTestId(course, `remove-course-CISC111`);
-        screen.getByTestId(`remove-course-CISC111`).click();
+        await findByTestId(course, "remove-course-CISC111");
+        screen.getByTestId("remove-course-CISC111").click();
         expect(removeCourseSpy).toHaveBeenCalledTimes(1);
         expect(removeCourseSpy).toHaveBeenLastCalledWith(courseUuid1);
         course = screen.getByTestId("Course CISC121: Intro to testing2");
         getByTestId(course, "course-dropdown-toggle").click(); // open dropdown
-        await findByTestId(course, `remove-course-CISC121`);
-        screen.getByTestId(`remove-course-CISC121`).click();
+        await findByTestId(course, "remove-course-CISC121");
+        screen.getByTestId("remove-course-CISC121").click();
         expect(removeCourseSpy).toHaveBeenCalledTimes(2);
         expect(removeCourseSpy).toHaveBeenLastCalledWith(courseUuid2);
     });

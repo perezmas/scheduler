@@ -54,7 +54,7 @@ async function addCourse(
     );
 
     fireEvent.change(courseName, { target: { value: name } });
-    fireEvent.change(courseID, { target: { value: id } });
+    fireEvent.change(courseID, {target: {value: id}});
     fireEvent.change(courseDescription, {
         target: { value: description !== undefined ? description : "" },
     });
@@ -129,7 +129,7 @@ async function testForError(
 
 describe(Scheduler, () => {
     beforeEach(() => {
-        render(<WrappedScheduler requirements={["MATH243"]} />);
+        render(<WrappedScheduler requirements={["MATH243","IRSH-201","SCOT-201","STUFF-101","STUFF-102"]} />);
     });
 
     it("Should start with 2 years and 3 semesters.", async () => {
@@ -419,9 +419,12 @@ describe(Scheduler, () => {
         await addCourse(2, 1, "Intro to more stuff", "STUFF-102");
 
         getByTestId(
-            screen.getByTestId("Course IRSH-201: Irish Dance"),
-            "remove-course-IRISH-201"
+            getByTestId(getByTestId(screen.getByTestId("Year 1"), "semester 1"),"Course IRSH-201: Irish Dance"),
+            "course-dropdown"
         ).click();
+
+        (await screen.findByText("Remove")).click();
+        
 
         expect(
             screen.queryByTestId("Course IRSH-201: Irish Dance")
@@ -510,7 +513,7 @@ describe(Scheduler, () => {
         screen.getByTestId("pre-Intro to Scots").click();
         screen.getByTestId("pre-Intro to Scots").click();
         screen.getByTestId("submit-course-button").click();
-        expect(screen.getAllByTestId("edit-course-button")).toHaveLength(5);
+        expect(screen.getAllByTestId("course-dropdown")).toHaveLength(5);
     });
 
     it("Should allow you to drag courses from one semester to another", async () => {

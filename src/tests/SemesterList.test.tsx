@@ -192,7 +192,8 @@ describe(SemesterList, () => {
         render(<WrappedSemesterList {...testProps} />);
         expect(removeCourseSpy).not.toHaveBeenCalled();
         const semester = screen.getByTestId("semester 1");
-        getByTestId(semester, "remove-course").click();
+        getByTestId(semester, "course-dropdown").click();
+        (await screen.findByText("Remove")).click();
         expect(removeCourseSpy).toHaveBeenCalledTimes(1);
         expect(removeCourseSpy).toHaveBeenLastCalledWith(courseUuid1);
     });
