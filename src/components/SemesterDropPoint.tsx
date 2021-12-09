@@ -3,11 +3,11 @@ import Semester, {SemesterProps} from "./Semester";
 import {useDrop} from "react-dnd";
 import AbstractData from "../interfaces/Data";
 
-export interface SemesterDraggerProps extends SemesterProps{
+export interface SemesterDropPointProps extends SemesterProps{
     acceptCourse: (uuid: string) => void
 }
 
-export default function SemesterDragger(props: SemesterDraggerProps): JSX.Element{
+export default function SemesterDropPoint(props: SemesterDropPointProps): JSX.Element{
     const [,drop] = useDrop(() => ({
         accept: "COURSE",
         drop: (item: AbstractData) => {

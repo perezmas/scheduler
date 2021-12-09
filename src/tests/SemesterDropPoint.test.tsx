@@ -1,20 +1,20 @@
 import React from "react";
 import { DndProvider, useDrag } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import SemesterDragger, {SemesterDraggerProps} from "../components/SemesterDragger";
+import SemesterDropPoint, {SemesterDropPointProps} from "../components/SemesterDropPoint";
 import {v4 as uuid} from "uuid";
 import { screen, render, fireEvent, waitFor } from "@testing-library/react";
 import CourseData from "../interfaces/Course";
 import AbstractData from "../interfaces/Data";
 
-interface WrappedSemesterDraggerProps extends SemesterDraggerProps {
+interface WrappedSemesterDropPointProps extends SemesterDropPointProps {
     draggableUuid: string
 }
 
-function WrappedSemesterDragger(props: WrappedSemesterDraggerProps): JSX.Element{
+function WrappedSemesterDropPoint(props: WrappedSemesterDropPointProps): JSX.Element{
     return (
         <DndProvider backend={HTML5Backend}>
-            <SemesterDragger {...props}/>
+            <SemesterDropPoint {...props}/>
             <DraggableThing uuid={props.draggableUuid}/>
         </DndProvider>
     );
@@ -34,10 +34,10 @@ function DraggableThing(props: AbstractData): JSX.Element{
     );
 }
 
-describe(SemesterDragger, () => {
+describe(SemesterDropPoint, () => {
     const semesterUuid = uuid();
     const draggableUuid = uuid();
-    const defaultProps: WrappedSemesterDraggerProps = {
+    const defaultProps: WrappedSemesterDropPointProps = {
         acceptCourse: jest.fn<void, [string]>(),
         courses: [],
         removeCourse: jest.fn<void, [string]>(),
@@ -54,7 +54,7 @@ describe(SemesterDragger, () => {
         const clearSpy = jest.fn<void, [void]>();
         const testProps = {...defaultProps};
         testProps.clearCourses = clearSpy;
-        render(<WrappedSemesterDragger {...testProps}/>);
+        render(<WrappedSemesterDropPoint {...testProps}/>);
         screen.getByTestId("clear-courses-toggle").click();
         await screen.findByTestId("clear-courses-button");
 
@@ -64,9 +64,9 @@ describe(SemesterDragger, () => {
     });
     it("Should call acceptCourse when something is dropped on it", async () => {
         const acceptCourseSpy = jest.fn<void, [string]>();
-        const testProps: WrappedSemesterDraggerProps = {...defaultProps};
+        const testProps: WrappedSemesterDropPointProps = {...defaultProps};
         testProps.acceptCourse = acceptCourseSpy;
-        render(<WrappedSemesterDragger {...testProps}/>);
+        render(<WrappedSemesterDropPoint {...testProps}/>);
         fireEvent.dragStart(screen.getByText("drag me"));
         expect(acceptCourseSpy).not.toHaveBeenCalled();
         fireEvent.drop(screen.getByTestId("drop-point"));

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import SemesterData from "../../interfaces/Semester";
 import Col from "react-bootstrap/Col";
-import SemesterDragger from "../SemesterDragger";
+import SemesterDropPoint from "../SemesterDropPoint";
 import CourseData from "../../interfaces/Course";
 
 export interface SemesterListProps {
@@ -66,7 +66,7 @@ export default function SemesterList(props: SemesterListProps): JSX.Element {
                             data-testid={`semester ${index + 1}`}
                             key={semesterProps.uuid}
                         >
-                            <SemesterDragger
+                            <SemesterDropPoint
                                 acceptCourse={(uuid: string) => {
                                     props.moveCourse(uuid, semesterProps.uuid);
                                 }}
