@@ -33,7 +33,7 @@ describe("Plan", () => {
         screen.getByTestId("plan-toggle").click();
         await screen.findByTestId("copy-plan");
         screen.getByTestId("copy-plan").click();
-        expect(screen.getAllByText("Plan #0")).toHaveLength(2);
+        expect(screen.getAllByText("Plan #1")).toHaveLength(2);
     });
     it("Should reroute the user when they click the button to edit a plan", async () => {
         screen.getByTestId("add-plan").click();

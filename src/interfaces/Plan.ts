@@ -1,4 +1,6 @@
+import CourseData from "./Course";
 import AbstractData from "./Data";
+import SemesterData from "./Semester";
 import YearData from "./Year";
 
 interface PlanData extends AbstractData {
@@ -10,6 +12,10 @@ interface PlanData extends AbstractData {
     date?: string
     /**All of the years in the plan. */
     years?: Array<YearData>
+
+    semesters?: Array<SemesterData>
+
+    courses?: Array<CourseData>
 }
 
 export default PlanData;

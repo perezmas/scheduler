@@ -48,7 +48,8 @@ describe(SemesterDropPoint, () => {
         uuid: semesterUuid,
         push: jest.fn<void, [CourseData]>(),
         clearCourses: jest.fn<void, [void]>(),
-        draggableUuid
+        draggableUuid,
+        requirements: []
     };
     it("Should call clearCourses if the clear button is clicked", async () => {
         const clearSpy = jest.fn<void, [void]>();

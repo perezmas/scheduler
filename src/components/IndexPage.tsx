@@ -1,19 +1,18 @@
 import React, { FC } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import PlanProps from "../interfaces/Plan";
+import { Plans } from "../hooks/usePlans";
 import PlanPage from "./PlanPage";
 
 type IndexPageProps = RouteComponentProps & {
-    plans: PlanProps[];
-    setPlans: (plans: PlanProps[]) => void;
+    plans: Plans;
 };
 const IndexPage: FC<IndexPageProps> = (props) => {
-    const { plans, setPlans } = props;
+    const { plans } = props;
     return (
         <div className="home">
             <div className="home-content">
                 <h1 className="center mb-5">UD CIS Scheduler</h1>
-                <PlanPage plans={plans} setPlans={setPlans} />
+                <PlanPage plans={plans} />
             </div>
         </div>
     );

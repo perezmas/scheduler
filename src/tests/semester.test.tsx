@@ -6,6 +6,7 @@ import {
     waitFor,
     getByText,
     getByTestId,
+    findByTestId,
 } from "@testing-library/react";
 import Semester, { SemesterProps } from "../components/Semester";
 import CourseProps from "../interfaces/Course";
@@ -13,14 +14,14 @@ import { v4 as uuid } from "uuid";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-function WrappedSemester(props: SemesterProps): JSX.Element{
+function WrappedSemester(props: SemesterProps): JSX.Element {
     return (
         <DndProvider backend={HTML5Backend}>
-            <Semester {...props}/>
+            <Semester {...props} />
         </DndProvider>
     );
 }
-
+const mockRequirements: Array<string> = ["CISC220", "CISC275", "MATH243"];
 describe("Semester", () => {
     const doNothing = jest.fn<void, [void]>();
     const doNothingWithString = jest.fn<void, [string]>();
@@ -39,6 +40,7 @@ describe("Semester", () => {
                 name="fall"
                 start={new Date("08-31-2021")}
                 end={new Date("12-15-2021")}
+                requirements={mockRequirements}
             />
         );
         expect(screen.getByText("fall")).toBeInTheDocument();
@@ -53,6 +55,7 @@ describe("Semester", () => {
                 push={doNothingWithCourseProps}
                 clearCourses={doNothing}
                 name="fall"
+                requirements={mockRequirements}
                 start={new Date("08-31-2021")}
                 end={new Date("12-15-2021")}
             />
@@ -101,6 +104,7 @@ describe("Semester", () => {
                 push={doNothingWithCourseProps}
                 clearCourses={doNothing}
                 name="fall"
+                requirements={mockRequirements}
                 start={new Date("08-31-2021")}
                 end={new Date("12-15-2021")}
             />
@@ -119,6 +123,7 @@ describe("Semester", () => {
                 removeCourse={doNothingWithString}
                 push={doNothingWithCourseProps}
                 clearCourses={doNothing}
+                requirements={mockRequirements}
                 name="fall"
                 start={new Date("08-31-2021")}
                 end={new Date("12-15-2021")}
@@ -139,6 +144,7 @@ describe("Semester", () => {
                 clearCourses={doNothing}
                 name="fall"
                 start={new Date("08-31-2021")}
+                requirements={mockRequirements}
                 end={new Date("12-15-2021")}
             />
         );
@@ -146,7 +152,7 @@ describe("Semester", () => {
 
         await screen.findByTestId("modal-add-course");
 
-        screen.getByText("Close Button").click();
+        screen.getByText("Cancel").click();
 
         await waitFor(() => {
             expect(
@@ -176,11 +182,12 @@ describe("Semester", () => {
                 push={doNothingWithCourseProps}
                 clearCourses={doNothing}
                 name="fall"
+                requirements={mockRequirements}
                 start={new Date("08-31-2021")}
                 end={new Date("12-15-2021")}
             />
         );
-
+        screen.getByTestId("course-dropdown-toggle").click(); // open dropdown
         screen.getByTestId("edit-course-button").click();
         await screen.findByTestId("modal-add-course");
     });
@@ -195,6 +202,7 @@ describe("Semester", () => {
                 push={pushSpy}
                 clearCourses={doNothing}
                 name="fall"
+                requirements={mockRequirements}
                 start={new Date("08-31-2021")}
                 end={new Date("12-15-2021")}
             />
@@ -225,6 +233,7 @@ describe("Semester", () => {
                 clearCourses={clearSpy}
                 name="fall"
                 start={new Date("08-31-2021")}
+                requirements={mockRequirements}
                 end={new Date("12-15-2021")}
             />
         );
@@ -270,18 +279,25 @@ describe("Semester", () => {
                 removeCourse={removeCourseSpy}
                 push={doNothingWithCourseProps}
                 clearCourses={doNothing}
+                requirements={mockRequirements}
                 name="fall"
                 start={new Date("08-31-2021")}
                 end={new Date("12-15-2021")}
             />
         );
         expect(removeCourseSpy).not.toHaveBeenCalled();
+
+        screen;
         let course = screen.getByTestId("Course CISC111: Intro to testing");
-        getByTestId(course, "remove-course").click();
+        getByTestId(course, "course-dropdown-toggle").click(); // open dropdown
+        await findByTestId(course, "remove-course-CISC111");
+        screen.getByTestId("remove-course-CISC111").click();
         expect(removeCourseSpy).toHaveBeenCalledTimes(1);
         expect(removeCourseSpy).toHaveBeenLastCalledWith(courseUuid1);
         course = screen.getByTestId("Course CISC121: Intro to testing2");
-        getByTestId(course, "remove-course").click();
+        getByTestId(course, "course-dropdown-toggle").click(); // open dropdown
+        await findByTestId(course, "remove-course-CISC121");
+        screen.getByTestId("remove-course-CISC121").click();
         expect(removeCourseSpy).toHaveBeenCalledTimes(2);
         expect(removeCourseSpy).toHaveBeenLastCalledWith(courseUuid2);
     });

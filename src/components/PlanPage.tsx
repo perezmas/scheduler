@@ -11,73 +11,32 @@ import {
 import "./styles.css";
 import { Link } from "react-router-dom";
 import { v4 as uuid } from "uuid";
-import YearData from "../interfaces/Year";
 import PlanData from "../interfaces/Plan";
-
-export const testList: PlanData[] = [
-    {
-        uuid: "1",
-        id: 1,
-        name: "max",
-        date: "01/01/2021",
-        years: Array<YearData>(),
-    },
-    {
-        uuid: "2",
-        id: 2,
-        name: "amani",
-        date: "02/02/2021",
-        years: Array<YearData>(),
-    },
-];
+import { Plans } from "../hooks/usePlans";
 
 interface PlanPageProps {
-    plans: PlanData[];
-    setPlans: (plans: PlanData[]) => void;
+    plans: Plans;
 }
 
 /**A card on the home screen that lets the user move between schedulers, mainly so that advisors can keep track of their students. */
 export function PlanPage(props: PlanPageProps): JSX.Element {
-    const { plans, setPlans } = props;
+    const { plans } = props;
 
     const addPlan = () => {
-        // sets array of all cards
-        setPlans([
-            ...plans,
-            {
-                id: plans.length,
-                uuid: uuid(),
-                name: "",
-                date: new Date().toLocaleDateString(),
-                years: Array<YearData>(),
-            },
-        ]);
+        // adds plan with new unique id
+        plans.addPlan(uuid());
     };
 
     const deleteCard = (planItem: PlanData) => {
+        // asks if you want to delete plan and deletes it
         if (window.confirm("Are you sure you want to delete this plan?")) {
-            const newArray = [...plans];
-            const index = newArray.indexOf(planItem);
-
-            if (index !== -1) {
-                newArray.splice(index, 1);
-                setPlans(newArray);
-            }
+            plans.deletePlan(planItem.uuid);
         }
     };
 
     const copy = (planItem: PlanData) => {
-        // sets array of all cards
-        setPlans([
-            ...plans,
-            {
-                id: planItem.id,
-                uuid: uuid(),
-                name: planItem.name,
-                date: planItem.date,
-                years: planItem.years,
-            },
-        ]);
+        // makes copy of given plan
+        plans.copyPlan(planItem.uuid, planItem);
     };
 
     const renderCard = (planItem: PlanData) => {
@@ -143,7 +102,7 @@ export function PlanPage(props: PlanPageProps): JSX.Element {
     return (
         <Container>
             <Row xs={1} md={3} className="g-4">
-                {plans.map((planItem) => 
+                {plans.planList.map((planItem: PlanData) => 
                     <Col key={planItem.uuid}>{renderCard(planItem)}</Col>
                 )}
                 <Col>
