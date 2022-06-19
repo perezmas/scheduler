@@ -8,7 +8,7 @@ const NavigationBar = (): JSX.Element => {
         <Navbar bg="light" expand="lg">
             <Container>
                 <Navbar.Brand as={Link} to="/">
-                    Fancy Scheduler
+                    Scheduler
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav" data-testid="open-bar">
@@ -33,8 +33,8 @@ const NavigationBar = (): JSX.Element => {
                                 CISC Department Page
                             </NavDropdown.Item>
                             <NavDropdown.Divider />
-                            <NavDropdown.Item href="https://www.reddit.com/r/catpictures/">
-                                Cat Pictures
+                            <NavDropdown.Item href="https://github.com/perezmas/scheduler/" target="_blank" rel="noopener noreferrer">
+                                Github Repo
                             </NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
